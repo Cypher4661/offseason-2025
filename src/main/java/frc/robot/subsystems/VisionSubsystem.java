@@ -17,30 +17,32 @@ public class VisionSubsystem extends SubsystemBase {
 
     public VisionSubsystem() {}
 
+    /** Gets robot pose from Limelight in field coordinates. */
     public Pose2d getEstimatedPose() {
         double[] botpose = limelightTable.getEntry("botpose").getDoubleArray(new double[6]);
 
-        // הגנה במקרה שאין נתונים תקינים
         if (botpose.length < 6) {
-            return new Pose2d(); // מחזיר מיקום אפס
+            // Not enough data, return default pose
+            return new Pose2d();
         }
 
-        return new Pose2d(botpose[0], botpose[1], Rotation2d.fromDegrees(botpose[5]));
+        double x = botpose[0];
+        double y = botpose[1];
+        double yaw = botpose[5]; // heading in degrees
+
+        return new Pose2d(x, y, Rotation2d.fromDegrees(yaw));
     }
 
     @Override
     public void initSendable(SendableBuilder builder) {
         super.initSendable(builder);
-
-        builder.setSmartDashboardType("Robot Pose");
-
-        builder.addDoubleProperty("Limelight X", () -> getEstimatedPose().getX(), null);
-        builder.addDoubleProperty("Limelight Y", () -> getEstimatedPose().getY(), null);
-        builder.addDoubleProperty("Limelight Angle", () -> getEstimatedPose().getRotation().getDegrees(), null);
+        builder.addDoubleProperty("x", () -> getEstimatedPose().getX(), null);
+        builder.addDoubleProperty("y", () -> getEstimatedPose().getY(), null);
+        builder.addDoubleProperty("angle", () -> getEstimatedPose().getRotation().getDegrees(), null);
     }
 
     @Override
     public void periodic() {
-        // אם תרצה לכתוב עוד דברים בעתיד, זה המקום
+        // Called once per scheduler run
     }
 }
