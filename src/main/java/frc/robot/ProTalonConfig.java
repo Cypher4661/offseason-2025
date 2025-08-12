@@ -24,7 +24,9 @@ public class ProTalonConfig {
         ProTalonConfig = new TalonConfig(id, new CANBus("rio"),  name + "/   drive motor")
         .withBrake(true)
         .withInvert(inverted)
+        //.withRadiansMotor(ratio)
         .withMeterMotor(ratio, diameter*Math.PI) // diameter in meters, wheel radius in meters
+        //.withDegreesMotor(ratio)
         .withVelocities(3, 6, 10) // m/s
         .withPID(0.001, 0, 0, 1.0/150, 2.0/9, 0, 0)
         .withRampTime(rampTime)

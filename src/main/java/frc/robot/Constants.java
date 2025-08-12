@@ -21,7 +21,7 @@ import frc.Demacia.utils.Motors.BaseMotorConfig.Canbus;
 public  final class Constants {
 
     public static final class PrototypesMotor {
-            public static final ProTalonConfig talon = new ProTalonConfig(1, "raz", 1.0/100.0, false, 0, 0);
+            public static final ProTalonConfig talon = new ProTalonConfig(1, "raz", 1.0/100.0, false, 0.0762, 0);
 
         
     }
