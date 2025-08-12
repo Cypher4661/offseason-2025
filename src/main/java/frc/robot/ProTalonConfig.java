@@ -28,7 +28,7 @@ public class ProTalonConfig {
         .withVelocities(3, 6, 10) // m/s
         .withPID(0.001, 0, 0, 1.0/150, 2.0/9, 0, 0)
         .withRampTime(rampTime)
-        .withVolts(6)
+        .withVolts(8)
         .withCurrent(20);
         
 
