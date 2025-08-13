@@ -20,25 +20,7 @@ public class VisionSubsystem extends SubsystemBase {
     /** Gets robot pose from Limelight in field coordinates. */
     public Pose2d getEstimatedPose() {
         double[] botpose = limelightTable.getEntry("botpose").getDoubleArray(new double[6]);
-
-        if (botpose.length < 6) {
-            // Not enough data, return default pose
-            return new Pose2d();
-        }
-
-        double x = botpose[0];
-        double y = botpose[1];
-        double yaw = botpose[5]; // heading in degrees
-
-        return new Pose2d(x, y, Rotation2d.fromDegrees(yaw));
-    }
-
-    @Override
-    public void initSendable(SendableBuilder builder) {
-        super.initSendable(builder);
-        builder.addDoubleProperty("x", () -> getEstimatedPose().getX(), null);
-        builder.addDoubleProperty("y", () -> getEstimatedPose().getY(), null);
-        builder.addDoubleProperty("angle", () -> getEstimatedPose().getRotation().getDegrees(), null);
+        return new Pose2d();
     }
 
     @Override
