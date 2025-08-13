@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import java.io.ObjectInputFilter.Config;
+
 import com.ctre.phoenix6.CANBus;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -18,24 +20,24 @@ public class PrototypesSubsystems extends SubsystemBase {
 
     super();
     this.talonMotor = new TalonMotor(config.ProTalonConfig);
-    addCommands();
+    addCommands(config.ratio);
   }
 
-  private void addCommands() {
+  private void addCommands(double ratio) {
     SmartDashboard.putNumber("talon Velocity Target", 1.0);
     SmartDashboard.putData("start talon", new RunCommand(
         () -> {
-          setTalonVelocity( SmartDashboard.getNumber("talon Velocity Target", 0.0));
+          setTalonVelocity( SmartDashboard.getNumber("talon Velocity Target", 0.0), ratio);
         }, this));
     SmartDashboard.putData("stop talon", new RunCommand(
         () -> {
-          setTalonVelocity(0.0);
+          setTalonVelocity(0.0, 1.0);
         }, this));
 
 
   }
-  public void setTalonVelocity(double velocity) {
-    talonMotor.setVelocity(velocity / (1.0/100));
+  public void setTalonVelocity(double velocity, Double ratio) {
+    talonMotor.setVelocity(velocity / (ratio));
   }
 
 
