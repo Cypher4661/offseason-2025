@@ -35,7 +35,7 @@ public class PrototypesSubsystems extends SubsystemBase {
 
   }
   public void setTalonVelocity(double velocity) {
-    talonMotor.setVelocity(velocity);
+    talonMotor.setVelocity(velocity / (1.0/100));
   }
 
 
