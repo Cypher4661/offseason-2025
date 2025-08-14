@@ -44,29 +44,42 @@ private final SparkMotor sparkMotor;
       }
 
 
-      private void addSparkCommands(double SparkGearRatio) {
-  SmartDashboard.putNumber("spark Velocity Target", 1.0);
-  SmartDashboard.putData("start spark", new RunCommand(
+  private void addSparkCommands(double SparkGearRatio) {
+    SmartDashboard.putNumber("spark Velocity Target", 1.0);
+    SmartDashboard.putData("start spark", new RunCommand(
       () -> {
-        setSparkVelocity(SmartDashboard.getNumber("spark Velocity Target", 0.0), SparkGearRatio);
+        try {
+          setSparkVelocity(SmartDashboard.getNumber("spark Velocity Target", 0.0), SparkGearRatio);
+        } catch (Exception e) {
+          // TODO: handle exception
+          SmartDashboard.putString("Error", "Failed to set spark velocity: " + e.getMessage());
+          System.out.println("Failed to set spark velocity: " + e.getMessage());
+        }
+        
       }, this));
-  SmartDashboard.putData("stop spark", new RunCommand(
+   SmartDashboard.putData("stop spark", new RunCommand(
       () -> {
-        setSparkVelocity(0.0, SparkGearRatio);
+        setSparkVelocity(0.0, 1.0);
       }, this));
 
   }
 
   public void setTalonVelocity(double velocity, Double ratio) {
     talonMotor.setVelocity(velocity / (ratio));
+    SmartDashboard.putNumber("Talon Target Velocity", velocity);
+    SmartDashboard.putNumber("Talon Actual Velocity", talonMotor.getCurrentVelocity());
   }
   public void setSparkVelocity(double velocity, Double ratio) {
     sparkMotor.setVelocity(velocity / ratio);
+    SmartDashboard.putNumber("Spark Target Velocity", velocity);
+    SmartDashboard.putNumber("Spark Actual Velocity", sparkMotor.getCurrentVelocity());
   }
   
 
   @Override
   public void periodic() {
+    SmartDashboard.putNumber("Talon Current Velocity", talonMotor.getCurrentVelocity());
+    SmartDashboard.putNumber("Spark Current Velocity", sparkMotor.getCurrentVelocity());
     // This method will be called once per scheduler run
   }
 }

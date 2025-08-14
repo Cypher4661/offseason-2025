@@ -31,7 +31,10 @@ public class ProTalonConfig {
         .withPID(0.001, 0, 0, 1.0/150, 2.0/9, 0, 0)
         .withRampTime(rampTime)
         .withVolts(8)
+        .withPID(0.001, 0, 0, 1.0 / 150, 2.0 / 9, 0, 0)
         .withCurrent(20);
+        
+        
         
 
 
