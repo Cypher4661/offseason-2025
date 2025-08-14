@@ -10,10 +10,11 @@ import com.ctre.phoenix6.CANBus;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.ProSparkConfig;
+
 import frc.robot.ProTalonConfig;
 import frc.robot.utils.TalonMotor;
 import frc.robot.utils.SparkMotor;
+import frc.robot.ProSparkConfig;
 
 public class PrototypesSubsystems extends SubsystemBase {
   /** Creates a new PrototypesSubsystems. */

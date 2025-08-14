@@ -1,4 +1,4 @@
-package frc;
+package frc.robot;
 
 import frc.robot.utils.SparkConfig;
 

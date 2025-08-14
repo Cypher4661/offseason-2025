@@ -7,7 +7,7 @@ package frc.robot;
 
 import frc.Demacia.utils.Motors.SparkConfig;
 import frc.Demacia.utils.Motors.TalonConfig;
-import frc.ProSparkConfig;
+import frc.robot.ProSparkConfig;
 import frc.Demacia.utils.Motors.BaseMotorConfig.Canbus;
 
 /**
@@ -22,7 +22,7 @@ import frc.Demacia.utils.Motors.BaseMotorConfig.Canbus;
 public  final class Constants {
 
     public static final class PrototypesMotor {
-            public static final ProTalonConfig talon = new ProTalonConfig(1, "raz", 1.0/100.0, false, 0.0762, 0);
+            public static final ProTalonConfig talon = new ProTalonConfig(1, "kraken", 1.0/100.0, false, 0.0762, 0);
             public static final ProSparkConfig Spark = new ProSparkConfig("sparkmotor" , 2 , false , 0.5 , 6 , 0.05 , 3 , 0.3 , 1 , 4 , 2);
 
 
