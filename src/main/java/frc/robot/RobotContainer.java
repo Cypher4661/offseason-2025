@@ -4,9 +4,9 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.VisionSubsystem;
-import frc.robot.subsystems.Examples.DemaciaMotorExample;
 
 public class RobotContainer {
 
@@ -14,15 +14,21 @@ public class RobotContainer {
   public static int N_CYCLE = 0;
   public static double CYCLE_TIME = 0.02;
 
-  public VisionSubsystem visionSubsystem = new VisionSubsystem();
+  // Subsystems
+  private final VisionSubsystem visionSubsystem = new VisionSubsystem("limelight");
 
   public RobotContainer(Robot robot) {
     RobotContainer.robot = robot;
     RobotContainer.CYCLE_TIME = robot.getPeriod();
+
+    // מציג את ה-Field2d של ה-Vision בלוח הבקרה
+    SmartDashboard.putData("Field", visionSubsystem.getField());
+
     configureBindings();
   }
   
-   private void configureBindings() {
+  private void configureBindings() {
+    // פה מוסיפים פקודות/קישור כפתורים
   }
 
   public static boolean isEnabled() {
@@ -31,9 +37,11 @@ public class RobotContainer {
 
   public void periodic() {
     N_CYCLE++;
+    // אפשר גם להדפיס או להציג את המיקום למעקב:
+    // System.out.println(visionSubsystem.getRobotPose());
   }
 
   public Command getAutonomousCommand() {
-    return null;
+    return null; // תחזיר פקודת אוטונומי אם יש
   }
 }

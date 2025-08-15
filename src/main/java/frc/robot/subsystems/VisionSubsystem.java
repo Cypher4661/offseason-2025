@@ -4,46 +4,43 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.networktables.*;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class VisionSubsystem extends SubsystemBase {
 
-    private final NetworkTable limelightTable = NetworkTableInstance.getDefault().getTable("limelight");
+    private final NetworkTable table;
+    private final Field2d field = new Field2d();
 
-    public VisionSubsystem() {}
-        private static final double reefAprilTagHeight = 0.17; // 6 inches in meters
-    
-    public Pose2d getEstimatedPose() {
-        double[] botpose = limelightTable.getEntry("botpose").getDoubleArray(new double[6]);
-        return new Pose2d();
-    }
-    public double GetxDistance(double height) {
-        double[] botpose = limelightTable.getEntry("botpose").getDoubleArray(new double[6]);
-        return height / Math.tan(botpose[1]);
+    public VisionSubsystem(String limelightName) {
+        table = NetworkTableInstance.getDefault().getTable(limelightName);
     }
 
-    
-    @Override
-    public void initSendable(SendableBuilder builder) {
-        // TODO Auto-generated method stub
-        super.initSendable(builder);
-        builder.setSmartDashboardType("VisionSubsystem");
+    /** מחזיר את המיקום (Pose2d) של הרובוט במגרש */
+    public Pose2d getRobotPose() {
+        String key = DriverStation.getAlliance()
+                .orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Red
+                ? "botpose_wpired" : "botpose_wpiblue";
 
-
-
+        double[] arr = table.getEntry(key).getDoubleArray(new double[6]);
+        if (arr.length < 6) return new Pose2d();
+        double x = arr[0];
+        double y = arr[1];
+        double yawRad = arr[5]; // yaw ברדיאנים
+        return new Pose2d(x, y, new Rotation2d(yawRad));
     }
-
 
     @Override
     public void periodic() {
-        // Called once per scheduler run
-        SmartDashboard.putNumber("Limelight X Distance", GetxDistance(reefAprilTagHeight));
-        System.out.println(GetxDistance(reefAprilTagHeight));
+        // מעדכן את ה־Field2d בכל מחזור
+        field.setRobotPose(getRobotPose());
+    }
+
+    public Field2d getField() {
+        return field;
     }
 }
