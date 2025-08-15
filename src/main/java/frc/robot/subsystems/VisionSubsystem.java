@@ -30,8 +30,8 @@ public class VisionSubsystem extends SubsystemBase {
         if (arr.length < 6) return new Pose2d();
         double x = arr[0];
         double y = arr[1];
-        double yawRad = arr[5]; // yaw ברדיאנים
-        return new Pose2d(x, y, new Rotation2d(yawRad));
+        double yawDeg = arr[5]; // yaw ברדיאנים
+        return new Pose2d(x, y, new Rotation2d(yawDeg * (Math.PI / 180.0)));
     }
 
     @Override
