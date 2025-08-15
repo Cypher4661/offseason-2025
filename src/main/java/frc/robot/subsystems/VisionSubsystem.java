@@ -20,7 +20,7 @@ public class VisionSubsystem extends SubsystemBase {
         table = NetworkTableInstance.getDefault().getTable(limelightName);
     }
 
-    /** מחזיר את המיקום (Pose2d) של הרובוט במגרש */
+
     public Pose2d getRobotPose() {
         String key = DriverStation.getAlliance()
                 .orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Red
@@ -30,13 +30,12 @@ public class VisionSubsystem extends SubsystemBase {
         if (arr.length < 6) return new Pose2d();
         double x = arr[0];
         double y = arr[1];
-        double yawDeg = arr[5]; // yaw ברדיאנים
+        double yawDeg = arr[5];
         return new Pose2d(x, y, new Rotation2d(yawDeg * (Math.PI / 180.0)));
     }
 
     @Override
     public void periodic() {
-        // מעדכן את ה־Field2d בכל מחזור
         field.setRobotPose(getRobotPose());
     }
 
