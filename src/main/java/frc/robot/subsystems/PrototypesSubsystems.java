@@ -70,7 +70,7 @@ private final SparkMotor sparkMotor;
     SmartDashboard.putNumber("Talon Actual Velocity", talonMotor.getCurrentVelocity());
   }
   public void setSparkVelocity(double velocity, Double ratio) {
-    sparkMotor.setVelocity(velocity / ratio);
+    sparkMotor.setVelocity(velocity / (ratio));
     SmartDashboard.putNumber("Spark Target Velocity", velocity);
     SmartDashboard.putNumber("Spark Actual Velocity", sparkMotor.getCurrentVelocity());
   }

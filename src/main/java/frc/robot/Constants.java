@@ -22,8 +22,9 @@ import frc.Demacia.utils.Motors.BaseMotorConfig.Canbus;
 public  final class Constants {
 
     public static final class PrototypesMotor {
-            public static final ProTalonConfig talon = new ProTalonConfig(1, "kraken", 1.0/100.0, false, 0.0762, 0);
-            public static final ProSparkConfig Spark = new ProSparkConfig("sparkmotor" , 2 , false , 1.0/80.0, 6 , 0.05 , 3 , 0.3 , 1 , 4 , 2);
+            public static final ProTalonConfig talon = new ProTalonConfig(1, "kraken", 1.0/125.0, false, 0.0762, 0);
+            public static final ProSparkConfig Spark = new ProSparkConfig("sparkmotor" , 7 , false , 1.0/9.0, 6 ,
+             0.0762 , 3 , 0.3 , 1 , 4 , 2);
            
 
     }
