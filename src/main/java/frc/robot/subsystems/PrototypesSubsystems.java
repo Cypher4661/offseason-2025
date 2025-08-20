@@ -81,6 +81,9 @@ private final frc.Demacia.utils.Motors.SparkMotor sparkMotor;
   public void periodic() {
     SmartDashboard.putNumber("Talon Current Velocity", talonMotor.getCurrentVelocity());
     SmartDashboard.putNumber("Spark Current Velocity", sparkMotor.getCurrentVelocity());
+    SmartDashboard.putNumber("Talon Current Position", talonMotor.getCurrentPosition());
+    SmartDashboard.putNumber("Spark Current Position", sparkMotor.getCurrentPosition());
+    
     // This method will be called once per scheduler run
   }
 }

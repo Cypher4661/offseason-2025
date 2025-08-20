@@ -26,7 +26,7 @@ public class ProSparkConfig {
 
         ProSparkConfig = new SparkConfig(sparkId ,name )
         .withInvert(isSparkInverted)
-        .withMeterMotor(SparkGearRatio, diameter*Math.PI) 
+        .withMeterMotor(SparkGearRatio, diameter) 
         .withMotionParam(SparkMaxVelocity, SparkMaxAcceleration, SparkMaxJerk) 
         .withRampTime(SparkRampTime)
         .withVolts(SparkMaxVoltage)

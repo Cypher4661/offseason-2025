@@ -28,7 +28,7 @@ public class ProTalonConfig {
         .withBrake(true)
         .withInvert(inverted)
         //.withRadiansMotor(ratio)
-        .withMeterMotor(ratio, diameter*Math.PI) // diameter in meters, wheel radius in meters
+        .withMeterMotor(ratio, diameter) // diameter in meters, wheel radius in meters
         //.withDegreesMotor(ratio)
         .withMotionParam(3, 6, 10) // m/s
         .withPID(0.001, 0, 0, 1.0/150, 2.0/9, 0, 0)
