@@ -40,6 +40,7 @@ public class SparkMotor extends SparkMax implements Sendable, MotorInterface {
     name = config.name;
     configMotor();
     addLog();
+    super.getClosedLoopController();
     SmartDashboard.putData(name, this);
     LogManager.log(name + " motor initialized");
   }
@@ -77,6 +78,7 @@ public class SparkMotor extends SparkMax implements Sendable, MotorInterface {
 
   private void addLog() {
     MotorLogEntry.add(this);
+
 
   }
 

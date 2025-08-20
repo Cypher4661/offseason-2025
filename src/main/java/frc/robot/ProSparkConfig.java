@@ -1,6 +1,6 @@
 package frc.robot;
 
-import frc.robot.utils.SparkConfig;
+import frc.Demacia.utils.Motors.SparkConfig;
 
 public class ProSparkConfig {
     public final int sparkId;
@@ -9,7 +9,7 @@ public class ProSparkConfig {
     public final boolean isSparkInverted;
     public final double diameter;
     public final double SparkRampTime;
-    public final SparkConfig ProSparkConfig;
+    public final frc.Demacia.utils.Motors.SparkConfig ProSparkConfig;
     
 
     public ProSparkConfig(String name,int sparkId,
@@ -27,7 +27,7 @@ public class ProSparkConfig {
         ProSparkConfig = new SparkConfig(sparkId ,name )
         .withInvert(isSparkInverted)
         .withMeterMotor(SparkGearRatio, diameter*Math.PI) 
-        .withVelocities(SparkMaxVelocity, SparkMaxAcceleration, SparkMaxJerk) 
+        .withMotionParam(SparkMaxVelocity, SparkMaxAcceleration, SparkMaxJerk) 
         .withRampTime(SparkRampTime)
         .withVolts(SparkMaxVoltage)
         .withPID(0.001, 0, 0, 1.0 / 150, 2.0 / 9, 0, 0)

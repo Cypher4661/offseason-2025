@@ -1,7 +1,10 @@
 package frc.robot;
 
 import com.ctre.phoenix6.CANBus;
-import frc.robot.utils.TalonConfig;
+
+import frc.Demacia.utils.Motors.TalonConfig;
+import frc.Demacia.utils.Motors.BaseMotorConfig.Canbus;
+
 
 
 public class ProTalonConfig {
@@ -11,7 +14,7 @@ public class ProTalonConfig {
     public final boolean inverted;
     public final double diameter;
     public final double rampTime;
-    public final TalonConfig ProTalonConfig;
+    public final frc.Demacia.utils.Motors.TalonConfig ProTalonConfig;
     
 
     public ProTalonConfig(int id, String name, double ratio, boolean inverted, double diameter, double rampTime) {
@@ -21,13 +24,13 @@ public class ProTalonConfig {
         this.inverted = inverted;
         this.diameter = diameter;
         this.rampTime = rampTime;
-        ProTalonConfig = new TalonConfig(id, new CANBus("rio"),  name + "/   drive motor")
+        ProTalonConfig = new TalonConfig(id, new CANBus("raz"),  name + "/   drive motor")
         .withBrake(true)
         .withInvert(inverted)
         //.withRadiansMotor(ratio)
         .withMeterMotor(ratio, diameter*Math.PI) // diameter in meters, wheel radius in meters
         //.withDegreesMotor(ratio)
-        .withVelocities(3, 6, 10) // m/s
+        .withMotionParam(3, 6, 10) // m/s
         .withPID(0.001, 0, 0, 1.0/150, 2.0/9, 0, 0)
         .withRampTime(rampTime)
         .withVolts(8)
