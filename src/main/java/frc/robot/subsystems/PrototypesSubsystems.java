@@ -66,12 +66,12 @@ private final frc.Demacia.utils.Motors.SparkMotor sparkMotor;
   }
 
   public void setTalonVelocity(double velocity, Double ratio) {
-    talonMotor.setVelocity(velocity / (ratio));
+    talonMotor.setVelocity(velocity);
     SmartDashboard.putNumber("Talon Target Velocity", velocity);
     SmartDashboard.putNumber("Talon Actual Velocity", talonMotor.getCurrentVelocity());
   }
   public void setSparkVelocity(double velocity, Double ratio) {
-    sparkMotor.setVelocity(velocity / (ratio));
+    sparkMotor.setVelocity(velocity);
     SmartDashboard.putNumber("Spark Target Velocity", velocity);
     SmartDashboard.putNumber("Spark Actual Velocity", sparkMotor.getCurrentVelocity());
   }

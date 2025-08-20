@@ -24,7 +24,7 @@ public class ProTalonConfig {
         this.inverted = inverted;
         this.diameter = diameter;
         this.rampTime = rampTime;
-        ProTalonConfig = new TalonConfig(id, new CANBus("raz"),  name + "/   drive motor")
+        ProTalonConfig = new TalonConfig(id, Canbus.Rio, name)
         .withBrake(true)
         .withInvert(inverted)
         //.withRadiansMotor(ratio)
