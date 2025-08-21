@@ -14,66 +14,25 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 
 public class VisionSubsystem extends SubsystemBase {
-
-    private final NetworkTable table;
-    private final Field2d field = new Field2d();
+    private NetworkTable table;
+    private final Field2d field;
+    private double tagX;
+    private double tagY;
+    private double id;
+    public Pose2d pose;
 
     public VisionSubsystem(String limelightName) {
         table = NetworkTableInstance.getDefault().getTable(limelightName);
-
-        Translation2d targetTranslation = new Translation2d(0.0, 0.0);
-        field.getObject("target").setPose(new Pose2d(targetTranslation, new Rotation2d()));
-        field.getObject("robot").setPose(new Pose2d(0.0, 0.0, new Rotation2d()));
-        field.setRobotPose(new Pose2d(0.0, 0.0, new Rotation2d()));
-        SmartDashboard.putData("Field", field);
+        field = new Field2d();
+        
     }
-
-    public Pose2d getRobPose() {
-        String key = DriverStation.getAlliance()
-                .orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Red
-                ? "botpose_wpired" : "botpose_wpiblue";
-
-        double[] arr = table.getEntry(key).getDoubleArray(new double[6]);
-        if (arr.length < 6) return new Pose2d();
-        double x = arr[0];
-        double y = arr[1];
-        double yawDeg = arr[5];
-        return new Pose2d(x, y, new Rotation2d(yawDeg * (Math.PI / 180.0)));
-    }
-
-    public Pose2d getRobotPose() {
-        Pose2d pose = getRobPose();
-        field.setRobotPose(pose);
-        return pose;
-    }
-
-    /**
-     * Returns the current robot pose in the field.
-     * 
-     * @return The current robot pose.
-     */
-
-    public Pose2d getCurrentRobotPose() {
-        return field.getRobotPose();
-    }
-
-    /**
-     * Sets the robot pose in the field.
-     * 
-     * @param pose The new robot pose to set.
-     */
-
-    public void setRobotPose(Pose2d pose) {
-        field.setRobotPose(pose);
-    }
-
-
     @Override
     public void periodic() {
-        field.setRobotPose(getRobotPose());
+        // TODO Auto-generated method stub
+        tagX = table.getEntry("tx").getDouble(0.0);
+        tagY = -(table.getEntry("ty").getDouble(0.0));
+        
     }
-
-    public Field2d getField() {
-        return field;
+    public double DistToTarget() {
+        dist = (Math.abs(height - camera.getPitch())) * (Math.tan(Math.toRadians(tagX)));
     }
-}
