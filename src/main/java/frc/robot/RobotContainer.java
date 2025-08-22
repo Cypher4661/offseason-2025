@@ -15,7 +15,7 @@ public class RobotContainer {
   public static int N_CYCLE = 0;
   public static double CYCLE_TIME = 0.02;
   
-  public DemaciaMotorExample demaciaMotorExample = new DemaciaMotorExample();
+ // public DemaciaMotorExample demaciaMotorExample = new DemaciaMotorExample();
 
   public RobotContainer(Robot robot) {
     RobotContainer.robot = robot;
