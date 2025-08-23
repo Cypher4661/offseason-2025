@@ -20,9 +20,39 @@ import frc.Demacia.utils.Motors.BaseMotorConfig.Canbus;
  */
 
 public  final class Constants {
-
+    public  static final class elevatorConfig{
+            public static final Motor_config LeftMotor = new Motor_config(
+            1,
+            "left_elevator_motor",
+            3,
+            false,
+            40,
+            0.5,
+            1.2,
+            1.5,
+            20,
+            0, 0, 0.0, 0.0, 0, 0, 0,
+            20,
+            40);
+            public static final Motor_config RightMotor = new Motor_config(
+                2,
+                "right_elevator_motor",
+                3,
+                false,
+                40,
+                0.5,
+                1.2,
+                1.5,
+                20,
+                0, 0, 0.0, 0.0, 0, 0, 0,
+                20,
+                40);
+    }
 
     }
+
+
+
 
   
 
