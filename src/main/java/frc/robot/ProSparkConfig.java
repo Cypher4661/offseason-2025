@@ -30,7 +30,7 @@ public class ProSparkConfig {
         .withMotionParam(SparkMaxVelocity, SparkMaxAcceleration, SparkMaxJerk) 
         .withRampTime(SparkRampTime)
         .withVolts(SparkMaxVoltage)
-        .withPID(1, 0.01, 0,0.1, 4.2, 0.4, 0)
+        .withPID(4, 0.0, 0,0.2, 0.9, 0.9, 0)
         .withCurrent(SparkMaxCurent);
 
     }

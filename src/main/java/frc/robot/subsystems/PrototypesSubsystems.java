@@ -85,6 +85,16 @@ private final frc.Demacia.utils.Motors.MotorInterface sparkMotor;
     SmartDashboard.putNumber("Spark Current Velocity", sparkMotor.getCurrentVelocity());
     SmartDashboard.putNumber("Talon Current Position", talonMotor.getCurrentPosition());
     SmartDashboard.putNumber("Spark Current Position", sparkMotor.getCurrentPosition());
+    double current = sparkMotor.getCurrentCurrent();
+    SmartDashboard.putNumber("Current Current", current);
+    System.out.println("Current Current: " + current);
+    if (current > 10) {
+      new RunCommand(() -> {
+        System.out.println("Position exceeded limit, stopping motor");
+        setSparkVelocity(0.0, 1.0);
+      }, this).schedule();
+        SmartDashboard.putString("Spark Status", "Position exceeded limit, stopped motor");
+    }
     
     // This method will be called once per scheduler run
   }

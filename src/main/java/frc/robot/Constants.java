@@ -25,8 +25,8 @@ public  final class Constants {
             public static final ProTalonConfig talon = new ProTalonConfig(1, "kraken",
              125.0, false, 0.0762, 0.5);
             public static final ProSparkConfig Spark = new ProSparkConfig("sparkmotor" , 7 , false ,
-             9.0, 0.5 ,
-             0.0762 , 1.7 ,
+             49.0/26.0, 0.5 ,
+             0.0762 , 3 ,
               6 , 1 ,
                8 , 20);
            
