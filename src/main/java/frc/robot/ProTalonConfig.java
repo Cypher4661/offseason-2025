@@ -30,7 +30,7 @@ public class ProTalonConfig {
         //.withRadiansMotor(ratio)
         .withMeterMotor(ratio, diameter) // diameter in meters, wheel radius in meters
         //.withDegreesMotor(ratio)
-        .withMotionParam(3, 6, 10) // m/s
+        .withMotionParam(0.2, 6, 10) // m/s
         .withPID(4, 0, 0, 0.12, 60, 0.1, 0)
         .withRampTime(rampTime)
         .withVolts(12)

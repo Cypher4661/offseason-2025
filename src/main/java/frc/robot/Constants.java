@@ -26,7 +26,7 @@ public  final class Constants {
              125.0, false, 0.0762, 0.5);
             public static final ProSparkConfig Spark = new ProSparkConfig("sparkmotor" , 7 , false ,
              9.0, 0.5 ,
-             0.0762 , 3 ,
+             0.0762 , 1.7 ,
               6 , 1 ,
                8 , 20);
            
