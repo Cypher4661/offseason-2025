@@ -9,39 +9,24 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.VisionSubsystem;
 
 public class RobotContainer {
-
-  public static Robot robot;
-  public static int N_CYCLE = 0;
-  public static double CYCLE_TIME = 0.02;
-
   // Subsystems
   private final VisionSubsystem visionSubsystem = new VisionSubsystem("limelight");
 
-  public RobotContainer(Robot robot) {
-    RobotContainer.robot = robot;
-    RobotContainer.CYCLE_TIME = robot.getPeriod();
-
     // מציג את ה-Field2d של ה-Vision בלוח הבקרה
-    SmartDashboard.putData("Field", visionSubsystem.getField());
+  public RobotContainer(Robot robot) {
 
-    configureBindings();
+    configureButtonBindings();
   }
-  
-  private void configureBindings() {
-    // פה מוסיפים פקודות/קישור כפתורים
-  }
+  private void configureButtonBindings() {
 
-  public static boolean isEnabled() {
-    return robot.isEnabled();
-  }
+    // Configure your button bindings here
 
-  public void periodic() {
-    N_CYCLE++;
-    // אפשר גם להדפיס או להציג את המיקום למעקב:
-    // System.out.println(visionSubsystem.getRobotPose());
   }
-
   public Command getAutonomousCommand() {
-    return null; // תחזיר פקודת אוטונומי אם יש
+    // Return the command to run in autonomous mode
+    return null; // Replace with your autonomous command
+  }
+  public void periodic() {
+    // Update the Field2d with the current pose of the vision subsystem
   }
 }

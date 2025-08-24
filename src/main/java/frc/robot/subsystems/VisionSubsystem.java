@@ -15,24 +15,26 @@ import edu.wpi.first.math.geometry.Translation2d;
 
 public class VisionSubsystem extends SubsystemBase {
     private NetworkTable table;
-    private final Field2d field;
-    private double tagX;
-    private double tagY;
-    private double id;
+    private final Field2d field;    
+    private NetworkTableEntry tx;
+    private NetworkTableEntry ty;
+    private NetworkTableEntry tv;
+
     public Pose2d pose;
 
     public VisionSubsystem(String limelightName) {
         table = NetworkTableInstance.getDefault().getTable(limelightName);
         field = new Field2d();
-        
+        SmartDashboard.putData("Field", field);
     }
     @Override
     public void periodic() {
         // TODO Auto-generated method stub
-        tagX = table.getEntry("tx").getDouble(0.0);
-        tagY = -(table.getEntry("ty").getDouble(0.0));
-        
+        double x = tx.getDouble(0.0);
+        double y = ty.getDouble(0.0);  
+        double v = tv.getDouble(0.0);
+        if(v != 0) {
+            
+        }
     }
-    public double DistToTarget() {
-        dist = (Math.abs(height - camera.getPitch())) * (Math.tan(Math.toRadians(tagX)));
-    }
+}
