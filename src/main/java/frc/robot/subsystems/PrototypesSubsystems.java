@@ -19,8 +19,8 @@ import frc.Demacia.utils.Motors.TalonMotor;
 
 public class PrototypesSubsystems extends SubsystemBase {
   /** Creates a new PrototypesSubsystems. */
-private final frc.Demacia.utils.Motors.TalonMotor talonMotor;
-private final frc.Demacia.utils.Motors.SparkMotor sparkMotor;
+private final frc.Demacia.utils.Motors.MotorInterface talonMotor;
+private final frc.Demacia.utils.Motors.MotorInterface sparkMotor;
 
   public PrototypesSubsystems(ProTalonConfig config ,ProSparkConfig SparkConfig ) {
 
@@ -34,6 +34,7 @@ private final frc.Demacia.utils.Motors.SparkMotor sparkMotor;
 
   private void addCommands(double ratio) {
     SmartDashboard.putNumber("talon Velocity Target", 1.0);
+    talonMotor.showSysidCommands(this);
     SmartDashboard.putData("start talon", new RunCommand(
         () -> {
           setTalonVelocity( 1, ratio);
@@ -62,6 +63,7 @@ private final frc.Demacia.utils.Motors.SparkMotor sparkMotor;
       () -> {
         setSparkVelocity(0.0, 1.0);
       }, this));
+      sparkMotor.showSysidCommands(this);
 
   }
 
