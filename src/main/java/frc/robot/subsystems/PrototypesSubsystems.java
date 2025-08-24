@@ -37,7 +37,7 @@ private final frc.Demacia.utils.Motors.MotorInterface sparkMotor;
     talonMotor.showSysidCommands(this);
     SmartDashboard.putData("start talon", new RunCommand(
         () -> {
-          setTalonVelocity( 1, ratio);
+          setTalonVelocity( SmartDashboard.getNumber("talon Velocity Target", 0.0), ratio);
         }, this));
     SmartDashboard.putData("stop talon", new RunCommand(
         () -> {

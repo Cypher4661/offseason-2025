@@ -32,8 +32,6 @@ public class ProSparkConfig {
         .withVolts(SparkMaxVoltage)
         .withPID(2, 0, 0,0.04, 3, 0.4, 0)
         .withCurrent(SparkMaxCurent);
-        
-
 
     }
 }
