@@ -4,29 +4,44 @@
 
 package frc.robot;
 
+import java.util.function.Supplier;
+
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.VisionSubsystem;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 
 public class RobotContainer {
-  // Subsystems
-  private final VisionSubsystem visionSubsystem = new VisionSubsystem("limelight");
 
-    // מציג את ה-Field2d של ה-Vision בלוח הבקרה
-  public RobotContainer(Robot robot) {
+    // Subsystems
+    private final VisionSubsystem visionSubsystem = new VisionSubsystem(
+            () -> new Rotation2d(0), // ספק זווית של הרובוט
+            new Camera("reef", null, 0, 0, Camera.CameraType.REEF));
 
-    configureButtonBindings();
-  }
-  private void configureButtonBindings() {
+    private final Field2d field = new Field2d();
+    // Constructor
+    public RobotContainer() {
+      // מציג את ה-Field2d בלוח הבקרה
+      SmartDashboard.putData("Field", field);
+      
+        configureButtonBindings();
+    }
 
-    // Configure your button bindings here
+    private void configureButtonBindings() {
+    }
 
+    public Command getAutonomousCommand() {
+        return null;
+    }
+
+    public void periodic() {
+      if (visionSubsystem.getPose() != null) {
+          field.setRobotPose(visionSubsystem.getPose());
+      }
   }
-  public Command getAutonomousCommand() {
-    // Return the command to run in autonomous mode
-    return null; // Replace with your autonomous command
-  }
-  public void periodic() {
-    // Update the Field2d with the current pose of the vision subsystem
-  }
+
+    public VisionSubsystem getVisionSubsystem() {
+        return visionSubsystem;
+    }
 }
