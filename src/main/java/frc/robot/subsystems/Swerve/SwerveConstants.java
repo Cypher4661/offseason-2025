@@ -14,10 +14,10 @@ public class SwerveConstants {
 
     public static class ChasissConstants{
         public static final ModuleConfig[] Config = {
-            new ModuleConfig(1, ChasissConstants.FL_SteerID, ChasissConstants.FL_DriveID, ChasissConstants.FL_CanCoderID, "Front_Laft", ModuleConstants.Diameter, ModuleConstants.FL_CanCoderOffset),
-            new ModuleConfig(2, ChasissConstants.FR_SteerID, ChasissConstants.FR_DriveID, ChasissConstants.FR_CanCoderID, "Front_Right", ModuleConstants.Diameter, ModuleConstants.FR_CanCoderOffset),
-            new ModuleConfig(3, ChasissConstants.BR_SteerID, ChasissConstants.BR_DriveID, ChasissConstants.BR_CanCoderID, "Back_Right", ModuleConstants.Diameter, ModuleConstants.BR_CanCoderOffset),
-            new ModuleConfig(4, ChasissConstants.BL_SteerID, ChasissConstants.BL_DriveID, ChasissConstants.BL_CanCoderID, "Back_Laft", ModuleConstants.Diameter, ModuleConstants.BL_CanCoderOffset)
+            new ModuleConfig(ChasissConstants.FL_ModuleID, ChasissConstants.FL_SteerID, ChasissConstants.FL_DriveID, ChasissConstants.FL_CanCoderID, "Front_Laft", ModuleConstants.Diameter, ModuleConstants.FL_CanCoderOffset),
+            new ModuleConfig(ChasissConstants.FR_ModuleID, ChasissConstants.FR_SteerID, ChasissConstants.FR_DriveID, ChasissConstants.FR_CanCoderID, "Front_Right", ModuleConstants.Diameter, ModuleConstants.FR_CanCoderOffset),
+            new ModuleConfig(ChasissConstants.BR_ModuleID, ChasissConstants.BR_SteerID, ChasissConstants.BR_DriveID, ChasissConstants.BR_CanCoderID, "Back_Right", ModuleConstants.Diameter, ModuleConstants.BR_CanCoderOffset),
+            new ModuleConfig(ChasissConstants.BL_ModuleID, ChasissConstants.BL_SteerID, ChasissConstants.BL_DriveID, ChasissConstants.BL_CanCoderID, "Back_Laft", ModuleConstants.Diameter, ModuleConstants.BL_CanCoderOffset)
         };
         public static final int FL_ModuleID = 1;
         public static final int FR_ModuleID = 2;
