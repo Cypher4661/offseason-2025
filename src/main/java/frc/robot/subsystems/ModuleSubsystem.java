@@ -1,6 +1,8 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -9,14 +11,20 @@ import frc.Demacia.utils.Motors.SparkMotor;
 import frc.Demacia.utils.Motors.TalonMotor;
 import frc.Demacia.utils.Sensors.Cancoder;
 import frc.robot.subsystems.Swerve.ModuleConfig;
+import frc.robot.subsystems.Swerve.SwerveConstants.ModuleConstants;
 
 public class ModuleSubsystem extends SubsystemBase{
     private TalonMotor DriveMotor;
     private SparkMotor SteerMotor;
     private Cancoder CanCoder;
-    private ModuleConfig ModuleConfig;
+    public ModuleConfig moduleConfig;
 
-    public ModuleSubsystem(ModuleConfig config) {
+    private SimpleMotorFeedforward SteerFF = new SimpleMotorFeedforward(ModuleConstants.Steer_KS, ModuleConstants.Steer_KV, ModuleConstants.Steer_KA);
+    private SimpleMotorFeedforward DriveFF = new SimpleMotorFeedforward(ModuleConstants.Drive_KS, ModuleConstants.Drive_KV, ModuleConstants.Drive_KA);
+    private PIDController SteerPID = new PIDController(ModuleConstants.Steer_KP, ModuleConstants.Steer_KI, ModuleConstants.Steer_KD);
+    private PIDController DrivePID = new PIDController(ModuleConstants.Drive_KP, ModuleConstants.Drive_KI, ModuleConstants.Drive_KD);
+
+    ModuleSubsystem(ModuleConfig config) {
         super();
         this.DriveMotor = new TalonMotor(config.DriveConfig);
         this.SteerMotor = new SparkMotor(config.SteerConfig);
@@ -41,16 +49,21 @@ public class ModuleSubsystem extends SubsystemBase{
         DriveMotor.set(power);
     }
     public void setSteerVelocity(double velocityRadPerSec){
-        SteerMotor.setVelocity(velocityRadPerSec);
+        double ff = SteerFF.calculate(velocityRadPerSec);
+        double pid = SteerPID.calculate(getSteerVelocity(), velocityRadPerSec);
+        setSteerPower(pid + ff);;
     }
     public void setDriveVelocity(double velocityMeterPerSec){
-        DriveMotor.setVelocity(velocityMeterPerSec);
+        double ff = DriveFF.calculate(velocityMeterPerSec);
+        double pid = DrivePID.calculate(getDriveVelocity(), velocityMeterPerSec);
+        setDrivePower(pid + ff);;
     }
     public void setSteerAngle(double angleDegrees){
         SteerMotor.setAngle(angleDegrees);
     }
+       
     public double getAngle(){
-        return SteerMotor.getCurrentPosition() / ModuleConfig.GearRatioSteer * 360.0;
+        return SteerMotor.getCurrentPosition() / moduleConfig.GearRatioSteer * 360.0;
     }
     public double getAbsoluteAngle(){
         return CanCoder.getCurrentAbsPosition();
@@ -72,6 +85,12 @@ public class ModuleSubsystem extends SubsystemBase{
     }
     public double getDriveAcceleration(){
         return DriveMotor.getCurrentAcceleration();
+    }
+    public double getSteerVoltage(){
+        return SteerMotor.getCurrentVoltage();
+    }
+    public double getDriveVoltage(){
+        return DriveMotor.getCurrentVoltage();
     }
 
     public void setStats(SwerveModuleState state){

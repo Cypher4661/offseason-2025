@@ -9,7 +9,20 @@ public class SwerveConstants {
         public static final double FR_CanCoderOffset = 8.0; // in degrees
         public static final double BR_CanCoderOffset = 8.0; // in degrees
         public static final double BL_CanCoderOffset = 8.0; // in degrees
-
+        public static final double Steer_KP = 0.0;
+        public static final double Steer_KI = 0.0;
+        public static final double Steer_KD = 0.0;
+        public static final double Steer_KS = 0.0;
+        public static final double Steer_KV = 0.0;
+        public static final double Steer_KA = 0.0;
+        public static final double Steer_KG = 0.0;
+        public static final double Drive_KP = 0.0;
+        public static final double Drive_KI = 0.0;
+        public static final double Drive_KD = 0.0;
+        public static final double Drive_KS = 0.0;
+        public static final double Drive_KV = 0.0;
+        public static final double Drive_KA = 0.0;
+        public static final double Drive_KG = 0.0;
     }
 
     public static class ChasissConstants{
