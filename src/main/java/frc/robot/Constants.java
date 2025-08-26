@@ -19,9 +19,7 @@ import frc.Demacia.utils.Motors.BaseMotorConfig.Canbus;
  */
 public final class Constants {
 
-  public static class ModuleConstants {
-    public static final double diameter = 0.1016; // in meters
-  }
+  
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }

@@ -1,21 +1,23 @@
-package frc.robot;
+package frc.robot.subsystems.Swerve;
 
 import com.ctre.phoenix6.CANBus;
 
 import frc.Demacia.utils.Motors.SparkConfig;
 import frc.Demacia.utils.Motors.TalonConfig;
 import frc.Demacia.utils.Motors.BaseMotorConfig.Canbus;
+import frc.Demacia.utils.Sensors.CancoderConfig;
 
 public class ModuleConfig {
     public int ModuleID;
     public SparkConfig SteerConfig;
     public TalonConfig DriveConfig;
+    public CancoderConfig CancoderConfig;
     public int CanCoderID;
     public String Name;
     public int SteerID;
     public int DriveID;
-    public double GearRatioSteer = 1 / (150.0 / 7.0);
-    public double GearRatioDrive = 1 / 6.75;
+    public double GearRatioSteer = 150.0 / 7.0;
+    public double GearRatioDrive = 6.75;
     public double Diameter;
     public double CanCoderOffset;
 
@@ -49,6 +51,6 @@ public class ModuleConfig {
             .withPID(0, 0, 0, 0, 0, 0, 0)
             .withRampTime(0.2)
             .withMotionParam(720, 1200, 2000);
-
+            
     }
 }
