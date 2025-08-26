@@ -1,7 +1,5 @@
 package frc.robot.subsystems.Swerve;
 
-import com.ctre.phoenix6.CANBus;
-
 import frc.Demacia.utils.Motors.SparkConfig;
 import frc.Demacia.utils.Motors.TalonConfig;
 import frc.Demacia.utils.Motors.BaseMotorConfig.Canbus;
