@@ -14,6 +14,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.Camera;
+import frc.robot.Constants;
 import frc.robot.Camera.CameraType;
 import static frc.robot.Constants.*;
 
@@ -37,6 +38,7 @@ public class VisionSubsystem extends SubsystemBase {
     private Translation2d origintoTag;
     private Translation2d robotToTagRR;
     public Pose2d pose;
+    private Translation2d robotToTagFC;
 
     private Supplier<Rotation2d> getRobotAngle;
 
@@ -73,6 +75,23 @@ public class VisionSubsystem extends SubsystemBase {
             pose = null;
         }
     }
+    public Translation2d getOriginToRobot() {
+
+        origintoTag = O_TO_TAG[(int) this.id == -1 ? 0 : (int) this.id];
+    
+        height = TAG_HEIGHT[(int) this.id];
+        if (origintoTag != null) {
+          // Get vector from robot to tag
+          robotToTagRR = getRobotToTagRR();
+    
+          robotToTagFC = robotToTagRR.rotateBy(getRobotAngle.get());
+          originToRobot = origintoTag.plus(robotToTagFC.rotateBy(Rotation2d.kPi));
+    
+          return originToRobot;
+        }
+        return new Translation2d();
+    
+    }
 
     public int getTagId() {
         return (int) Table.getEntry("tid").getDouble(0.0);
@@ -86,10 +105,11 @@ public class VisionSubsystem extends SubsystemBase {
             dist = dist / Math.cos(Math.toRadians(camToTagYaw));
             return Math.abs(dist);
         }
+        alpha = camToTagPitch + camera.getPitch();
         dist = (Math.abs(height - camera.getHeight())) / Math.tan(Math.toRadians(alpha));
         dist = dist / Math.cos(Math.toRadians(camToTagYaw));
         return Math.abs(dist);
-    }
+    } 
 
     public Translation2d getRobotToTagRR() {
         cameraToTag = new Translation2d(getDistFromCamera(),
@@ -99,7 +119,7 @@ public class VisionSubsystem extends SubsystemBase {
         return robotToTag;
     }
 
-    public Translation2d getOriginToRobot() {
+    public Translation2d getOriginToTag() {
         origintoTag = O_TO_TAG[(int) this.id == -1 ? 0 : (int) this.id];
         height = TAG_HEIGHT[(int) this.id];
         if (origintoTag != null) {

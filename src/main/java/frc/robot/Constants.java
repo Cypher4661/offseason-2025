@@ -17,6 +17,9 @@ import edu.wpi.first.math.geometry.Translation2d;
  */
 public final class Constants {
 
+  public static final double cameraAg = 0.0; // Camera angle in degrees
+  public static final double cameraPosition = 0.0; // Camera distance from robot center in degrees
+  public static final double cameraHeight = 0.33; // Camera height in meters
   private static double BARGE_TAG_HIGHT = inchToMeter(73.54);
   private static double REEF_TAG_HIGHT = inchToMeter(12.13);
   private static double STATION_TAG_HIGHT = inchToMeter(58.50);

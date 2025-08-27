@@ -7,6 +7,7 @@ package frc.robot;
 import java.util.function.Supplier;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.VisionSubsystem;
@@ -17,12 +18,13 @@ public class RobotContainer {
     // Subsystems
     private final VisionSubsystem visionSubsystem = new VisionSubsystem(
             () -> new Rotation2d(0), // ספק זווית של הרובוט
-            new Camera("reef", null, 0, 0, Camera.CameraType.REEF));
+            new Camera("reef", new Translation3d(-0.123, -0.1175, 0.68), 0.0, 0.0, Camera.CameraType.REEF)); // הגדרת המצלמה
 
     private final Field2d field = new Field2d();
     // Constructor
     public RobotContainer() {
       // מציג את ה-Field2d בלוח הבקרה
+      field.setRobotPose(visionSubsystem.getPose());
       SmartDashboard.putData("Field", field);
       
         configureButtonBindings();
