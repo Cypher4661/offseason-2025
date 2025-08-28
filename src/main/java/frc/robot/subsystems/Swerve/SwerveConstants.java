@@ -25,13 +25,14 @@ public class SwerveConstants {
         public static final double Drive_KG = 0.0;
     }
 
-    public static class ChasissConstants{
+    public static class ChassisConstants{
         public static final ModuleConfig[] Config = {
-            new ModuleConfig(ChasissConstants.FL_ModuleID, ChasissConstants.FL_SteerID, ChasissConstants.FL_DriveID, ChasissConstants.FL_CanCoderID, "Front_Laft", ModuleConstants.Diameter, ModuleConstants.FL_CanCoderOffset),
-            new ModuleConfig(ChasissConstants.FR_ModuleID, ChasissConstants.FR_SteerID, ChasissConstants.FR_DriveID, ChasissConstants.FR_CanCoderID, "Front_Right", ModuleConstants.Diameter, ModuleConstants.FR_CanCoderOffset),
-            new ModuleConfig(ChasissConstants.BR_ModuleID, ChasissConstants.BR_SteerID, ChasissConstants.BR_DriveID, ChasissConstants.BR_CanCoderID, "Back_Right", ModuleConstants.Diameter, ModuleConstants.BR_CanCoderOffset),
-            new ModuleConfig(ChasissConstants.BL_ModuleID, ChasissConstants.BL_SteerID, ChasissConstants.BL_DriveID, ChasissConstants.BL_CanCoderID, "Back_Laft", ModuleConstants.Diameter, ModuleConstants.BL_CanCoderOffset)
+            new ModuleConfig(ChassisConstants.FL_ModuleID, ChassisConstants.FL_SteerID, ChassisConstants.FL_DriveID, ChassisConstants.FL_CanCoderID, "Front_Laft", ModuleConstants.Diameter, ModuleConstants.FL_CanCoderOffset),
+            new ModuleConfig(ChassisConstants.FR_ModuleID, ChassisConstants.FR_SteerID, ChassisConstants.FR_DriveID, ChassisConstants.FR_CanCoderID, "Front_Right", ModuleConstants.Diameter, ModuleConstants.FR_CanCoderOffset),
+            new ModuleConfig(ChassisConstants.BR_ModuleID, ChassisConstants.BR_SteerID, ChassisConstants.BR_DriveID, ChassisConstants.BR_CanCoderID, "Back_Right", ModuleConstants.Diameter, ModuleConstants.BR_CanCoderOffset),
+            new ModuleConfig(ChassisConstants.BL_ModuleID, ChassisConstants.BL_SteerID, ChassisConstants.BL_DriveID, ChassisConstants.BL_CanCoderID, "Back_Laft", ModuleConstants.Diameter, ModuleConstants.BL_CanCoderOffset)
         };
+        public static final int GyroID = 0;
         public static final int FL_ModuleID = 1;
         public static final int FR_ModuleID = 2;
         public static final int BR_ModuleID = 3;
@@ -48,6 +49,15 @@ public class SwerveConstants {
         public static final int FR_DriveID = 4;
         public static final int BR_DriveID = 6;
         public static final int BL_DriveID = 8;
-        
+        public static final double FL_Y = 0.0;
+        public static final double FL_X = 0.0;
+        public static final double FR_Y = 0.0;
+        public static final double FR_X = 0.0;
+        public static final double BR_Y = 0.0;
+        public static final double BR_X = 0.0;
+        public static final double BL_Y = 0.0;
+        public static final double BL_X = 0.0;
+        public static final double Max_Linear_Speed = 5.0; // in meters per second
+        public static  final double Max_Linear_Accel = 4.0; // in meters per second squared
     }
 }

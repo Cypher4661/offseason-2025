@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.robot.subsystems.Swerve;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
@@ -10,10 +10,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.Demacia.utils.Motors.SparkMotor;
 import frc.Demacia.utils.Motors.TalonMotor;
 import frc.Demacia.utils.Sensors.Cancoder;
-import frc.robot.subsystems.Swerve.ModuleConfig;
 import frc.robot.subsystems.Swerve.SwerveConstants.ModuleConstants;
 
-public class ModuleSubsystem extends SubsystemBase{
+public class SwerveModule extends SubsystemBase{
     private TalonMotor DriveMotor;
     private SparkMotor SteerMotor;
     private Cancoder CanCoder;
@@ -24,7 +23,7 @@ public class ModuleSubsystem extends SubsystemBase{
     private PIDController SteerPID = new PIDController(ModuleConstants.Steer_KP, ModuleConstants.Steer_KI, ModuleConstants.Steer_KD);
     private PIDController DrivePID = new PIDController(ModuleConstants.Drive_KP, ModuleConstants.Drive_KI, ModuleConstants.Drive_KD);
 
-    ModuleSubsystem(ModuleConfig config) {
+    SwerveModule(ModuleConfig config) {
         super();
         this.DriveMotor = new TalonMotor(config.DriveConfig);
         this.SteerMotor = new SparkMotor(config.SteerConfig);
@@ -74,6 +73,9 @@ public class ModuleSubsystem extends SubsystemBase{
     public Rotation2d getSteerRotation(){
         return new Rotation2d(getSteerAngle());
     }
+    public double getDrivePosition(){
+        return DriveMotor.getCurrentPosition();
+    }
     public double getSteerVelocity(){
         return SteerMotor.getCurrentVelocity();
     }
@@ -91,6 +93,9 @@ public class ModuleSubsystem extends SubsystemBase{
     }
     public double getDriveVoltage(){
         return DriveMotor.getCurrentVoltage();
+    }
+    public SwerveModuleState getStats(){
+        return new SwerveModuleState(getDriveVelocity(), getSteerRotation());
     }
 
     public void setStats(SwerveModuleState state){
