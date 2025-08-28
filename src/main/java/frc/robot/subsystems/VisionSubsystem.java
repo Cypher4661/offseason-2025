@@ -75,24 +75,6 @@ public class VisionSubsystem extends SubsystemBase {
             pose = null;
         }
     }
-    public Translation2d getOriginToRobot() {
-
-        origintoTag = O_TO_TAG[(int) this.id == -1 ? 0 : (int) this.id];
-    
-        height = TAG_HEIGHT[(int) this.id];
-        if (origintoTag != null) {
-          // Get vector from robot to tag
-          robotToTagRR = getRobotToTagRR();
-    
-          robotToTagFC = robotToTagRR.rotateBy(getRobotAngle.get());
-          originToRobot = origintoTag.plus(robotToTagFC.rotateBy(Rotation2d.kPi));
-    
-          return originToRobot;
-        }
-        return new Translation2d();
-    
-    }
-
     public int getTagId() {
         return (int) Table.getEntry("tid").getDouble(0.0);
     }
@@ -119,6 +101,11 @@ public class VisionSubsystem extends SubsystemBase {
         return robotToTag;
     }
 
+    public Translation2d getCameraToTag() {
+        return new Translation2d(getDistFromCamera(),
+            Rotation2d.fromDegrees(camToTagYaw));
+    }
+
     public Translation2d getOriginToTag() {
         origintoTag = O_TO_TAG[(int) this.id == -1 ? 0 : (int) this.id];
         height = TAG_HEIGHT[(int) this.id];
@@ -131,23 +118,44 @@ public class VisionSubsystem extends SubsystemBase {
         return new Translation2d();
     }
 
+    public Translation2d getOriginToRobot() {
+
+        origintoTag = O_TO_TAG[(int) this.id == -1 ? 0 : (int) this.id];
+    
+        height = TAG_HEIGHT[(int) this.id];
+        if (origintoTag != null) {
+          // Get vector from robot to tag
+          robotToTagRR = getRobotToTagRR();
+    
+          robotToTagFC = robotToTagRR.rotateBy(getRobotAngle.get());
+          originToRobot = origintoTag.plus(robotToTagFC.rotateBy(Rotation2d.kPi));
+    
+          return originToRobot;
+        }
+        return new Translation2d();
+    }
+
+
     public Pose2d getPose() {
         return this.pose;
     }
 
     public Rotation2d getRobotAngle() {
+        Table.getEntry("pipeline").setNumber(1);
         try {
-            Yaw3d = Table.getEntry("camerapose_targetspace").getDoubleArray(new double[]{0, 0, 0, 0, 0, 0})[4];
-            tagID = Table.getEntry("tid").getDouble(0.0);
-            yaw3dRotation2d = Rotation2d.fromDegrees(Yaw3d)
-                    .rotateBy(Rotation2d.fromDegrees(camera.getYaw()))
-                    .rotateBy(TAG_ANGLE[(int) tagID])
-                    .rotateBy(Rotation2d.fromDegrees(180));
-            return yaw3dRotation2d;
+          Yaw3d = Table.getEntry("camerapose_targetspace").getDoubleArray(new double[] { 0, 0, 0, 0, 0, 0 })[4];
+          tagID = Table.getEntry("tid").getDouble(0.0);
+          Table.getEntry("pipeline").setNumber(0);
+          yaw3dRotation2d = Rotation2d.fromDegrees(Yaw3d).rotateBy(Rotation2d.fromDegrees(camera.getYaw()))
+              .rotateBy(TAG_ANGLE[(int) tagID]).rotateBy(Rotation2d.fromDegrees(180));
+          return yaw3dRotation2d;
+    
         } catch (Exception E) {
-            return getRobotAngle();
+          getRobotAngle();
         }
-    }
+    
+        return null;
+      }
 
     public boolean isSeeTag(int id, double distance) {
         return Table.getEntry("tid").getDouble(0.0) == id && getRobotToTagRR().getNorm() <= distance;
