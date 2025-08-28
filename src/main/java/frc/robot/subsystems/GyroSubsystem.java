@@ -4,25 +4,28 @@
 
 package frc.robot.subsystems;
 
-import com.kauailabs.navx.frc.AHRS;
-import com.kauailabs.navx.frc.AHRS.SerialDataType;
+import com.studica.frc.AHRS;
+import com.studica.frc.AHRS.NavXComType;
 
-import edu.wpi.first.wpilibj.I2C;
-import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.SerialPort;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class gyro extends SubsystemBase {
+public class GyroSubsystem extends SubsystemBase {
   private AHRS gyro;
   
   /** Creates a new gyro. */
-  public gyro() {
-    gyro = new AHRS(SerialPort.Port.kUSB);
+  public GyroSubsystem() {
+    gyro = new AHRS(NavXComType.kMXP_SPI);
     gyro.reset();
   }
 
   @Override
   public void periodic() {
+    SmartDashboard.putNumber("Gyro Yaw", getYaw());
     // This method will be called once per scheduler run
+  }
+
+  public double getYaw() {
+    return gyro.getYaw();
   }
 }
