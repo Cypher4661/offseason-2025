@@ -10,6 +10,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import java.util.function.Supplier;
 
+import com.studica.frc.AHRS;
+import com.studica.frc.AHRS.NavXComType;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -43,10 +46,7 @@ public class VisionSubsystem extends SubsystemBase {
     private Supplier<Rotation2d> getRobotAngle;
 
     private Camera camera;
-
-    private double tagID = 0;
-    private double Yaw3d;
-    private Rotation2d yaw3dRotation2d;
+    private AHRS gyro;
 
 
     public VisionSubsystem(Supplier<Rotation2d> getRobotAngle, Camera camera) {
@@ -54,6 +54,9 @@ public class VisionSubsystem extends SubsystemBase {
         this.camera = camera;
         Table = NetworkTableInstance.getDefault().getTable(camera.getTableName());
         field = new Field2d();
+
+        gyro = new AHRS(NavXComType.kMXP_SPI);
+        gyro.reset();
     }
 
     public Field2d getField2d() {
@@ -141,21 +144,10 @@ public class VisionSubsystem extends SubsystemBase {
     }
 
     public Rotation2d getRobotAngle() {
-        Table.getEntry("pipeline").setNumber(1);
-        try {
-          Yaw3d = Table.getEntry("camerapose_targetspace").getDoubleArray(new double[] { 0, 0, 0, 0, 0, 0 })[4];
-          tagID = Table.getEntry("tid").getDouble(0.0);
-          Table.getEntry("pipeline").setNumber(0);
-          yaw3dRotation2d = Rotation2d.fromDegrees(Yaw3d).rotateBy(Rotation2d.fromDegrees(camera.getYaw()))
-              .rotateBy(TAG_ANGLE[(int) tagID]).rotateBy(Rotation2d.fromDegrees(180));
-          return yaw3dRotation2d;
-    
-        } catch (Exception E) {
-          getRobotAngle();
-        }
-    
-        return null;
-      }
+        gyro.getYaw();
+        return Rotation2d.fromDegrees(gyro.getYaw());
+    }
+
 
     public boolean isSeeTag(int id, double distance) {
         return Table.getEntry("tid").getDouble(0.0) == id && getRobotToTagRR().getNorm() <= distance;
