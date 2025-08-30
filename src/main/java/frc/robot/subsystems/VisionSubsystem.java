@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.networktables.*;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import java.util.function.Supplier;
@@ -77,6 +78,7 @@ public class VisionSubsystem extends SubsystemBase {
         } else {
             pose = null;
         }
+        SmartDashboard.putNumber("YAW", getAngle());
     }
     public int getTagId() {
         return (int) Table.getEntry("tid").getDouble(0.0);
