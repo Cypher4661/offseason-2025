@@ -44,14 +44,12 @@ public class VisionSubsystem extends SubsystemBase {
     public Pose2d pose;
     private Translation2d robotToTagFC;
 
-    private Supplier<Rotation2d> getRobotAngle;
 
     private Camera camera;
     private AHRS gyro;
 
 
-    public VisionSubsystem(Supplier<Rotation2d> getRobotAngle, Camera camera) {
-        this.getRobotAngle = getRobotAngle;
+    public VisionSubsystem(Camera camera) {
         this.camera = camera;
         Table = NetworkTableInstance.getDefault().getTable(camera.getTableName());
         field = new Field2d();
@@ -72,7 +70,7 @@ public class VisionSubsystem extends SubsystemBase {
 
         if (Table.getEntry("tv").getDouble(0.0) != 0) {
             if (id > 0 && id < TAG_HEIGHT.length) {
-                pose = new Pose2d(getOriginToRobot(), getRobotAngle.get());
+                pose = new Pose2d(getOriginToRobot(), getRobotAngle());
                 field.setRobotPose(pose);
             }
         } else {
@@ -116,7 +114,7 @@ public class VisionSubsystem extends SubsystemBase {
         height = TAG_HEIGHT[(int) this.id];
         if (origintoTag != null) {
             robotToTagRR = getRobotToTagRR();
-            Translation2d robotToTagFC = robotToTagRR.rotateBy(getRobotAngle.get());
+            Translation2d robotToTagFC = robotToTagRR.rotateBy(getRobotAngle());
             originToRobot = origintoTag.plus(robotToTagFC.rotateBy(Rotation2d.kPi));
             return originToRobot;
         }
@@ -132,7 +130,7 @@ public class VisionSubsystem extends SubsystemBase {
           // Get vector from robot to tag
           robotToTagRR = getRobotToTagRR();
     
-          robotToTagFC = robotToTagRR.rotateBy(getRobotAngle.get());
+          robotToTagFC = robotToTagRR.rotateBy(getRobotAngle());
           originToRobot = origintoTag.plus(robotToTagFC.rotateBy(Rotation2d.kPi));
     
           return originToRobot;
@@ -160,6 +158,6 @@ public class VisionSubsystem extends SubsystemBase {
     }
 
     public double getAngle() {
-        return Table.getEntry("botpose").getDoubleArray(new double[]{0, 0, 0, 0, 0, 0})[5];
+        return gyro.getYaw();
     }
 }
