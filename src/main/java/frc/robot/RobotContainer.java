@@ -26,12 +26,12 @@ public class RobotContainer {
     );
     private final VisionSubsystem visionSubsystem = new VisionSubsystem(reefCamera);
 
+
     private final Field2d field = new Field2d();
     // Constructor
     public RobotContainer() {
       // מציג את ה-Field2d בלוח הבקרה
       field.setRobotPose(visionSubsystem.getPose());
-      SmartDashboard.putData("Field", field);
       
         configureButtonBindings();
     }

@@ -16,6 +16,7 @@ import edu.wpi.first.math.geometry.Translation2d;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+  public static final double gyroOffset = -0.3199999928474426; // Gyro offset in degrees
 
   public static final double cameraAg = 0.0; // Camera angle in degrees
   public static final double cameraPosition = 0.0; // Camera distance from robot center in degrees

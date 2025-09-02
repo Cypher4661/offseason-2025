@@ -5,10 +5,13 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.networktables.*;
+import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import java.lang.module.ModuleDescriptor.Builder;
 import java.util.function.Supplier;
 
 import com.studica.frc.AHRS;
@@ -54,8 +57,11 @@ public class VisionSubsystem extends SubsystemBase {
         Table = NetworkTableInstance.getDefault().getTable(camera.getTableName());
         field = new Field2d();
 
+        
         gyro = new AHRS(NavXComType.kMXP_SPI);
         gyro.reset();
+        
+        
     }
 
     public Field2d getField2d() {
@@ -70,13 +76,18 @@ public class VisionSubsystem extends SubsystemBase {
 
         if (Table.getEntry("tv").getDouble(0.0) != 0) {
             if (id > 0 && id < TAG_HEIGHT.length) {
-                pose = new Pose2d(getOriginToRobot(), getRobotAngle());
+                pose = new Pose2d(getOriginToRobot(), getAngle());
                 field.setRobotPose(pose);
             }
         } else {
             pose = null;
         }
-        SmartDashboard.putNumber("YAW", getAngle());
+        addCommands();
+
+        // SmartDashboard.putNumber("YAW", getAngle().getDegrees());
+        // System.out.println(gyro.isConnected());
+
+
     }
     public int getTagId() {
         return (int) Table.getEntry("tid").getDouble(0.0);
@@ -85,14 +96,14 @@ public class VisionSubsystem extends SubsystemBase {
     public double getDistFromCamera() {
         alpha = camToTagPitch + camera.getPitch();
         height = TAG_HEIGHT[(int) id];
-        if (camera.getCameraType() == CameraType.REEF) {
-            dist = (Math.abs(height - camera.getHeight())) * Math.tan(Math.toRadians(alpha));
-            dist = dist / Math.cos(Math.toRadians(camToTagYaw));
-            return Math.abs(dist);
-        }
+        // if (camera.getCameraType() == CameraType.REEF) {
+        //     dist = (Math.abs(height - camera.getHeight())) * Math.tan(Math.toRadians(alpha));
+        //     dist = dist / Math.cos(Math.toRadians(camToTagYaw));
+        //     return Math.abs(dist);
+        // }
         alpha = camToTagPitch + camera.getPitch();
         dist = (Math.abs(height - camera.getHeight())) / Math.tan(Math.toRadians(alpha));
-        dist = dist / Math.cos(Math.toRadians(camToTagYaw));
+        // dist = dist / Math.cos(Math.toRadians(camToTagYaw));
         return Math.abs(dist);
     } 
 
@@ -109,28 +120,16 @@ public class VisionSubsystem extends SubsystemBase {
             Rotation2d.fromDegrees(camToTagYaw));
     }
 
-    public Translation2d getOriginToTag() {
-        origintoTag = O_TO_TAG[(int) this.id == -1 ? 0 : (int) this.id];
-        height = TAG_HEIGHT[(int) this.id];
-        if (origintoTag != null) {
-            robotToTagRR = getRobotToTagRR();
-            Translation2d robotToTagFC = robotToTagRR.rotateBy(getRobotAngle());
-            originToRobot = origintoTag.plus(robotToTagFC.rotateBy(Rotation2d.kPi));
-            return originToRobot;
-        }
-        return new Translation2d();
-    }
-
     public Translation2d getOriginToRobot() {
 
         origintoTag = O_TO_TAG[(int) this.id == -1 ? 0 : (int) this.id];
     
         height = TAG_HEIGHT[(int) this.id];
         if (origintoTag != null) {
-          // Get vector from robot to tag
+        //   Get vector from robot to tag
           robotToTagRR = getRobotToTagRR();
     
-          robotToTagFC = robotToTagRR.rotateBy(getRobotAngle());
+        robotToTagFC = robotToTagRR.rotateBy(getAngle());
           originToRobot = origintoTag.plus(robotToTagFC.rotateBy(Rotation2d.kPi));
     
           return originToRobot;
@@ -143,10 +142,7 @@ public class VisionSubsystem extends SubsystemBase {
         return this.pose;
     }
 
-    public Rotation2d getRobotAngle() {
-        gyro.getYaw();
-        return Rotation2d.fromDegrees(gyro.getYaw());
-    }
+
 
 
     public boolean isSeeTag(int id, double distance) {
@@ -157,7 +153,30 @@ public class VisionSubsystem extends SubsystemBase {
         return Table.getEntry("tid").getDouble(0.0) > 0;
     }
 
-    public double getAngle() {
-        return gyro.getYaw();
+    public Rotation2d getAngle() {
+        return Rotation2d.fromDegrees(gyro.getYaw() - Constants.gyroOffset);
     }
+   @Override
+     public void initSendable(SendableBuilder builder) {
+        
+        
+        builder.setSmartDashboardType("VisionSubsystem");
+        builder.addDoubleProperty("tag ID", null, null);
+        builder.addDoubleProperty("Tag Dist", null, null);
+        builder.addDoubleProperty("Tag Yaw", null, null);
+        builder.addDoubleProperty("Robot X", null, null);
+        builder.addDoubleProperty("Robot Y", null, null);
+        bui
+        
+   }
+   public void addCommands() {
+        SmartDashboard.putNumber("Tag ID", id);
+        SmartDashboard.putNumber("Tag Dist", getDistFromCamera());
+        SmartDashboard.putNumber("Tag Yaw", camToTagYaw);
+        SmartDashboard.putNumber("Tag Pitch", camToTagPitch);
+        SmartDashboard.putBoolean("See Tag", isSeeTag());
+        SmartDashboard.putData("Field", field);
+        SmartDashboard.putNumber("Robot X", getOriginToRobot().getX());
+    SmartDashboard.putNumber("Robot Y", getOriginToRobot().getY());
+   }
 }
