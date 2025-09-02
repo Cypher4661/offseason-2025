@@ -53,14 +53,16 @@ public class VisionSubsystem extends SubsystemBase {
 
 
     public VisionSubsystem(Camera camera) {
+        super();
         this.camera = camera;
         Table = NetworkTableInstance.getDefault().getTable(camera.getTableName());
         field = new Field2d();
 
-        
+
         gyro = new AHRS(NavXComType.kMXP_SPI);
         gyro.reset();
-        
+        SmartDashboard.putData("Vision", this);
+        SmartDashboard.putData("Field", field);
         
     }
 
@@ -158,25 +160,22 @@ public class VisionSubsystem extends SubsystemBase {
     }
    @Override
      public void initSendable(SendableBuilder builder) {
-        
-        
-        builder.setSmartDashboardType("VisionSubsystem");
-        builder.addDoubleProperty("tag ID", null, null);
-        builder.addDoubleProperty("Tag Dist", null, null);
-        builder.addDoubleProperty("Tag Yaw", null, null);
-        builder.addDoubleProperty("Robot X", null, null);
-        builder.addDoubleProperty("Robot Y", null, null);
-        bui
+    super.initSendable(builder);
+
+    // Your existing entries (fixed syntax)
+    builder.addDoubleProperty("Tag ID", () -> id, null);
+    builder.addDoubleProperty("Tag Dist", () -> getDistFromCamera(), null);
+    builder.addDoubleProperty("Tag Yaw", () -> camToTagYaw, null);
+    builder.addDoubleProperty("Tag Pitch", () -> camToTagPitch, null);
+    builder.addBooleanProperty("See Tag", () -> isSeeTag(), null);
+    builder.addDoubleProperty("Robot X", () -> getOriginToRobot().getX(), null);
+    builder.addDoubleProperty("Robot Y", () -> getOriginToRobot().getY(), null);
+
+    // Add gyro diagnostics
+    builder.addBooleanProperty("Gyro Connected", () -> gyro.isConnected(), null);
+    builder.addBooleanProperty("Gyro Calibrating", () -> gyro.isCalibrating(), null);
+    builder.addDoubleProperty("Gyro Yaw", () -> gyro.getYaw(), null);
         
    }
-   public void addCommands() {
-        SmartDashboard.putNumber("Tag ID", id);
-        SmartDashboard.putNumber("Tag Dist", getDistFromCamera());
-        SmartDashboard.putNumber("Tag Yaw", camToTagYaw);
-        SmartDashboard.putNumber("Tag Pitch", camToTagPitch);
-        SmartDashboard.putBoolean("See Tag", isSeeTag());
-        SmartDashboard.putData("Field", field);
-        SmartDashboard.putNumber("Robot X", getOriginToRobot().getX());
-    SmartDashboard.putNumber("Robot Y", getOriginToRobot().getY());
-   }
+
 }
