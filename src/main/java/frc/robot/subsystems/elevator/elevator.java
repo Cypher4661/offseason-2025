@@ -1,4 +1,4 @@
-package frc.robot;
+package frc.robot.subsystems.elevator;
 
 public class elevator {
     private final frc.Demacia.utils.Motors.MotorInterface leftMotor;

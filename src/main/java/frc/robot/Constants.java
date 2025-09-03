@@ -9,6 +9,7 @@ import frc.Demacia.utils.Motors.SparkConfig;
 import frc.Demacia.utils.Motors.TalonConfig;
 
 import frc.Demacia.utils.Motors.BaseMotorConfig.Canbus;
+import frc.robot.subsystems.elevator.Motor_config;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -47,6 +48,9 @@ public  final class Constants {
                 0, 0, 0.0, 0.0, 0, 0, 0,
                 20,
                 40);
+            public static final double MagneticLimitSwitchID = 0;
+            public static final double LimitSwitchID = 1;
+            
     }
 
     }
