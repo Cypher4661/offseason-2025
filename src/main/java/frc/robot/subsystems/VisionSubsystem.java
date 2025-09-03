@@ -84,10 +84,12 @@ public class VisionSubsystem extends SubsystemBase {
         } else {
             pose = null;
         }
-        addCommands();
 
-        // SmartDashboard.putNumber("YAW", getAngle().getDegrees());
-        // System.out.println(gyro.isConnected());
+        System.out.println(getTagId());
+        System.out.println(getDistFromCamera());
+        System.out.println(getOriginToRobot());
+        System.out.println(getRobotToTagRR());
+        System.out.println(getAngle().getDegrees());
 
 
     }
