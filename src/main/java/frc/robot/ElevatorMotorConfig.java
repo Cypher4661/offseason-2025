@@ -2,7 +2,7 @@ package frc.robot;
 
 import com.ctre.phoenix6.CANBus;
 import frc.Demacia.utils.Motors.TalonConfig;
-
+import frc.Demacia.utils.Motors.BaseMotorConfig.Canbus;
 
 public class ElevatorMotorConfig {
     public final int id;
@@ -21,7 +21,8 @@ public class ElevatorMotorConfig {
         this.inverted = inverted;
         this.diameter = diameter;
         this.rampTime = rampTime;
-        ElevatorMotorConfig = new TalonConfig(id, new CANBus("rio"),  name + "/   elevator motor")
+        ElevatorMotorConfig = new TalonConfig(id, name + "/   elevator motor") // לא הגדרתי נכון canbus אשמח לעזרה
+        .withCanbus(new CANBus("rio"))
         .withBrake(true)
         .withInvert(inverted)
         //.withRadiansMotor(ratio)

@@ -12,7 +12,7 @@ import frc.Demacia.utils.Motors.TalonMotor;
 public class ElevatorSubsystem extends SubsystemBase{
     private final TalonMotor talonMotor;
 
-  public ElevatorSubsystem (ElevatorMotorConfig config ,ElevatorMotorConfig SparkConfig ) {
+  public ElevatorSubsystem (ElevatorMotorConfig config  ) {
 
     super();
     this.talonMotor = new TalonMotor(config.ElevatorMotorConfig);
