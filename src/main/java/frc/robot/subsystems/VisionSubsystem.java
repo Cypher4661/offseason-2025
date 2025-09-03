@@ -80,16 +80,10 @@ public class VisionSubsystem extends SubsystemBase {
             if (id > 0 && id < TAG_HEIGHT.length) {
                 pose = new Pose2d(getOriginToRobot(), getAngle());
                 field.setRobotPose(pose);
-            }
+            } 
         } else {
             pose = null;
         }
-
-        System.out.println(getTagId());
-        System.out.println(getDistFromCamera());
-        System.out.println(getOriginToRobot());
-        System.out.println(getRobotToTagRR());
-        System.out.println(getAngle().getDegrees());
 
 
     }
@@ -165,14 +159,17 @@ public class VisionSubsystem extends SubsystemBase {
     super.initSendable(builder);
 
     // Your existing entries (fixed syntax)
-    builder.addDoubleProperty("Tag ID", () -> id, null);
+    builder.addDoubleProperty("Tag ID", () -> getTagId(), null);
     builder.addDoubleProperty("Tag Dist", () -> getDistFromCamera(), null);
     builder.addDoubleProperty("Tag Yaw", () -> camToTagYaw, null);
     builder.addDoubleProperty("Tag Pitch", () -> camToTagPitch, null);
     builder.addBooleanProperty("See Tag", () -> isSeeTag(), null);
     builder.addDoubleProperty("Robot X", () -> getOriginToRobot().getX(), null);
     builder.addDoubleProperty("Robot Y", () -> getOriginToRobot().getY(), null);
+    builder.addDoubleProperty("Robot to Tag X", () -> getRobotToTagRR().getX(), null);
+    builder.addDoubleProperty("Robot to Tag Y", () -> getRobotToTagRR().getY(), null);
 
+    
     // Add gyro diagnostics
     builder.addBooleanProperty("Gyro Connected", () -> gyro.isConnected(), null);
     builder.addBooleanProperty("Gyro Calibrating", () -> gyro.isCalibrating(), null);
