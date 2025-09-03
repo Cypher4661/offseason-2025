@@ -48,8 +48,8 @@ public  final class Constants {
                 0, 0, 0.0, 0.0, 0, 0, 0,
                 20,
                 40);
-            public static final double MagneticLimitSwitchID = 0;
-            public static final double LimitSwitchID = 1;
+            public static final int MagneticLimitSwitchID = 0;
+            public static final int LimitSwitchID = 1;
             
     }
 

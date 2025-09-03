@@ -8,26 +8,22 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
-public class MagneticLimitSwitch extends SubsystemBase {
-  /** Creates a new MagneticLimitSwitch. */
-  DigitalInput magneticLimitSwitch  = new DigitalInput(Constants.elevatorConfig.MagneticLimitSwitchID);
-  public MagneticLimitSwitch() {
-
-
-  }
-
+public class LimitSwitch extends SubsystemBase {
+  /** Creates a new LimitSwitch. */
+  DigitalInput limitSwitch  = new DigitalInput(Constants.elevatorConfig.LimitSwitchID);
+  public LimitSwitch() {}
+  
   public boolean get(){
-    boolean state = magneticLimitSwitch.get();
+    boolean state = limitSwitch.get();
     if (state){
       return false;
     } else {
       return true;
     }
   }
-  
-  
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    
   }
 }
