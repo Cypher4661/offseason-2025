@@ -4,11 +4,8 @@
 
 package frc.robot;
 
-import java.util.function.Supplier;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Camera.CameraType;
 import frc.robot.subsystems.VisionSubsystem;
@@ -19,7 +16,7 @@ public class RobotContainer {
     // Subsystems
     private final Camera reefCamera = new Camera(
         "tag",                  
-        new Translation3d(-0.123, -0.1175, 0.68),
+        new Translation3d(-0.123, -0.1175, 0.71),
         0.0,                          // Pitc
         0.0,                            // Yaw
         CameraType.REEF                 

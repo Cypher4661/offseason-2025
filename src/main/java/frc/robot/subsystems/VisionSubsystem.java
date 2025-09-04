@@ -49,7 +49,7 @@ public class VisionSubsystem extends SubsystemBase {
         field = new Field2d();
 
 
-        AHRS gyro = new AHRS(NavXComType.kMXP_SPI);
+        gyro = new AHRS(NavXComType.kMXP_SPI);
         gyro.reset();
         SmartDashboard.putData("Vision", this);
         SmartDashboard.putData("Field", field);
@@ -111,6 +111,7 @@ public class VisionSubsystem extends SubsystemBase {
     private Translation2d getOriginToRobot() {
 
         Translation2d origintoTag = O_TO_TAG[id];
+        System.out.println("id = " + id + " origintoTag = " + origintoTag);
     
         height = TAG_HEIGHT[id];
         //   Get vector from robot to tag
@@ -143,26 +144,24 @@ public class VisionSubsystem extends SubsystemBase {
         return Rotation2d.fromDegrees(gyro.getYaw() - Constants.gyroOffset);
     }
    @Override
-     public void initSendable(SendableBuilder builder) {
-    super.initSendable(builder);
+    public void initSendable(SendableBuilder builder) {
+        super.initSendable(builder);
 
-    // Your existing entries (fixed syntax)
-    builder.addDoubleProperty("Tag ID", () -> getTagId(), null);
-    builder.addDoubleProperty("Tag Dist", () -> getDistFromCamera(), null);
-    builder.addDoubleProperty("Tag Yaw", () -> camToTagYaw, null);
-    builder.addDoubleProperty("Tag Pitch", () -> camToTagPitch, null);
-    builder.addBooleanProperty("See Tag", () -> isSeeTag(), null);
-    builder.addDoubleProperty("Robot X", () -> getOriginToRobot().getX(), null);
-    builder.addDoubleProperty("Robot Y", () -> getOriginToRobot().getY(), null);
-    builder.addDoubleProperty("Robot to Tag X", () -> getRobotToTagRR().getX(), null);
-    builder.addDoubleProperty("Robot to Tag Y", () -> getRobotToTagRR().getY(), null);
+        // Your existing entries (fixed syntax)
+        builder.addDoubleProperty("Tag ID", () -> getTagId(), null);
+        builder.addDoubleProperty("Tag Dist", () -> getDistFromCamera(), null);
+        builder.addDoubleProperty("Tag Yaw", () -> camToTagYaw, null);
+        builder.addDoubleProperty("Tag Pitch", () -> camToTagPitch, null);
+        builder.addBooleanProperty("See Tag", () -> isSeeTag(), null);
+        builder.addDoubleProperty("Robot X", () -> getOriginToRobot().getX(), null);
+        builder.addDoubleProperty("Robot Y", () -> getOriginToRobot().getY(), null);
+        builder.addDoubleProperty("Robot to Tag X", () -> getRobotToTagRR().getX(), null);
+        builder.addDoubleProperty("Robot to Tag Y", () -> getRobotToTagRR().getY(), null);
 
-    
-    // Add gyro diagnostics
-    builder.addBooleanProperty("Gyro Connected", () -> gyro.isConnected(), null);
-    builder.addBooleanProperty("Gyro Calibrating", () -> gyro.isCalibrating(), null);
-    builder.addDoubleProperty("Gyro Yaw", () -> gyro.getYaw(), null);
         
+        // Add gyro diagnostics
+        builder.addBooleanProperty("Gyro Connected", () -> gyro.isConnected(), null);
+        builder.addBooleanProperty("Gyro Calibrating", () -> gyro.isCalibrating(), null);
+        builder.addDoubleProperty("Gyro Yaw", () -> gyro.getYaw(), null);
    }
-
 }

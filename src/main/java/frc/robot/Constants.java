@@ -16,13 +16,14 @@ import edu.wpi.first.math.geometry.Translation2d;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-  public static final double gyroOffset = -0.3199999928474426; // Gyro offset in degrees
+  public static final double gyroOffset = 0.3199999928474426; // Gyro offset in degrees
 
   public static final double cameraAg = 0.0; // Camera angle in degrees
   public static final double cameraPosition = 0.0; // Camera distance from robot center in degrees
   public static final double cameraHeight = 0.33; // Camera height in meters
   private static double BARGE_TAG_HIGHT = inchToMeter(73.54);
-  private static double REEF_TAG_HIGHT = inchToMeter(12.13);
+  // private static double REEF_TAG_HIGHT = inchToMeter(12.13);
+  private static double REEF_TAG_HIGHT = inchToMeter(11.811);
   private static double STATION_TAG_HIGHT = inchToMeter(58.50);
   private static double SIDE_TAG_HIGHT = inchToMeter(51.25);
 
@@ -31,7 +32,7 @@ public final class Constants {
          * Each value is the (x, y) position of the center of the tag on the field in meters.
          * Index corresponds to AprilTag ID (0 is unused).
          */
-  public static Translation2d[] O_TO_TAG = { null, // 0
+  public static Translation2d[] O_TO_TAG = { // 0
     new Translation2d(inchToMeter(657.37), inchToMeter(25.80)), // 1
     new Translation2d(inchToMeter(657.37), inchToMeter(291.20)), // 2
     new Translation2d(inchToMeter(455.15), inchToMeter(317.15)), // 3
