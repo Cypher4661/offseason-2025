@@ -5,11 +5,11 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.ElevatorSubsystem;
+
 import frc.robot.subsystems.Examples.DemaciaMotorExample;
 
 public class RobotContainer {
-  private final ElevatorSubsystem ElevatorSubsystem = new ElevatorSubsystem(Constants.ElevatorSubsystem.talon);
+
   public static Robot robot;
   public static int N_CYCLE = 0;
   public static double CYCLE_TIME = 0.02;

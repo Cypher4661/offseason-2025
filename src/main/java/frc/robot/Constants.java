@@ -4,7 +4,7 @@ package frc.robot;
 
 import frc.Demacia.utils.Motors.SparkConfig;
 import frc.Demacia.utils.Motors.TalonConfig;
-import frc.robot.ElevatorMotorConfig;
+
 import frc.Demacia.utils.Motors.BaseMotorConfig.Canbus;
 
 /**
@@ -17,12 +17,6 @@ import frc.Demacia.utils.Motors.BaseMotorConfig.Canbus;
  */
 
 public  final class Constants {
-
-    public static final class ElevatorSubsystem {
-            public static final ElevatorMotorConfig talon = new ElevatorMotorConfig(1, "elemotor", 1.0/100.0, false, 0.0762, 0);
-
-
-    }
 
   
 }
