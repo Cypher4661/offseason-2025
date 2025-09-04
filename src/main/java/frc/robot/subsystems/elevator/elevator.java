@@ -10,7 +10,7 @@ import frc.robot.Constants;
 import com.ctre.phoenix6.controls.Follower;
 
 public class elevator extends SubsystemBase {
-    private MagneticLimitSwitch MagneticLimitSwitch; // סוויץ' מגנטי שנדלק בכל קומה
+    // סוויץ' מגנטי שנדלק בכל קומה
     private DigitalInput limitSwitch  = new DigitalInput(Constants.elevatorConfig.LimitSwitchID);
     DigitalInput magneticLimitSwitch  = new DigitalInput(Constants.elevatorConfig.MagneticLimitSwitchID);
   
@@ -42,7 +42,7 @@ public class elevator extends SubsystemBase {
         return !limitSwitch.get();
     }
     private boolean IsMagnet(){
-        return !limitSwitch.get();
+        return !magneticLimitSwitch.get();
     }
 
 
@@ -76,7 +76,7 @@ public class elevator extends SubsystemBase {
 
         // בדיקה אם עברנו קומה לפי מגנטים
         for (int i = 1; i < floorHeights.length; i++) {
-            if (Math.abs(currentHeight - floorHeights[i]) < 0.05 && MagneticLimitSwitch.get()) {
+            if (Math.abs(currentHeight - floorHeights[i]) < 0.05 && IsMagnet()) {
                 currentFloor = i;
                 leftMotor.setEncoderPosition(floorHeights[i]);
                 break;
