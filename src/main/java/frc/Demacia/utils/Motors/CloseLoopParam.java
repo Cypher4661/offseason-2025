@@ -3,7 +3,7 @@ package frc.Demacia.utils.Motors;
 /** 
 * Class to hold closed loop param
 *  */
-class CloseLoopParam { // calculate volts - not -1 to 1 !!!
+public class CloseLoopParam { // calculate volts - not -1 to 1 !!!
 
     public static String[] names= {"kp", "ki", "kd", "ks", "kv", "ka", "kg"};
 

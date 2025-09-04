@@ -5,11 +5,8 @@
 package frc.robot;
 
 
-import frc.Demacia.utils.Motors.SparkConfig;
 import frc.Demacia.utils.Motors.TalonConfig;
-
 import frc.Demacia.utils.Motors.BaseMotorConfig.Canbus;
-import frc.robot.subsystems.elevator.Motor_config;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -22,36 +19,22 @@ import frc.robot.subsystems.elevator.Motor_config;
 
 public  final class Constants {
     public  static final class elevatorConfig{
-            public static final Motor_config LeftMotor = new Motor_config(
-            1,
-            "left_elevator_motor",
-            3,
-            false,
-            40,
-            0.5,
-            1.2,
-            1.5,
-            20,
-            0, 0, 0.0, 0.0, 0, 0, 0,
-            20,
-            40);
-            public static final Motor_config RightMotor = new Motor_config(
-                2,
-                "right_elevator_motor",
-                3,
-                false,
-                40,
-                0.5,
-                1.2,
-                1.5,
-                20,
-                0, 0, 0.0, 0.0, 0, 0, 0,
-                20,
-                40);
-            public static final int MagneticLimitSwitchID = 0;
-            public static final int LimitSwitchID = 1;
-            
-    }
+            public static final TalonConfig LeftMotor = new TalonConfig(1, Canbus.Rio, "Elevator-Left")
+                .withBrake(true)
+                .withMeterMotor(64, 2*0.05)
+                .withCurrent(30)
+                .withInvert(false)
+                .withMotionParam(0.5, 1, 2)
+                .withPID(10.0,0.1,0.01,0.3,10,1,0.4)
+                .withRampTime(0.4)
+                .withVolts(12);
+
+            public static final TalonConfig RightMotor = new TalonConfig(2,"Elevator-Right", LeftMotor)
+                .withInvert(true);
+            public static final int MagneticSwitch = 0;
+            public static final int buttomSwitch = 1;
+           
+        }
 
     }
 
