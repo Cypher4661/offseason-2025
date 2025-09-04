@@ -23,7 +23,7 @@ import frc.robot.subsystems.elevator.Motor_config;
 public  final class Constants {
     public  static final class elevatorConfig{
             public static final Motor_config LeftMotor = new Motor_config(
-            1,
+            7,
             "left_elevator_motor",
             3,
             false,

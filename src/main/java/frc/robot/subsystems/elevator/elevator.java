@@ -29,7 +29,7 @@ public class elevator extends SubsystemBase {
 
         // הגדרת המנוע הימני לעקוב אחרי המנוע השמאלי
         ///בעיהההההההההההההה
-        rightMotor.setControl(new Follower(leftMotor.getDeviceID(), true));
+        //rightMotor.setControl(new Follower(leftMotor.getDeviceID(), true));
     }
 
     // פקודה לעבור לקומה

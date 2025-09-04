@@ -7,6 +7,8 @@ package frc.robot;
 import edu.wpi.first.wpilibj2.command.Command;
 
 import frc.robot.subsystems.Examples.DemaciaMotorExample;
+import frc.robot.subsystems.elevator.elevator;
+import frc.robot.subsystems.elevator.elevator_subsystems;
 
 public class RobotContainer {
 
@@ -15,7 +17,7 @@ public class RobotContainer {
   public static double CYCLE_TIME = 0.02;
   
  // public DemaciaMotorExample demaciaMotorExample = new DemaciaMotorExample();
-
+  public elevator_subsystems elevatorSubsystems = new elevator_subsystems();
   public RobotContainer(Robot robot) {
     RobotContainer.robot = robot;
     RobotContainer.CYCLE_TIME = robot.getPeriod();
