@@ -44,6 +44,9 @@ public class ElevatorSubsystem extends SubsystemBase {
         
         SmartDashboard.putData("Elevetor", this);
         MotorCommands.showPowerCommand("Elevator Power", this, leftMotor);
+        mode = ElevatorMode.Calibreate;
+        mode.height = getHeight() + 0.05;
+        setDefaultCommand(new ElevatorCommand(this));
     }
 
     private boolean isAtButtom(){

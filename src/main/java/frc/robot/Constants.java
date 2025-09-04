@@ -36,8 +36,8 @@ public  final class Constants {
 
     public static final int MagneticLimitSwitchID = 0;
     public static final int LimitSwitchID = 1;
-
-            
+    public static final double CalibreatePowerUp = 0.2;
+    public static final double CalibreatePowerDown = 0.05;           
     }
 
     }
