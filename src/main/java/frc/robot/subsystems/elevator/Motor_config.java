@@ -49,7 +49,7 @@ public class Motor_config {
         .withInvert(inverted)
         .withMeterMotor(ratio, diameter) // diameter in meters, wheel radius in meters
         .withMotionParam(maxVelocity, maxAcceleration, maxJerk) // m/s
-        .withPID(p, i, d)
+        .withPID(p, i, d, s, v, a, g)
         .withRampTime(rampTime)
         .withVolts(maxVolts)
         .withCurrent(maxVolts);

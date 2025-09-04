@@ -1,5 +1,6 @@
 package frc.robot.subsystems.elevator;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class elevator extends SubsystemBase {
@@ -15,6 +16,10 @@ public class elevator extends SubsystemBase {
 
 
     }
+    public void Move(double highet) {
+        rightMotor.setPositionVoltage(highet);
+        
+    }
     
     
     @Override
@@ -24,6 +29,8 @@ public class elevator extends SubsystemBase {
         floor = 0;
     
       }
+      SmartDashboard.putNumber("elevator floor", floor);
+      SmartDashboard.putNumber("elevator position", rightMotor.getCurrentPosition());
     }
 
 
