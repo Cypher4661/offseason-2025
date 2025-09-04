@@ -25,7 +25,7 @@ public final class Constants {
   private static double REEF_TAG_HIGHT = inchToMeter(12.13);
   private static double STATION_TAG_HIGHT = inchToMeter(58.50);
   private static double SIDE_TAG_HIGHT = inchToMeter(51.25);
-  
+
         /**
          * Array of AprilTag field locations.
          * Each value is the (x, y) position of the center of the tag on the field in meters.

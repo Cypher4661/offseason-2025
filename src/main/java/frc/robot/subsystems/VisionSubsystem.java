@@ -6,13 +6,10 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.networktables.*;
 import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-import java.lang.module.ModuleDescriptor.Builder;
-import java.util.function.Supplier;
 
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
@@ -22,15 +19,12 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.Camera;
 import frc.robot.Constants;
-import frc.robot.Camera.CameraType;
 import static frc.robot.Constants.*;
 
 
 public class VisionSubsystem extends SubsystemBase {
 
 
-    private Translation2d robotToTag;
-    private Translation2d cameraToTag;
     private double alpha;
     private Field2d field;
 
@@ -38,14 +32,10 @@ public class VisionSubsystem extends SubsystemBase {
     private NetworkTable Table;
     private double camToTagYaw;
     private double camToTagPitch;
-    private double id;
+    private int id;
     private double height;
     private double dist;
-    private Translation2d originToRobot;
-    private Translation2d origintoTag;
-    private Translation2d robotToTagRR;
     public Pose2d pose;
-    private Translation2d robotToTagFC;
 
 
     private Camera camera;
@@ -59,7 +49,7 @@ public class VisionSubsystem extends SubsystemBase {
         field = new Field2d();
 
 
-        gyro = new AHRS(NavXComType.kMXP_SPI);
+        AHRS gyro = new AHRS(NavXComType.kMXP_SPI);
         gyro.reset();
         SmartDashboard.putData("Vision", this);
         SmartDashboard.putData("Field", field);
@@ -72,12 +62,12 @@ public class VisionSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        camToTagPitch = Table.getEntry("ty").getDouble(0.0);
-        camToTagYaw = (-Table.getEntry("tx").getDouble(0.0)) + camera.getYaw();
-        id = getTagId();
-
+        
         if (Table.getEntry("tv").getDouble(0.0) != 0) {
-            if (id > 0 && id < TAG_HEIGHT.length) {
+            camToTagPitch = Table.getEntry("ty").getDouble(0.0);
+            camToTagYaw = (-Table.getEntry("tx").getDouble(0.0)) + camera.getYaw();
+            id = getTagId();
+          if (id > 0 && id < TAG_HEIGHT.length) {
                 pose = new Pose2d(getOriginToRobot(), getAngle());
                 field.setRobotPose(pose);
             } 
@@ -106,9 +96,9 @@ public class VisionSubsystem extends SubsystemBase {
     } 
 
     public Translation2d getRobotToTagRR() {
-        cameraToTag = new Translation2d(getDistFromCamera(),
+        Translation2d cameraToTag = new Translation2d(getDistFromCamera(),
                 Rotation2d.fromDegrees(camToTagYaw));
-        robotToTag = new Translation2d(camera.getRobotToCamPosition().getX(),
+        Translation2d robotToTag = new Translation2d(camera.getRobotToCamPosition().getX(),
                 camera.getRobotToCamPosition().getY()).plus(cameraToTag);
         return robotToTag;
     }
@@ -118,22 +108,20 @@ public class VisionSubsystem extends SubsystemBase {
             Rotation2d.fromDegrees(camToTagYaw));
     }
 
-    public Translation2d getOriginToRobot() {
+    private Translation2d getOriginToRobot() {
 
-        origintoTag = O_TO_TAG[(int) this.id == -1 ? 0 : (int) this.id];
+        Translation2d origintoTag = O_TO_TAG[id];
     
-        height = TAG_HEIGHT[(int) this.id];
-        if (origintoTag != null) {
+        height = TAG_HEIGHT[id];
         //   Get vector from robot to tag
-          robotToTagRR = getRobotToTagRR();
+        Translation2d robotToTagRR = getRobotToTagRR();
     
-        robotToTagFC = robotToTagRR.rotateBy(getAngle());
-          originToRobot = origintoTag.plus(robotToTagFC.rotateBy(Rotation2d.kPi));
+        Translation2d robotToTagFC = robotToTagRR.rotateBy(getAngle());
+        Translation2d originToRobot = origintoTag.plus(robotToTagFC.rotateBy(Rotation2d.kPi));
     
-          return originToRobot;
-        }
-        return new Translation2d();
+        return originToRobot;
     }
+    
 
 
     public Pose2d getPose() {
