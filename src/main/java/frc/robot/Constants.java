@@ -33,6 +33,10 @@ public  final class Constants {
                 .withInvert(true);
             public static final int MagneticSwitch = 0;
             public static final int buttomSwitch = 1;
+
+            public static final double CalibrateUpPower = 0.3;
+            public static final double CalibrateDownPower = 0.05;
+            public static final double CalibrateUpDistance = 0.05;
            
         }
 

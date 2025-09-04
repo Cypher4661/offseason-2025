@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.Demacia.utils.Log.LogManager;
+import frc.Demacia.utils.Motors.MotorCommands;
 import frc.Demacia.utils.Motors.MotorInterface;
 import frc.Demacia.utils.Motors.TalonMotor;
 import frc.robot.Constants;
@@ -24,7 +25,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     private double magneticSwitchHeights[] = {0.3, 0.46, 0.57, 0.68, 0.75, 0.9, 1.01, 1.12};
 
-    static enum ElevatorMode {Idle(0), Home(0), Intake(0), L2(0), L3(0), L4(0), Algie1(0), Algie2(0), Algie3(0), Test(0);
+    static enum ElevatorMode {Idle(0), Home(0), Intake(0), L2(0), L3(0), L4(0), Algie1(0), Algie2(0), Algie3(0), Test(0), Calibrate(0);
         double height = 0;
         ElevatorMode(double height) {
           this.height = height;
@@ -44,6 +45,10 @@ public class ElevatorSubsystem extends SubsystemBase {
         buttomSwitch = new DigitalInput(Constants.elevatorConfig.buttomSwitch);
         magneticSwitch = new DigitalInput(Constants.elevatorConfig.MagneticSwitch);
         SmartDashboard.putData("Elevator", this);
+        setMode(ElevatorMode.Calibrate);
+        setDefaultCommand(new ElevatorCommand(this));
+        leftMotor.showConfigPIDFSlotCommand(0);
+        MotorCommands.showPowerCommand("Elevator Power Cmd", this, leftMotor);
     }
 
     public void setPower(double power) {
@@ -73,7 +78,15 @@ public class ElevatorSubsystem extends SubsystemBase {
       return mode;
     }
     public void setMode(ElevatorMode mode) {
-      this.mode = mode;
+      if(calibreated) {
+        this.mode = mode;
+        if(mode == ElevatorMode.Calibrate) {
+          mode.height = getHeight() + Constants.elevatorConfig.CalibrateUpDistance;  
+        }
+      } else {
+        this.mode = ElevatorMode.Calibrate;
+        mode.height = getHeight() + Constants.elevatorConfig.CalibrateUpDistance;
+      }
     }
     public String getModeString() {
       return mode.toString();
@@ -81,8 +94,12 @@ public class ElevatorSubsystem extends SubsystemBase {
     public void setMode(String name) {
       var m = ElevatorMode.valueOf(name);
       if(m != null) {
-        this.mode = m;
+        setMode(m);
       }
+    }
+
+    public boolean isCalibrated() {
+      return calibreated;
     }
 
     @Override
@@ -91,7 +108,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         builder.addBooleanProperty("Buttom", this::isAtButtomSwitch, null);
         builder.addBooleanProperty("Magnetic", this::isAtSwitch, null);
         builder.addDoubleProperty("Height", this::getHeight, null);
-        builder.addDoubleProperty("Test Height", ()->testHeight, (height)->testHeight = height);
+        builder.addDoubleProperty("Test Height", ()->testHeight, (height)-> {testHeight = height; ElevatorMode.Test.height = height;});
         builder.addStringProperty("Mode", this::getModeString, this::setMode);
     }
 
