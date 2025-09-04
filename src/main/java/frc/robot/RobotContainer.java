@@ -9,7 +9,10 @@ import frc.robot.subsystems.Examples.DemaciaMotorExample;
 
 public class RobotContainer {
 
-  public static Robot robot;
+  public static boolean isRed = true;
+  public static Robot robot = new Robot();
+
+  
   public static int N_CYCLE = 0;
   public static double CYCLE_TIME = 0.02;
 

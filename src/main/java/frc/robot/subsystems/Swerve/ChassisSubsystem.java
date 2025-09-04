@@ -1,10 +1,12 @@
 package frc.robot.subsystems.Swerve;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
-import java.util.concurrent.ForkJoinTask;
+import frc.robot.RobotContainer;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
+import com.studica.frc.AHRS;
+import com.studica.frc.AHRS.NavXComType;
+
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -18,7 +20,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 public class ChassisSubsystem extends SubsystemBase {
     public SwerveDrivePoseEstimator poseEstimator;
     public SwerveDriveKinematics kinematics;
-    public Pigeon2 gyro;
+    public AHRS gyro;
     public Field2d field = new Field2d();
     public SwerveModule FL;
     public SwerveModule FR;
@@ -33,7 +35,7 @@ public class ChassisSubsystem extends SubsystemBase {
 
     public ChassisSubsystem(){
         super();
-        gyro = new Pigeon2(SwerveConstants.ChassisConstants.GyroID, "rio");
+        gyro = new AHRS(NavXComType.kMXP_SPI);
         kinematics = new SwerveDriveKinematics(new Translation2d[]{
             new Translation2d(SwerveConstants.ChassisConstants.FL_X, SwerveConstants.ChassisConstants.FL_Y),
             new Translation2d(SwerveConstants.ChassisConstants.FR_X, SwerveConstants.ChassisConstants.FR_Y),
@@ -78,7 +80,7 @@ public class ChassisSubsystem extends SubsystemBase {
     }
 
     public void setYaw(Rotation2d yaw){
-        gyro.setYaw(yaw.getDegrees());
+        gyro.setAngleAdjustment(yaw.getDegrees());
     }
 
     public void resetPose(Pose2d pose){
@@ -120,7 +122,7 @@ public class ChassisSubsystem extends SubsystemBase {
         ChassisSpeeds limitedVelocities = new ChassisSpeeds(limitedVelocityVector.getX(), limitedVelocityVector.getY(), wanted_Speeds.omegaRadiansPerSecond);
         Translation2d lastWantedSpeeds = limitedVelocityVector;
         setVelocities(limitedVelocities);
-        
+
     }
 
     public void setVelocities(ChassisSpeeds speeds){
@@ -129,10 +131,15 @@ public class ChassisSubsystem extends SubsystemBase {
         setModuleStats(states);
     }
 
+    public boolean isRed(){
+        return RobotContainer.isRed;
+    }
+
     @Override
     public void periodic() {
         Rotation2d gyro = getGyroAngle();
         poseEstimator.update(gyro, getModulePositions());
+        field.setRobotPose(poseEstimator.getEstimatedPosition());
     }
 
 }
