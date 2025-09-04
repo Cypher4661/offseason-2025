@@ -1,14 +1,19 @@
 package frc.robot.subsystems.elevator;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.Demacia.utils.Motors.MotorInterface;
 import frc.Demacia.utils.Motors.TalonMotor;
+import frc.robot.Constants;
+
 import com.ctre.phoenix6.controls.Follower;
 
 public class elevator extends SubsystemBase {
     private MagneticLimitSwitch MagneticLimitSwitch; // סוויץ' מגנטי שנדלק בכל קומה
-    private LimitSwitch LimitSwitch; // סוויץ' שמופעל רק בגובה 0
+    private DigitalInput limitSwitch  = new DigitalInput(Constants.elevatorConfig.LimitSwitchID);
+    DigitalInput magneticLimitSwitch  = new DigitalInput(Constants.elevatorConfig.MagneticLimitSwitchID);
+  
     private final MotorInterface leftMotor;
     private final MotorInterface rightMotor;
 
@@ -26,11 +31,20 @@ public class elevator extends SubsystemBase {
     public elevator(Motor_config leftMotorConfig, Motor_config rightMotorConfig) {
         leftMotor = new TalonMotor(leftMotorConfig.TalonConfig);
         rightMotor = new TalonMotor(rightMotorConfig.TalonConfig);
+        
 
         // הגדרת המנוע הימני לעקוב אחרי המנוע השמאלי
         ///בעיהההההההההההההה
         //rightMotor.setControl(new Follower(leftMotor.getDeviceID(), true));
     }
+
+    private boolean isAtButtom(){
+        return !limitSwitch.get();
+    }
+    private boolean IsMagnet(){
+        return !limitSwitch.get();
+    }
+
 
     // פקודה לעבור לקומה
     public void moveToFloor(int targetFloor) {
@@ -49,7 +63,7 @@ public class elevator extends SubsystemBase {
     @Override
     public void periodic() {
         // בדיקה אם ה-Limit Switch בגובה 0 מופעל
-        if (LimitSwitch.get()) {
+        if (isAtButtom()) {
             currentFloor = 0;
             leftMotor.setEncoderPosition(floorHeights[0]);
         }
@@ -85,5 +99,6 @@ public class elevator extends SubsystemBase {
         // עדכון נתונים ל-SmartDashboard
         SmartDashboard.putNumber("elevator floor", currentFloor);
         SmartDashboard.putNumber("elevator position", leftMotor.getCurrentPosition());
+    
     }
 }
