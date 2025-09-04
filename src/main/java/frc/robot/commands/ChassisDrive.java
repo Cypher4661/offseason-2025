@@ -1,8 +1,10 @@
 package frc.robot.commands;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Swerve.ChassisSubsystem;
 import frc.robot.subsystems.Swerve.SwerveConstants;
@@ -23,20 +25,7 @@ public class ChassisDrive extends Command{
         addRequirements(chassis);
     }
 
-    public static boolean getPecisionMode(){
-        return precisionMode;
-    }
 
-    //public static void setPrecisitinMode(boolean precisionMode){
-      //  ChassisDrive.precisionMode = precisionMode;
-        //if(!precisionMode){
-          //  RobotContainer.robot.setNotPrecisionMode();
-        //}
-    //}
-
-    //public void invertPrecisionMode(){
-      //  setPrecisitinMode(!precisionMode);
-    //}
 
     @Override
     public void execute(){
@@ -45,6 +34,7 @@ public class ChassisDrive extends Command{
         double LjoyY = controller.getLeftY() * direction;
         double LjoyX = controller.getLeftX() * direction;
         double rot = controller.getLeftTriggerAxis() - controller.getRightTriggerAxis();
+        LjoyX = MathUtil.applyDeadband(LjoyX, ChassisConstants.DeadBand);
 
         double VelX = Math.pow(LjoyX, 2) * ChassisConstants.Max_Linear_Speed * Math.signum(LjoyX);
         double VelY = Math.pow(LjoyY, 2) * ChassisConstants.Max_Linear_Speed * Math.signum(LjoyY);

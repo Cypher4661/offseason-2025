@@ -27,6 +27,7 @@ public class SwerveModule extends SubsystemBase{
         super();
         this.DriveMotor = new TalonMotor(config.DriveConfig);
         this.SteerMotor = new SparkMotor(config.SteerConfig);
+        System.out.println("Init cancoder " + config.CancoderConfig.id);
         this.CanCoder = new Cancoder(config.CancoderConfig);
         
         SteerMotor.setAngle(getAbsoluteAngle() - config.CanCoderOffset);
@@ -62,7 +63,7 @@ public class SwerveModule extends SubsystemBase{
     }
        
     public double getAngle(){
-        return SteerMotor.getCurrentPosition() / moduleConfig.GearRatioSteer * 360.0;
+        return SteerMotor.getCurrentPosition();
     }
     public double getAbsoluteAngle(){
         return CanCoder.getCurrentAbsPosition();

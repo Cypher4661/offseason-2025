@@ -49,16 +49,17 @@ public class SwerveConstants {
         public static final int FR_DriveID = 4;
         public static final int BR_DriveID = 6;
         public static final int BL_DriveID = 8;
-        public static final double FL_Y = 0.0;
-        public static final double FL_X = 0.0;
-        public static final double FR_Y = 0.0;
-        public static final double FR_X = 0.0;
-        public static final double BR_Y = 0.0;
-        public static final double BR_X = 0.0;
-        public static final double BL_Y = 0.0;
-        public static final double BL_X = 0.0;
+        public static final double FL_Y = 0.308325;
+        public static final double FL_X = -0.308325;
+        public static final double FR_Y = 0.308325;
+        public static final double FR_X = 0.308325;
+        public static final double BR_Y = -0.308325;
+        public static final double BR_X = 0.308325;
+        public static final double BL_Y = -0.308325;
+        public static final double BL_X = -0.308325;
         public static final double Max_Linear_Speed = 5.0; // in meters per second
         public static final double Max_Linear_Accel = 4.0; // in meters per second squared
         public static final double Max_Rotation_Speed = 4.0; // in meters per second
+        public static final double DeadBand = 0.1;
     }
 }

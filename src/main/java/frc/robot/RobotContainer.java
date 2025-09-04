@@ -5,22 +5,28 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Examples.DemaciaMotorExample;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.ChassisDrive;
+import frc.robot.subsystems.Swerve.ChassisSubsystem;
 
 public class RobotContainer {
 
   public static boolean isRed = true;
   public static Robot robot = new Robot();
+  public CommandXboxController DriverController = new CommandXboxController(0);
+  public ChassisSubsystem chassis = new ChassisSubsystem();
+
 
   
   public static int N_CYCLE = 0;
   public static double CYCLE_TIME = 0.02;
 
-  public DemaciaMotorExample demaciaMotorExample = new DemaciaMotorExample();
+  
 
   public RobotContainer(Robot robot) {
     RobotContainer.robot = robot;
     RobotContainer.CYCLE_TIME = robot.getPeriod();
+    chassis.setDefaultCommand(new ChassisDrive(chassis, DriverController));
     configureBindings();
   }
   

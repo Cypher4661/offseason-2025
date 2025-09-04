@@ -28,6 +28,7 @@ public class ModuleConfig {
         this.Diameter = diameter;
         this.CanCoderOffset = canCoderOffset;
 
+        CancoderConfig = new CancoderConfig(canCoderID, Canbus.Rio, name + "/Cancoder");
 
         SteerConfig = new SparkConfig(steerID, name + "/Steer")
             .withBrake(true)

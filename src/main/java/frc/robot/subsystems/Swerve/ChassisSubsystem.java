@@ -1,9 +1,10 @@
 package frc.robot.subsystems.Swerve;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.RobotContainer;
+import frc.robot.commands.ChassisDrive;
 
-import com.ctre.phoenix6.hardware.Pigeon2;
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 
@@ -16,8 +17,10 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class ChassisSubsystem extends SubsystemBase {
+    public CommandXboxController Controller;
     public SwerveDrivePoseEstimator poseEstimator;
     public SwerveDriveKinematics kinematics;
     public AHRS gyro;
@@ -43,6 +46,9 @@ public class ChassisSubsystem extends SubsystemBase {
             new Translation2d(SwerveConstants.ChassisConstants.BL_X, SwerveConstants.ChassisConstants.BL_Y)
         });
         poseEstimator = new SwerveDrivePoseEstimator(kinematics, getGyroAngle(), getModulePositions(), new Pose2d());
+        SmartDashboard.putData("Chassis", this);
+        SmartDashboard.putData("Field", field);
+
     }
 
     public void StopChassis(){
