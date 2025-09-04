@@ -32,7 +32,8 @@ public class elevator extends SubsystemBase {
         leftMotor = new TalonMotor(leftMotorConfig.TalonConfig);
         rightMotor = new TalonMotor(rightMotorConfig.TalonConfig);
         
-
+        SmartDashboard.putNumber("target floor", targetFloor);
+        
         // הגדרת המנוע הימני לעקוב אחרי המנוע השמאלי
         ///בעיהההההההההההההה
         //rightMotor.setControl(new Follower(leftMotor.getDeviceID(), true));
@@ -99,6 +100,8 @@ public class elevator extends SubsystemBase {
         // עדכון נתונים ל-SmartDashboard
         SmartDashboard.putNumber("elevator floor", currentFloor);
         SmartDashboard.putNumber("elevator position", leftMotor.getCurrentPosition());
+        SmartDashboard.putBoolean("LimitSwitch", isAtButtom());
+        SmartDashboard.putBoolean("MagneticLimitSwitch", IsMagnet());
     
     }
 }
