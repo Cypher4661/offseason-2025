@@ -141,7 +141,7 @@ public class VisionSubsystem extends SubsystemBase {
     }
 
     public Rotation2d getAngle() {
-        return Rotation2d.fromDegrees(gyro.getYaw() - Constants.gyroOffset);
+        return Rotation2d.fromDegrees(-gyro.getYaw() + Constants.gyroOffset);
     }
    @Override
      public void initSendable(SendableBuilder builder) {

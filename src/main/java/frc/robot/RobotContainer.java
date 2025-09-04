@@ -17,7 +17,7 @@ public class RobotContainer {
     private final Camera reefCamera = new Camera(
         "tag",                  
         new Translation3d(-0.123, -0.1175, 0.71),
-        0.0,                          // Pitc
+        0.0,                          // Pitch
         0.0,                            // Yaw
         CameraType.REEF                 
     );
