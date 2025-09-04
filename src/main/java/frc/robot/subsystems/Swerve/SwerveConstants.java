@@ -33,10 +33,10 @@ public class SwerveConstants {
             new ModuleConfig(ChassisConstants.BL_ModuleID, ChassisConstants.BL_SteerID, ChassisConstants.BL_DriveID, ChassisConstants.BL_CanCoderID, "Back_Laft", ModuleConstants.Diameter, ModuleConstants.BL_CanCoderOffset)
         };
         public static final int GyroID = 0;
-        public static final int FL_ModuleID = 1;
-        public static final int FR_ModuleID = 2;
-        public static final int BR_ModuleID = 3;
-        public static final int BL_ModuleID = 4;
+        public static final int FL_ModuleID = 0;
+        public static final int FR_ModuleID = 0;
+        public static final int BR_ModuleID = 0;
+        public static final int BL_ModuleID = 0;
         public static final int FL_CanCoderID = 9;
         public static final int FR_CanCoderID = 10;
         public static final int BR_CanCoderID = 11; 

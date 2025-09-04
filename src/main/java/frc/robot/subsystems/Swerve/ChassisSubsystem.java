@@ -29,22 +29,35 @@ public class ChassisSubsystem extends SubsystemBase {
     public SwerveModule FR;
     public SwerveModule BR;
     public SwerveModule BL;
-    public final SwerveModule[] Modules = {
-        FL = new SwerveModule(SwerveConstants.ChassisConstants.Config[0]),
-        FR = new SwerveModule(SwerveConstants.ChassisConstants.Config[1]),
-        BR = new SwerveModule(SwerveConstants.ChassisConstants.Config[2]),
-        BL = new SwerveModule(SwerveConstants.ChassisConstants.Config[3])
-    };
+    public final SwerveModule[] Modules;
+
+    public static int N = 0;
 
     public ChassisSubsystem(){
         super();
-        gyro = new AHRS(NavXComType.kMXP_SPI);
+        System.out.println("N = " + N++);
+        Exception e = new Exception();
+        e.printStackTrace();
+        System.out.println(" chassis init");
+        FL  = new SwerveModule(SwerveConstants.ChassisConstants.Config[0]);
+        FR  = new SwerveModule(SwerveConstants.ChassisConstants.Config[1]);
+        BR = new SwerveModule(SwerveConstants.ChassisConstants.Config[2]);
+        BL = new SwerveModule(SwerveConstants.ChassisConstants.Config[3]);
+        System.out.println(" module created");
+        Modules = new SwerveModule[]{
+            FL,
+            FR,
+            BR,
+            BL
+        };
+          gyro = new AHRS(NavXComType.kMXP_SPI);
         kinematics = new SwerveDriveKinematics(new Translation2d[]{
             new Translation2d(SwerveConstants.ChassisConstants.FL_X, SwerveConstants.ChassisConstants.FL_Y),
             new Translation2d(SwerveConstants.ChassisConstants.FR_X, SwerveConstants.ChassisConstants.FR_Y),
             new Translation2d(SwerveConstants.ChassisConstants.BR_X, SwerveConstants.ChassisConstants.BR_Y),
             new Translation2d(SwerveConstants.ChassisConstants.BL_X, SwerveConstants.ChassisConstants.BL_Y)
         });
+        System.out.println(" kinematics created");
         poseEstimator = new SwerveDrivePoseEstimator(kinematics, getGyroAngle(), getModulePositions(), new Pose2d());
         SmartDashboard.putData("Chassis", this);
         SmartDashboard.putData("Field", field);

@@ -26,6 +26,7 @@ public class SwerveModule extends SubsystemBase{
     SwerveModule(ModuleConfig config) {
         super();
         this.DriveMotor = new TalonMotor(config.DriveConfig);
+        System.out.println("steer id = " + config.SteerConfig.id);
         this.SteerMotor = new SparkMotor(config.SteerConfig);
         System.out.println("Init cancoder " + config.CancoderConfig.id);
         this.CanCoder = new Cancoder(config.CancoderConfig);

@@ -12,7 +12,7 @@ import frc.robot.subsystems.Swerve.ChassisSubsystem;
 public class RobotContainer {
 
   public static boolean isRed = true;
-  public static Robot robot = new Robot();
+  public static Robot robot;
   public CommandXboxController DriverController = new CommandXboxController(0);
   public ChassisSubsystem chassis = new ChassisSubsystem();
 
