@@ -40,6 +40,7 @@ public class VisionSubsystem extends SubsystemBase {
 
     private Camera camera;
     private AHRS gyro;
+    
 
 
     public VisionSubsystem(Camera camera) {
@@ -95,7 +96,7 @@ public class VisionSubsystem extends SubsystemBase {
         return Math.abs(dist);
     } 
 
-    public Translation2d getRobotToTagRR() {
+    public Translation2d getRobotToTagVector() {
         Translation2d cameraToTag = new Translation2d(getDistFromCamera(),
                 Rotation2d.fromDegrees(camToTagYaw));
         Translation2d robotToTag = new Translation2d(camera.getRobotToCamPosition().getX(),
@@ -111,14 +112,13 @@ public class VisionSubsystem extends SubsystemBase {
     private Translation2d getOriginToRobot() {
 
         Translation2d origintoTag = O_TO_TAG[id];
-        System.out.println("id = " + id + " origintoTag = " + origintoTag);
     
         height = TAG_HEIGHT[id];
         //   Get vector from robot to tag
-        Translation2d robotToTagRR = getRobotToTagRR();
+        Translation2d getRobotToTagVector = getRobotToTagVector();
     
-        Translation2d robotToTagFC = robotToTagRR.rotateBy(getAngle());
-        Translation2d originToRobot = origintoTag.plus(robotToTagFC.rotateBy(Rotation2d.kPi));
+        Translation2d robotToTagField = getRobotToTagVector.rotateBy(getAngle());
+        Translation2d originToRobot = origintoTag.plus(robotToTagField.rotateBy(Rotation2d.kPi));
     
         return originToRobot;
     }
@@ -133,7 +133,7 @@ public class VisionSubsystem extends SubsystemBase {
 
 
     public boolean isSeeTag(int id, double distance) {
-        return Table.getEntry("tid").getDouble(0.0) == id && getRobotToTagRR().getNorm() <= distance;
+        return Table.getEntry("tid").getDouble(0.0) == id && getRobotToTagVector().getNorm() <= distance;
     }
 
     public boolean isSeeTag() {
@@ -155,8 +155,8 @@ public class VisionSubsystem extends SubsystemBase {
         builder.addBooleanProperty("See Tag", () -> isSeeTag(), null);
         builder.addDoubleProperty("Robot X", () -> getOriginToRobot().getX(), null);
         builder.addDoubleProperty("Robot Y", () -> getOriginToRobot().getY(), null);
-        builder.addDoubleProperty("Robot to Tag X", () -> getRobotToTagRR().getX(), null);
-        builder.addDoubleProperty("Robot to Tag Y", () -> getRobotToTagRR().getY(), null);
+        builder.addDoubleProperty("Robot to Tag X", () -> getRobotToTagVector().getX(), null);
+        builder.addDoubleProperty("Robot to Tag Y", () -> getRobotToTagVector().getY(), null);
 
         
         // Add gyro diagnostics
