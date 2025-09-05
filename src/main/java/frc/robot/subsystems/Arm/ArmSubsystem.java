@@ -1,4 +1,4 @@
-package frc.robot.subsystems.elevator;
+package frc.robot.subsystems.Arm;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -11,17 +11,15 @@ import frc.Demacia.utils.Motors.MotorInterface;
 import frc.Demacia.utils.Motors.TalonMotor;
 import frc.robot.Constants;
 
-import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
 
-public class ElevatorSubsystem extends SubsystemBase {
+public class ArmSubsystem extends SubsystemBase {
     // סוויץ' מגנטי שנדלק בכל קומה
-    private DigitalInput buttomSwitch  = new DigitalInput(Constants.ArmConfig.LimitSwitchID);
   
     private final MotorInterface ArmMotor;
 
     // גבהים לכל קומה (במטרים / יחידות אנקודר)
-    private static final double[] magenticHeights = { 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8}; 
+    private static final double[] angles = { 0, 40, 90, 120, 150, 200, 270}; 
 
     public enum ElevatorMode { Idle(0), Home(0), Intake(0.2), L1(0.3), L2(0.7), 
         L3(0.9), L4(1.2), AlgieUp(1), AlgieDown(0.4), Barge(1.2), Test(0),
@@ -34,13 +32,13 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     private ElevatorMode mode = ElevatorMode.Calibreate;
     private boolean calibreated = false;
-    private double minHeight = 0;
-    private double maxHeight = 1.2;
+    private double minangle = 0;
+    private double maxangle = 270;
 
-    public ElevatorSubsystem() {
+    public ArmSubsystem() {
         ArmMotor = new TalonMotor(Constants.ArmConfig.ArmConfig);
   
-        SmartDashboard.putData("Elevetor", this);
+        SmartDashboard.putData("Arm", this);
         MotorCommands.showPowerCommand("Arm Power", this, ArmMotor);
         mode = ElevatorMode.Calibreate;
         mode.height = getHeight() + 0.05;
