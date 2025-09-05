@@ -50,10 +50,9 @@ public class ElevatorSubsystem extends SubsystemBase {
         mode.height = getHeight() + 0.05;
         setDefaultCommand(new ElevatorCommand(this));
         SmartDashboard.putString("SetMode", "test");
-        SmartDashboard.putData("SetModeNow", new RunCommand(
+        SmartDashboard.putData("SetModeNow", new StartEndCommand(
         () -> setMode(SmartDashboard.getString("SetMode", "test")),
-        
-        this));
+        () -> {}));
     }
 
     private boolean isAtButtom(){
@@ -65,7 +64,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     public double getHeight(){
         return leftMotor.getCurrentPosition();
-    }
+    } 
 
     public void setPower(double power) {
         if(power < 0 && isAtButtom()) power = 0;
