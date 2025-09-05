@@ -47,6 +47,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         mode = ElevatorMode.Calibreate;
         mode.height = getHeight() + 0.05;
         setDefaultCommand(new ElevatorCommand(this));
+        
     }
 
     private boolean isAtButtom(){
@@ -124,6 +125,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         builder.addBooleanProperty("Calibreated", () -> calibreated, null);
         builder.addBooleanProperty("buttom", this::isAtButtom, null);
         builder.addBooleanProperty("magnet", this::IsMagnet, null);
+        
         builder.addDoubleProperty("Test Height", ()->ElevatorMode.Test.height, (height)->ElevatorMode.Test.height = height);
     }
 }

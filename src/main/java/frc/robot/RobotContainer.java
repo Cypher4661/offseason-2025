@@ -17,7 +17,7 @@ public class RobotContainer {
   public static double CYCLE_TIME = 0.02;
   
  // public DemaciaMotorExample demaciaMotorExample = new DemaciaMotorExample();
-  
+  public ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
   public RobotContainer(Robot robot) {
     RobotContainer.robot = robot;
     RobotContainer.CYCLE_TIME = robot.getPeriod();
