@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.ChassisDrive;
@@ -11,7 +12,7 @@ import frc.robot.subsystems.Swerve.ChassisSubsystem;
 
 public class RobotContainer {
 
-  public static boolean isRed = true;
+  public static boolean isRed = SmartDashboard.getBoolean("Is Red", false);
   public static Robot robot;
   public CommandXboxController DriverController = new CommandXboxController(0);
   public ChassisSubsystem chassis = new ChassisSubsystem();

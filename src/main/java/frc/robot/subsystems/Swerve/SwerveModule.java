@@ -13,15 +13,10 @@ import frc.Demacia.utils.Sensors.Cancoder;
 import frc.robot.subsystems.Swerve.SwerveConstants.ModuleConstants;
 
 public class SwerveModule extends SubsystemBase{
-    private TalonMotor DriveMotor;
-    private SparkMotor SteerMotor;
+    protected TalonMotor DriveMotor;
+    protected SparkMotor SteerMotor;
     private Cancoder CanCoder;
     public ModuleConfig moduleConfig;
-
-    private SimpleMotorFeedforward SteerFF = new SimpleMotorFeedforward(ModuleConstants.Steer_KS, ModuleConstants.Steer_KV, ModuleConstants.Steer_KA);
-    private SimpleMotorFeedforward DriveFF = new SimpleMotorFeedforward(ModuleConstants.Drive_KS, ModuleConstants.Drive_KV, ModuleConstants.Drive_KA);
-    private PIDController SteerPID = new PIDController(ModuleConstants.Steer_KP, ModuleConstants.Steer_KI, ModuleConstants.Steer_KD);
-    private PIDController DrivePID = new PIDController(ModuleConstants.Drive_KP, ModuleConstants.Drive_KI, ModuleConstants.Drive_KD);
 
     SwerveModule(ModuleConfig config) {
         super();
@@ -50,14 +45,10 @@ public class SwerveModule extends SubsystemBase{
         DriveMotor.set(power);
     }
     public void setSteerVelocity(double velocityRadPerSec){
-        double ff = SteerFF.calculate(velocityRadPerSec);
-        double pid = SteerPID.calculate(getSteerVelocity(), velocityRadPerSec);
-        setSteerPower(pid + ff);;
+        SteerMotor.setVelocity(velocityRadPerSec);
     }
     public void setDriveVelocity(double velocityMeterPerSec){
-        double ff = DriveFF.calculate(velocityMeterPerSec);
-        double pid = DrivePID.calculate(getDriveVelocity(), velocityMeterPerSec);
-        setDrivePower(pid + ff);;
+       DriveMotor.setVelocity(velocityMeterPerSec);
     }
     public void setSteerAngle(double angleDegrees){
         SteerMotor.setAngle(angleDegrees);

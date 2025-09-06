@@ -1,7 +1,9 @@
 package frc.robot.subsystems.Swerve;
 
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.Demacia.utils.Motors.MotorCommands;
 import frc.robot.RobotContainer;
 import frc.robot.commands.ChassisDrive;
 
@@ -35,15 +37,12 @@ public class ChassisSubsystem extends SubsystemBase {
 
     public ChassisSubsystem(){
         super();
-        System.out.println("N = " + N++);
         Exception e = new Exception();
         e.printStackTrace();
-        System.out.println(" chassis init");
         FL  = new SwerveModule(SwerveConstants.ChassisConstants.Config[0]);
         FR  = new SwerveModule(SwerveConstants.ChassisConstants.Config[1]);
         BR = new SwerveModule(SwerveConstants.ChassisConstants.Config[2]);
         BL = new SwerveModule(SwerveConstants.ChassisConstants.Config[3]);
-        System.out.println(" module created");
         Modules = new SwerveModule[]{
             FL,
             FR,
@@ -57,11 +56,21 @@ public class ChassisSubsystem extends SubsystemBase {
             new Translation2d(SwerveConstants.ChassisConstants.BR_X, SwerveConstants.ChassisConstants.BR_Y),
             new Translation2d(SwerveConstants.ChassisConstants.BL_X, SwerveConstants.ChassisConstants.BL_Y)
         });
-        System.out.println(" kinematics created");
         poseEstimator = new SwerveDrivePoseEstimator(kinematics, getGyroAngle(), getModulePositions(), new Pose2d());
         SmartDashboard.putData("Chassis", this);
         SmartDashboard.putData("Field", field);
+        SmartDashboard.putData("Chassis", this);
+        SmartDashboard.putData("Stop Chassis", new InstantCommand(()-> StopChassis()));
+        MotorCommands.showRandomPowerCommand("Steer Random Power", -8.0, 8.0, 0.2, this, FL.SteerMotor, FR.SteerMotor, BR.SteerMotor, BL.SteerMotor);
+        MotorCommands.showRandomPowerCommand("Drive Random Power", -8.0, 8.0, 0.2, this, FL.DriveMotor, FR.DriveMotor, BR.DriveMotor, BL.DriveMotor);
+        SmartDashboard.putData("Set 90 Degrees", new InstantCommand(()-> setAllModulsTo90Degrees()));
+    }
 
+    public void  setAllModulsTo90Degrees(){
+        FL.setStats(new SwerveModuleState(0, Rotation2d.fromDegrees(90)));
+        FR.setStats(new SwerveModuleState(0, Rotation2d.fromDegrees(90)));
+        BR.setStats(new SwerveModuleState(0, Rotation2d.fromDegrees(90)));
+        BL.setStats(new SwerveModuleState(0, Rotation2d.fromDegrees(90)));
     }
 
     public void StopChassis(){
@@ -78,7 +87,12 @@ public class ChassisSubsystem extends SubsystemBase {
     }
 
     public SwerveModuleState[] getModuleStates(){
-        return kinematics.toSwerveModuleStates(getChassisSpeedsFieldRel());
+        return new SwerveModuleState[]{
+            FL.getStats(),
+            FR.getStats(),
+            BR.getStats(),
+            BL.getStats()
+        };
     }
 
     public SwerveModulePosition[] getModulePositions(){

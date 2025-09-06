@@ -1,28 +1,17 @@
 package frc.robot.subsystems.Swerve;
 
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+
 public class SwerveConstants {
     public static class ModuleConstants{
         public static final double Diameter = 0.1016; // in meters
         public static final double gearRatioSteer = 150.0 / 7.0;
         public static final double gearRatioDrive = 6.75;
-        public static final double FL_CanCoderOffset = 8.0; // in degrees
-        public static final double FR_CanCoderOffset = 8.0; // in degrees
-        public static final double BR_CanCoderOffset = 8.0; // in degrees
-        public static final double BL_CanCoderOffset = 8.0; // in degrees
-        public static final double Steer_KP = 0.0;
-        public static final double Steer_KI = 0.0;
-        public static final double Steer_KD = 0.0;
-        public static final double Steer_KS = 0.0;
-        public static final double Steer_KV = 0.0;
-        public static final double Steer_KA = 0.0;
-        public static final double Steer_KG = 0.0;
-        public static final double Drive_KP = 0.0;
-        public static final double Drive_KI = 0.0;
-        public static final double Drive_KD = 0.0;
-        public static final double Drive_KS = 0.0;
-        public static final double Drive_KV = 0.0;
-        public static final double Drive_KA = 0.0;
-        public static final double Drive_KG = 0.0;
+        public static final double FL_CanCoderOffset = 0.0; // in degrees
+        public static final double FR_CanCoderOffset = 0.0; // in degrees
+        public static final double BR_CanCoderOffset = 0.0; // in degrees
+        public static final double BL_CanCoderOffset = 0.0; // in degrees
+        
     }
 
     public static class ChassisConstants{
@@ -60,6 +49,7 @@ public class SwerveConstants {
         public static final double Max_Linear_Speed = 5.0; // in meters per second
         public static final double Max_Linear_Accel = 4.0; // in meters per second squared
         public static final double Max_Rotation_Speed = 4.0; // in meters per second
+        public static final ChassisSpeeds Max_Spees_PrecisionMode = new ChassisSpeeds(1.0, 1.0, 1.0); // in meters per second and radians per second
         public static final double DeadBand = 0.1;
     }
 }
