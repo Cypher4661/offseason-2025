@@ -6,7 +6,9 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.networktables.*;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -41,7 +43,9 @@ public class VisionSubsystem extends SubsystemBase {
     private Camera camera;
     private AHRS gyro;
     
+    private final SendableChooser<String> allianceChooser = new SendableChooser<>();
 
+    private double currentGyroOffset;
 
     public VisionSubsystem(Camera camera) {
         super();
@@ -55,11 +59,13 @@ public class VisionSubsystem extends SubsystemBase {
         SmartDashboard.putData("Vision", this);
         SmartDashboard.putData("Field", field);
         
+        allianceChooser.setDefaultOption("Blue", "blue");
+        allianceChooser.addOption("Red", "red");
+        allianceChooser.addOption("Auto (DS Alliance)", "auto");
+        SmartDashboard.putData("Alliance Color", allianceChooser);
     }
 
-    public Field2d getField2d() {
-        return field;
-    }
+
 
     @Override
     public void periodic() {
@@ -78,6 +84,16 @@ public class VisionSubsystem extends SubsystemBase {
 
 
     }
+
+    public void updateGyroOffset() {
+        String alliance = getAllianceColor();
+        if ("red".equalsIgnoreCase(alliance)) {
+            currentGyroOffset = Constants.gyroOffsetRed;
+        } else {
+            currentGyroOffset = Constants.gyroOffsetBlue;
+        }
+    }
+
     public int getTagId() {
         return (int) Table.getEntry("tid").getDouble(0.0);
     }
@@ -85,14 +101,10 @@ public class VisionSubsystem extends SubsystemBase {
     public double getDistFromCamera() {
         alpha = camToTagPitch + camera.getPitch();
         height = TAG_HEIGHT[(int) id];
-        // if (camera.getCameraType() == CameraType.REEF) {
-        //     dist = (Math.abs(height - camera.getHeight())) * Math.tan(Math.toRadians(alpha));
-        //     dist = dist / Math.cos(Math.toRadians(camToTagYaw));
-        //     return Math.abs(dist);
-        // }
+
         alpha = camToTagPitch + camera.getPitch();
         dist = (Math.abs(height - camera.getHeight())) / Math.tan(Math.toRadians(alpha));
-        // dist = dist / Math.cos(Math.toRadians(camToTagYaw));
+        
         return Math.abs(dist);
     } 
 
@@ -122,15 +134,11 @@ public class VisionSubsystem extends SubsystemBase {
     
         return originToRobot;
     }
-    
 
 
     public Pose2d getPose() {
         return this.pose;
     }
-
-
-
 
     public boolean isSeeTag(int id, double distance) {
         return Table.getEntry("tid").getDouble(0.0) == id && getRobotToTagVector().getNorm() <= distance;
@@ -141,8 +149,20 @@ public class VisionSubsystem extends SubsystemBase {
     }
 
     public Rotation2d getAngle() {
-        return Rotation2d.fromDegrees(-gyro.getYaw() + Constants.gyroOffset);
+        return Rotation2d.fromDegrees(-gyro.getYaw() + currentGyroOffset);
     }
+
+    public String getAllianceColor() {
+        String selected = allianceChooser.getSelected();
+        if ("red".equalsIgnoreCase(selected)) return "red";
+        if ("blue".equalsIgnoreCase(selected)) return "blue";
+
+        // Auto mode = take from DS
+        return DriverStation.getAlliance().isPresent() &&
+               DriverStation.getAlliance().get() == DriverStation.Alliance.Red
+               ? "red" : "blue";
+    }
+
    @Override
      public void initSendable(SendableBuilder builder) {
     super.initSendable(builder);
@@ -163,5 +183,7 @@ public class VisionSubsystem extends SubsystemBase {
         builder.addBooleanProperty("Gyro Connected", () -> gyro.isConnected(), null);
         builder.addBooleanProperty("Gyro Calibrating", () -> gyro.isCalibrating(), null);
         builder.addDoubleProperty("Gyro Yaw", () -> gyro.getYaw(), null);
+
+        builder.addStringProperty("Alliance Color", () -> getAllianceColor(), null);
    }
 }
