@@ -1,127 +1,177 @@
 package frc.robot.subsystems.Arm;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.Demacia.utils.Motors.MotorCommands;
-import frc.Demacia.utils.Motors.MotorInterface;
-import frc.Demacia.utils.Motors.TalonMotor;
-import frc.robot.Constants;
 
-import com.ctre.phoenix6.hardware.TalonFX;
+import frc.Demacia.utils.Motors.MotorInterface;
+import frc.Demacia.utils.Motors.MotorCommands;
+import frc.Demacia.utils.Motors.TalonMotor;
+import frc.Demacia.utils.Motors.TalonConfig;
+
+import frc.Demacia.utils.Sensors.Cancoder;
+import frc.Demacia.utils.Sensors.CancoderConfig;
+import frc.robot.subsystems.Arm.ArmSubsystem.ArmMode;  
+
 
 public class ArmSubsystem extends SubsystemBase {
-    // סוויץ' מגנטי שנדלק בכל קומה
+
+  public enum ArmMode {
+    Idle(0),      // לא עושה כלום
+    L2(0),      
+    L1(-30),     
+    Intake(30),
+    L3(75),
+    L4(105);
+
+    double angle;
+    ArmMode(double angle) { this.angle = angle; }
+  }
+
+  private final MotorInterface motor;
+  private final TalonConfig armConfig;
+  private final Cancoder cancoder;            
+  private final boolean isDegrees;             
+  private final boolean isRadians;
+
+  private ArmMode mode = ArmMode.Idle; // מצב התחלתי בטוח ,אי הוזזה של הזרוע כברירת מחדל
+  private boolean holding = false;
+
+  public ArmSubsystem(TalonConfig armConfig, CancoderConfig cancoderConfig) {
+    super();
+    this.armConfig = armConfig;
+    this.motor = new TalonMotor(armConfig);
+    this.isDegrees = armConfig.isDegreesMotor;
+    this.isRadians = armConfig.isRadiansMotor;
+    this.cancoder = (cancoderConfig != null) ? new Cancoder(cancoderConfig) : null;
+
+    setupDashboard();
+  }
+
+  public double getAngle() {
+    return motor.getCurrentAngle();
+  }
+
+  public void setAngle(double angle) {
+    motor.setAngle(angle);
+  }
+
+  // שליטה ידנית בכוח בטווח של -1 עד 1 
+  public void setPower(double percent) {
+    motor.setDuty(percent);
+  }
+
+  public void stop() {
+    setPower(0.0);
+  }
+
+  public void setMode(ArmMode newMode) {
+    this.mode = safeParseMode(newMode.name());
+    if (this.mode != ArmMode.Idle) {
+      setAngle(this.mode.angle);
+      holding = true;
+    }
+  }
+
+  public void setMode(String modeName) {
+    setMode(safeParseMode(modeName));
+  }
+
+  public ArmMode getMode() { return mode; }
+
+  public void enableHold(boolean enable) {
+    this.holding = enable;
+    if (enable) {
+      setAngle(getAngle());
+    }
+  }
+
+
+  public void calibrateFromCancoder() {
+    if (cancoder == null) return;
+
+    double absRad = cancoder.getCurrentAbsPosition();
+
+    double targetAngle =  Math.toDegrees(absRad) ;
+
+    double currentPosition = motor.getCurrentPosition();
+    double currentAngle = motor.getCurrentAngle();
+    double deltaAngle = normalizeAngleForUnits(targetAngle - currentAngle);
+
+    double newPosition = currentPosition + deltaAngle; 
+    motor.setEncoderPosition(newPosition);
+  }
+
+  @Override
+  public void periodic() {
+    if (holding) {
+      // החזקה פאסיבית על הזווית הנוכחית (מאפשר תיקונים קטנים נגד גרביטציה/עומס)
+      motor.setAngle(getAngle());
+    }
+
+  }
+
+  @Override
+  public void initSendable(SendableBuilder builder) {
+    super.initSendable(builder);
+    builder.addStringProperty("Mode", () -> mode.name(), null);
+    builder.addDoubleProperty("Angle", this::getAngle, null);
+    builder.addBooleanProperty("Holding", () -> holding, null);
+  }
+
+
   
-    private final MotorInterface ArmMotor;
 
-    // גבהים לכל קומה (במטרים / יחידות אנקודר)
-    private static final double[] angles = { 0, 40, 90, 120, 150, 200, 270}; 
+  private void setupDashboard() {
+    MotorCommands.showAngleCommand("Arm: Angle Command", this, motor);
+    MotorCommands.showPowerCommand("Arm: Power Command", this, motor);
 
-    public enum ElevatorMode { Idle(0), Home(0), Intake(0.2), L1(0.3), L2(0.7), 
-        L3(0.9), L4(1.2), AlgieUp(1), AlgieDown(0.4), Barge(1.2), Test(0),
-        Calibreate(0);
-        double height;
-        private ElevatorMode(double height) {
-            this.height = height;
-        }
-    }
+    // Hold/Release
+    SmartDashboard.putData("Arm: Hold", new RunCommand(() -> {
+      setAngle(getAngle());
+      enableHold(true);
+    }, this));
+    SmartDashboard.putData("Arm: Release Hold", new RunCommand(() -> {
+      enableHold(false);
+      stop();
+    }, this));
 
-    private ElevatorMode mode = ElevatorMode.Calibreate;
-    private boolean calibreated = false;
-    private double minangle = 0;
-    private double maxangle = 270;
-
-    public ArmSubsystem() {
-        ArmMotor = new TalonMotor(Constants.ArmConfig.ArmConfig);
-  
-        SmartDashboard.putData("Arm", this);
-        MotorCommands.showPowerCommand("Arm Power", this, ArmMotor);
-        mode = ElevatorMode.Calibreate;
-        mode.height = getHeight() + 0.05;
-        setDefaultCommand(new ElevatorCommand(this));
-        SmartDashboard.putString("SetMode", "test");
-        SmartDashboard.putData("SetModeNow", new StartEndCommand(
-        () -> setMode(SmartDashboard.getString("SetMode", "test")),
-        () -> {}));
-    }
-
-    private boolean isAtButtom(){
-        return !buttomSwitch.get() || getHeight() <= minHeight;
-    }
+    SmartDashboard.putData("Arm: Calibrate From Cancoder", new RunCommand(this::calibrateFromCancoder, this));
     
 
-    public double getHeight(){
-        return ArmMotor.getCurrentPosition();
-    } 
+SmartDashboard.putData("Arm: Idle",
+    new InstantCommand(() -> setMode(ArmMode.Idle), this));
+SmartDashboard.putData("Arm: Intake",
+    new InstantCommand(() -> setMode(ArmMode.Intake), this));
+SmartDashboard.putData("Arm: L1",
+    new InstantCommand(() -> setMode(ArmMode.L1), this));
+SmartDashboard.putData("Arm: L3",
+    new InstantCommand(() -> setMode(ArmMode.L3), this));
+SmartDashboard.putData("Arm: Test",
+    new InstantCommand(() -> setMode(ArmMode.L2), this));
+SmartDashboard.putData("Arm: L4",
+    new InstantCommand(() -> setMode(ArmMode.L4), this));
+  }
 
-    public void setPower(double power) {
-        if(power < 0 && isAtButtom()) power = 0;
-        if(power > 0 && getHeight() > maxHeight) power = 0;
-        ArmMotor.setDuty(power);
-    }
+  private ArmMode safeParseMode(String s) {
+    try { return ArmMode.valueOf(s); }
+    catch (Exception e) { return ArmMode.L2; }
+  }
 
-    public void setHeight(double height) {
-        if(!calibreated) return;
-        height = Math.max(minHeight, Math.min(maxHeight, height));
-        ArmMotor.setPositionVoltage(height, isAtButtom()? 0 :  Constants.ArmConfig.kg);
+  private double normalizeAngleForUnits(double delta) {
+    if (isRadians) {
+      while (delta > Math.PI) delta -= 2*Math.PI;
+      while (delta <= -Math.PI) delta += 2*Math.PI;
+      return delta;
     }
-
-    public void setMode(ElevatorMode mode) {
-        if(!calibreated) {
-            this.mode = ElevatorMode.Calibreate;
-        } else {
-            this.mode = mode;
-        }   
+    if (isDegrees) {
+      // לטווח (-180, 180]
+      while (delta > 180.0) delta -= 360.0;
+      while (delta <= -180.0) delta += 360.0;
+      return delta;
     }
-    public void setMode(String mode) {
-        try{
-            setMode(ElevatorMode.valueOf(mode));
-        } catch(Exception e){
-            System.out.println("Invalid elevator mode: " + mode);
-        }
-    }
-
-    public ElevatorMode getMode() {
-        return mode;
-    }
-
-    public String getModeString() {
-        return mode.toString();
-    }
-
-    @Override
-    public void periodic() {
-        if(buttomSwitch.get()){
-            calibreated = true;
-            ArmMotor.setEncoderPosition(minHeight);
-            setPower(0);
-        } else if(calibreated && IsMagnet()) {
-            double h = getHeight();
-            double closest = 0;
-            double error = Double.MAX_VALUE;
-            for(double mh : magenticHeights){
-                if(Math.abs(mh - h) < error){
-                    error = Math.abs(mh - h);
-                    closest = mh;
-                }
-            }
-            ArmMotor.setEncoderPosition(closest);
-        }
-    }
-
-    @Override
-    public void initSendable(SendableBuilder builder) {
-        super.initSendable(builder);
-    
-        builder.addStringProperty("Mode", this::getModeString, null);
-        builder.addDoubleProperty("Height", this::getHeight, null);
-        builder.addBooleanProperty("Calibreated", () -> calibreated, null);
-        builder.addBooleanProperty("buttom", this::isAtButtom, null);
-        
-        builder.addDoubleProperty("Test Height", ()->ElevatorMode.Test.height, (height)->ElevatorMode.Test.height = height);
-    }
+    return delta;
+  }
 }
