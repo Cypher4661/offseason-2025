@@ -85,14 +85,14 @@ public class VisionSubsystem extends SubsystemBase {
 
     }
 
-    public void updateGyroOffset() {
-        String alliance = getAllianceColor();
-        if ("red".equalsIgnoreCase(alliance)) {
-            currentGyroOffset = Constants.gyroOffsetRed;
-        } else {
-            currentGyroOffset = Constants.gyroOffsetBlue;
-        }
-    }
+    // public void updateGyroOffset() {
+    //     String alliance = getAllianceColor();
+    //     if ("red".equalsIgnoreCase(alliance)) {
+    //         currentGyroOffset = Constants.gyroOffsetRed;
+    //     } else {
+    //         currentGyroOffset = Constants.gyroOffsetBlue;
+    //     }
+    // }
 
     public int getTagId() {
         return (int) Table.getEntry("tid").getDouble(0.0);
@@ -149,19 +149,19 @@ public class VisionSubsystem extends SubsystemBase {
     }
 
     public Rotation2d getAngle() {
-        return Rotation2d.fromDegrees(-gyro.getYaw() + currentGyroOffset);
+        return Rotation2d.fromDegrees(-gyro.getYaw() + Constants.gyroOffset);
     }
 
-    public String getAllianceColor() {
-        String selected = allianceChooser.getSelected();
-        if ("red".equalsIgnoreCase(selected)) return "red";
-        if ("blue".equalsIgnoreCase(selected)) return "blue";
+    // public String getAllianceColor() {
+    //     String selected = allianceChooser.getSelected();
+    //     if ("red".equalsIgnoreCase(selected)) return "red";
+    //     if ("blue".equalsIgnoreCase(selected)) return "blue";
 
-        // Auto mode = take from DS
-        return DriverStation.getAlliance().isPresent() &&
-               DriverStation.getAlliance().get() == DriverStation.Alliance.Red
-               ? "red" : "blue";
-    }
+    //     // Auto mode = take from DS
+    //     return DriverStation.getAlliance().isPresent() &&
+    //            DriverStation.getAlliance().get() == DriverStation.Alliance.Red
+    //            ? "red" : "blue";
+    // }
 
    @Override
      public void initSendable(SendableBuilder builder) {
@@ -184,6 +184,6 @@ public class VisionSubsystem extends SubsystemBase {
         builder.addBooleanProperty("Gyro Calibrating", () -> gyro.isCalibrating(), null);
         builder.addDoubleProperty("Gyro Yaw", () -> gyro.getYaw(), null);
 
-        builder.addStringProperty("Alliance Color", () -> getAllianceColor(), null);
+        // builder.addStringProperty("Alliance Color", () -> getAllianceColor(), null);
    }
 }

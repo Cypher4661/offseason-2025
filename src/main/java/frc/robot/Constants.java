@@ -5,7 +5,9 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -16,14 +18,13 @@ import edu.wpi.first.math.geometry.Translation2d;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-  public static final double gyroOffsetBlue = 0.3199999928474426; // Gyro offset for blue alliance in degrees
-  public static final double gyroOffsetRed = 183.2; // Gyro offset for red alliance in degrees
+  public static final double gyroOffset = 0.32 ; // Gyro offset for blue alliance in degrees
+  // public static final double gyroOffsetRed = 183.2; // Gyro offset for red alliance in degrees
 
   
-
-  public static final double cameraAg = 0.0; // Camera angle in degrees
-  public static final double cameraPosition = 0.0; // Camera distance from robot center in degrees
-  public static final double cameraHeight = 0.33; // Camera height in meters
+  // public static final double cameraAg = 0.0; // Camera angle in degrees
+  // public static final double cameraPosition = 0.0; // Camera distance from robot center in degrees
+  // public static final double cameraHeight = 0.33; // Camera height in meters
   private static double BARGE_TAG_HIGHT = inchToMeter(73.54);
   // private static double REEF_TAG_HIGHT = inchToMeter(12.13);
   private static double REEF_TAG_HIGHT = inchToMeter(11.811);
