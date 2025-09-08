@@ -13,6 +13,7 @@ import frc.Demacia.utils.Motors.TalonConfig;
 
 import frc.Demacia.utils.Sensors.Cancoder;
 import frc.Demacia.utils.Sensors.CancoderConfig;
+import frc.robot.Constants;
 import frc.robot.subsystems.Arm.ArmSubsystem.ArmMode;  
 
 
@@ -68,41 +69,28 @@ public class ArmSubsystem extends SubsystemBase {
 
   public ArmMode getMode() { return mode; }
 
-  public void enableHold(boolean enable) {
-    this.holding = enable;
-    if (enable) {
-      moveToAngle(getAngle());
-    }
-  }
+  // public void enableHold(boolean enable) {
+  //   this.holding = enable;
+  //   if (enable) {
+  //     moveToAngle(getAngle());
+  //   }
+  // }
 
 
   public void calibrateFromCancoder() {
-    if (cancoder == null) return;
-
-    double absRad = cancoder.getCurrentAbsPosition();
-
-    double targetAngle =  Math.toDegrees(absRad) ;
-
-    double currentPosition = motor.getCurrentPosition();
-
-    motor.setEncoderPosition(currentPosition);
+   
+    double absDegrees = cancoder.getCurrentAbsPosition();
+    motor.setEncoderPosition(absDegrees - Constants.Arm.ARM_CANCODER_OFFSET);
   }
 
-private void moveToAngle(double targetDeg) {
-    double posNow = motor.getCurrentPosition();   
-    double angNow = motor.getCurrentAngle();      
-    double delta = targetDeg - angNow;
-    delta = ((delta % 360.0) + 360.0) % 360.0;
-    motor.setMotion(posNow + delta);
+public void setAngle(double targetDeg) {
+    motor.setMotion(targetDeg);
   }
   
 
   @Override
   public void periodic() {
-    if (holding) {
-      // החזקה פאסיבית על הזווית הנוכחית (מאפשר תיקונים קטנים נגד גרביטציה/עומס)
-      motor.moveToAngle(getAngle());
-    }
+    
 
   }
 
@@ -111,23 +99,14 @@ private void moveToAngle(double targetDeg) {
     super.initSendable(builder);
     builder.addStringProperty("Mode", () -> mode.name(), null);
     builder.addDoubleProperty("Angle", this::getAngle, null);
-    builder.addBooleanProperty("Holding", () -> holding, null);
+    builder.addDoubleProperty("Abs", () -> cancoder.getCurrentAbsPosition(), null);
   }
 
   private void setupDashboard() {
     MotorCommands.showAngleCommand("Arm: Angle Command", this, motor);
     MotorCommands.showPowerCommand("Arm: Power Command", this, motor);
 
-    SmartDashboard.putData("Arm: Hold", new RunCommand(() -> {
-      moveToAngle(getAngle());
-      enableHold(true);
-    }, this));
-    SmartDashboard.putData("Arm: Release Hold", new RunCommand(() -> {
-      enableHold(false);
-      stop();
-    }, this));
-
-    SmartDashboard.putData("Arm: Calibrate From Cancoder", new RunCommand(this::calibrateFromCancoder, this));
+    SmartDashboard.putData("Arm: Calibrate From Cancoder", new RunCommand(this::calibrateFromCancoder, this).ignoringDisable(true));
     
 SmartDashboard.putData("Arm: Idle",
     new InstantCommand(() -> {
@@ -137,31 +116,31 @@ SmartDashboard.putData("Arm: Idle",
 SmartDashboard.putData("Arm: Intake",
     new InstantCommand(() -> {
       mode = ArmMode.Intake;
-      moveToAngle(mode.angle);
+
     }, this));
 
 SmartDashboard.putData("Arm: L1",
     new InstantCommand(() -> {
       mode = ArmMode.L1;
-      moveToAngle(mode.angle);
+
     }, this));
 
 SmartDashboard.putData("Arm: L3",
     new InstantCommand(() -> {
       mode = ArmMode.L3;
-      moveToAngle(mode.angle);
+
     }, this));
 
 SmartDashboard.putData("Arm: Test",
     new InstantCommand(() -> {
       mode = ArmMode.L2;           
-      moveToAngle(mode.angle);
+
     }, this));
 
 SmartDashboard.putData("Arm: L4",
     new InstantCommand(() -> {
       mode = ArmMode.L4;
-      moveToAngle(mode.angle);
+
     }, this));
 
   }

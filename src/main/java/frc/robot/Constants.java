@@ -16,7 +16,7 @@ public final class Constants {
     public static final boolean ARM_MOTOR_INVERTED = false;
     public static final boolean ARM_CANCODER_INVERTED = false;
 
-    public static final double ARM_CANCODER_OFFSET_RAD = 0.0;
+    public static final double ARM_CANCODER_OFFSET = 0.0;
 
     public static final double MinimumVelocity  = 90.0;
     public static final double MaxAcceleration   = 150.0;
@@ -50,7 +50,7 @@ public final class Constants {
 
     public static final CancoderConfig ARM_CANCODER =
         new CancoderConfig(ARM_CANCODER_ID, Canbus.Rio, "arm/cancoder")
-          .withOffset(ARM_CANCODER_OFFSET_RAD)
+          .withOffset(0)
           .withInvert(ARM_CANCODER_INVERTED);
   }
 }
