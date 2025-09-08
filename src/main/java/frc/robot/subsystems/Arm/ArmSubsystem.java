@@ -34,21 +34,20 @@ public class ArmSubsystem extends SubsystemBase {
   private final MotorInterface motor;
   private final TalonConfig armConfig;
   private final Cancoder cancoder;            
-  private final boolean isDegrees;             
-  private final boolean isRadians;
+
 
   private ArmMode mode = ArmMode.Idle; // מצב התחלתי בטוח ,אי הוזזה של הזרוע כברירת מחדל
-  private boolean holding = false;
 
-  public ArmSubsystem(TalonConfig armConfig, CancoderConfig cancoderConfig) {
+
+  public ArmSubsystem() {
     super();
-    this.armConfig = armConfig;
+    this.armConfig = Constants.Arm.ARM_CONFIG;
+    CancoderConfig cancoderConfig = Constants.Arm.ARM_CANCODER;
     this.motor = new TalonMotor(armConfig);
-    this.isDegrees = armConfig.isDegreesMotor;
-    this.isRadians = armConfig.isRadiansMotor;
-    this.cancoder = (cancoderConfig != null) ? new Cancoder(cancoderConfig) : null;
+    this.cancoder = new Cancoder(cancoderConfig);
 
     setupDashboard();
+    setDefaultCommand(new ArmCommand(this));
   }
 
   public double getAngle() {
@@ -69,12 +68,6 @@ public class ArmSubsystem extends SubsystemBase {
 
   public ArmMode getMode() { return mode; }
 
-  // public void enableHold(boolean enable) {
-  //   this.holding = enable;
-  //   if (enable) {
-  //     moveToAngle(getAngle());
-  //   }
-  // }
 
 
   public void calibrateFromCancoder() {

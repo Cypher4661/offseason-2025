@@ -37,7 +37,7 @@ public final class Constants {
 
     public static final double L2Angle = -30;
 
-    public static final TalonConfig ARM_CONFIG_DEGREES =
+    public static final TalonConfig ARM_CONFIG =
         new TalonConfig(ARM_MOTOR_ID, Canbus.Rio, "arm")
           .withBrake(true)
           .withInvert(ARM_MOTOR_INVERTED)
