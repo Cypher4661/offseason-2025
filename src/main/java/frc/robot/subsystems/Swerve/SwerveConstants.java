@@ -11,15 +11,22 @@ public class SwerveConstants {
         public static final double FR_CanCoderOffset = 0.0; // in degrees
         public static final double BR_CanCoderOffset = 0.0; // in degrees
         public static final double BL_CanCoderOffset = 0.0; // in degrees
-        
+        public static final boolean FL_SteerInverted = false;
+        public static final boolean FR_SteerInverted = false;
+        public static final boolean BR_SteerInverted = false;
+        public static final boolean BL_SteerInverted = false;
+        public static final boolean FL_DriveInverted = false;
+        public static final boolean FR_DriveInverted = false;
+        public static final boolean BR_DriveInverted = false;
+        public static final boolean BL_DriveInverted = false;
     }
 
     public static class ChassisConstants{
         public static final ModuleConfig[] Config = {
-            new ModuleConfig(ChassisConstants.FL_ModuleID, ChassisConstants.FL_SteerID, ChassisConstants.FL_DriveID, ChassisConstants.FL_CanCoderID, "Front_Laft", ModuleConstants.Diameter, ModuleConstants.FL_CanCoderOffset),
-            new ModuleConfig(ChassisConstants.FR_ModuleID, ChassisConstants.FR_SteerID, ChassisConstants.FR_DriveID, ChassisConstants.FR_CanCoderID, "Front_Right", ModuleConstants.Diameter, ModuleConstants.FR_CanCoderOffset),
-            new ModuleConfig(ChassisConstants.BR_ModuleID, ChassisConstants.BR_SteerID, ChassisConstants.BR_DriveID, ChassisConstants.BR_CanCoderID, "Back_Right", ModuleConstants.Diameter, ModuleConstants.BR_CanCoderOffset),
-            new ModuleConfig(ChassisConstants.BL_ModuleID, ChassisConstants.BL_SteerID, ChassisConstants.BL_DriveID, ChassisConstants.BL_CanCoderID, "Back_Laft", ModuleConstants.Diameter, ModuleConstants.BL_CanCoderOffset)
+            new ModuleConfig(ChassisConstants.FL_ModuleID, ChassisConstants.FL_SteerID, ChassisConstants.FL_DriveID, ChassisConstants.FL_CanCoderID, "Front_Laft", ModuleConstants.Diameter, ModuleConstants.FL_CanCoderOffset, ModuleConstants.FL_SteerInverted, ModuleConstants.FL_DriveInverted),
+            new ModuleConfig(ChassisConstants.FR_ModuleID, ChassisConstants.FR_SteerID, ChassisConstants.FR_DriveID, ChassisConstants.FR_CanCoderID, "Front_Right", ModuleConstants.Diameter, ModuleConstants.FR_CanCoderOffset, ModuleConstants.FR_SteerInverted, ModuleConstants.FR_DriveInverted),
+            new ModuleConfig(ChassisConstants.BR_ModuleID, ChassisConstants.BR_SteerID, ChassisConstants.BR_DriveID, ChassisConstants.BR_CanCoderID, "Back_Right", ModuleConstants.Diameter, ModuleConstants.BR_CanCoderOffset, ModuleConstants.BR_SteerInverted, ModuleConstants.BR_DriveInverted),
+            new ModuleConfig(ChassisConstants.BL_ModuleID, ChassisConstants.BL_SteerID, ChassisConstants.BL_DriveID, ChassisConstants.BL_CanCoderID, "Back_Laft", ModuleConstants.Diameter, ModuleConstants.BL_CanCoderOffset, ModuleConstants.BL_SteerInverted, ModuleConstants.BL_DriveInverted)
         };
         public static final int GyroID = 0;
         public static final int FL_ModuleID = 0;

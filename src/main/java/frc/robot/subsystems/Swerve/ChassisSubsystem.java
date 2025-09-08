@@ -59,7 +59,6 @@ public class ChassisSubsystem extends SubsystemBase {
         poseEstimator = new SwerveDrivePoseEstimator(kinematics, getGyroAngle(), getModulePositions(), new Pose2d());
         SmartDashboard.putData("Chassis", this);
         SmartDashboard.putData("Field", field);
-        SmartDashboard.putData("Chassis", this);
         SmartDashboard.putData("Stop Chassis", new InstantCommand(()-> StopChassis()));
         MotorCommands.showRandomPowerCommand("Steer Random Power", -8.0, 8.0, 0.2, this, FL.SteerMotor, FR.SteerMotor, BR.SteerMotor, BL.SteerMotor);
         MotorCommands.showRandomPowerCommand("Drive Random Power", -8.0, 8.0, 0.2, this, FL.DriveMotor, FR.DriveMotor, BR.DriveMotor, BL.DriveMotor);

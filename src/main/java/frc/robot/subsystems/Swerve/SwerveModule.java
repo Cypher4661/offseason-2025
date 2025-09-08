@@ -6,6 +6,8 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.Demacia.utils.Motors.SparkMotor;
 import frc.Demacia.utils.Motors.TalonMotor;
@@ -27,6 +29,8 @@ public class SwerveModule extends SubsystemBase{
         this.CanCoder = new Cancoder(config.CancoderConfig);
         
         SteerMotor.setAngle(getAbsoluteAngle() - config.CanCoderOffset);
+
+        SmartDashboard.putData(config.Name + " Steer ABS", new InstantCommand(()-> getAbsoluteAngle()));
     }
 
     public void setNeutralMode(boolean isBrake){

@@ -18,8 +18,10 @@ public class ModuleConfig {
     public double GearRatioDrive = 6.75;
     public double Diameter;
     public double CanCoderOffset;
+    public boolean IsSteerInverted;
+    public boolean IsDriveInverted;
 
-    public ModuleConfig(int moduleID, int steerID, int driveID, int canCoderID, String name, double diameter, double canCoderOffset) {
+    public ModuleConfig(int moduleID, int steerID, int driveID, int canCoderID, String name, double diameter, double canCoderOffset, boolean isSteerinverted, boolean isDriveinverted) {
         this.ModuleID = moduleID;
         this.SteerID = steerID;
         this.DriveID = driveID;
@@ -27,22 +29,24 @@ public class ModuleConfig {
         this.Name = name;
         this.Diameter = diameter;
         this.CanCoderOffset = canCoderOffset;
+        this.IsSteerInverted = isSteerinverted;
+        this.IsDriveInverted = isDriveinverted;
 
 
         SteerConfig = new SparkConfig(steerID, name + "/Steer")
             .withBrake(true)
-            .withInvert(false)
+            .withInvert(isSteerinverted)
             .withDegreesMotor(GearRatioSteer)
             .withCurrent(20)
             .withVolts(8)
-            .withPID(0, 0, 0, 0, 0, 0, 0)
+            .withPID(0.10181, 0, 0, 0.376615, 0.0072425, 0.000705, 0)
             .withRampTime(0.2)
             .withMotionParam(720, 1200, 2000)
             .withMaxPositionError(0.5);
 
         DriveConfig = new TalonConfig(driveID, Canbus.Rio, name + "/Drive")
             .withBrake(true)
-            .withInvert(false)
+            .withInvert(isDriveinverted)
             .withMeterMotor(GearRatioDrive, diameter)
             .withCurrent(20)
             .withVolts(12)
