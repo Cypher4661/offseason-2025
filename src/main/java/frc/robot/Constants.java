@@ -18,9 +18,9 @@ public final class Constants {
 
     public static final double ARM_CANCODER_OFFSET_RAD = 0.0;
 
-    public static final double VEL_SLOW  = 90.0;
-    public static final double VEL_MID   = 150.0;
-    public static final double VEL_FAST  = 220.0;
+    public static final double MinimumVelocity  = 90.0;
+    public static final double MaxAcceleration   = 150.0;
+    public static final double MaxVelocity  = 220.0;
 
     public static final double kP = 0.03;
     public static final double kI = 0.00;
@@ -35,12 +35,14 @@ public final class Constants {
     public static final double MAX_CURRENT = 30.0;
     public static final double RAMP_TIME_S = 0.30;
 
+    public static final double L2Angle = -30;
+
     public static final TalonConfig ARM_CONFIG_DEGREES =
         new TalonConfig(ARM_MOTOR_ID, Canbus.Rio, "arm")
           .withBrake(true)
           .withInvert(ARM_MOTOR_INVERTED)
           .withDegreesMotor(ARM_GEAR_RATIO)                 // -> setAngle/getCurrentAngle במעלות
-          .withMotionParam(VEL_SLOW, VEL_MID, VEL_FAST)      // deg/s
+          .withMotionParam(MinimumVelocity, MaxAcceleration, MaxVelocity)      // deg/s
           .withPID(kP, kI, kD, kS, kV, kA, kG)              // כייל בשטח
           .withVolts(MAX_VOLTS)
           .withCurrent(MAX_CURRENT)
