@@ -8,7 +8,6 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Camera.CameraType;
 import frc.robot.subsystems.VisionSubsystem;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 
@@ -16,8 +15,7 @@ public class RobotContainer {
 
     // Subsystems
 
-    private final VisionSubsystem visionSubsystem = new VisionSubsystem(
-        new Camera("tag", new Translation3d(0.15, 0.15, 71.0), 0.0, 0.0, CameraType.REEF));
+    private final VisionSubsystem visionSubsystem = new VisionSubsystem(Constants.CAMERA_POSITION);
 
 
     private final Field2d field = new Field2d();

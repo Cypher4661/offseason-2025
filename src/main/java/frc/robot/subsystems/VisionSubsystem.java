@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -30,6 +31,7 @@ public class VisionSubsystem extends SubsystemBase {
     private double alpha;
     private Field2d field;
 
+    private NetworkTableEntry cropEntry;
 
     private NetworkTable Table;
     private double camToTagYaw;
@@ -43,12 +45,9 @@ public class VisionSubsystem extends SubsystemBase {
     private Camera camera;
     private AHRS gyro;
     
-    private final SendableChooser<String> allianceChooser = new SendableChooser<>();
-
-    private double currentGyroOffset;
-
-    public VisionSubsystem(Camera camera) {
+    public VisionSubsystem(Camera camera, NetworkTableEntry cropEntry) {
         super();
+        this.cropEntry = cropEntry;
         this.camera = camera;
         Table = NetworkTableInstance.getDefault().getTable(camera.getTableName());
         field = new Field2d();
@@ -58,18 +57,14 @@ public class VisionSubsystem extends SubsystemBase {
         gyro.reset();
         SmartDashboard.putData("Vision", this);
         SmartDashboard.putData("Field", field);
-        
-        allianceChooser.setDefaultOption("Blue", "blue");
-        allianceChooser.addOption("Red", "red");
-        allianceChooser.addOption("Auto (DS Alliance)", "auto");
-        SmartDashboard.putData("Alliance Color", allianceChooser);
     }
 
 
 
     @Override
     public void periodic() {
-        
+        cropEntry = Table.getEntry("crop");
+
         if (Table.getEntry("tv").getDouble(0.0) != 0) {
             camToTagPitch = Table.getEntry("ty").getDouble(0.0);
             camToTagYaw = (-Table.getEntry("tx").getDouble(0.0)) + camera.getYaw();
@@ -84,15 +79,6 @@ public class VisionSubsystem extends SubsystemBase {
 
 
     }
-
-    // public void updateGyroOffset() {
-    //     String alliance = getAllianceColor();
-    //     if ("red".equalsIgnoreCase(alliance)) {
-    //         currentGyroOffset = Constants.gyroOffsetRed;
-    //     } else {
-    //         currentGyroOffset = Constants.gyroOffsetBlue;
-    //     }
-    // }
 
     public int getTagId() {
         return (int) Table.getEntry("tid").getDouble(0.0);
@@ -116,10 +102,6 @@ public class VisionSubsystem extends SubsystemBase {
         return robotToTag;
     }
 
-    public Translation2d getCameraToTag() {
-        return new Translation2d(getDistFromCamera(),
-            Rotation2d.fromDegrees(camToTagYaw));
-    }
 
     private Translation2d getOriginToRobot() {
 
@@ -152,16 +134,30 @@ public class VisionSubsystem extends SubsystemBase {
         return Rotation2d.fromDegrees(-gyro.getYaw() + Constants.gyroOffset);
     }
 
-    // public String getAllianceColor() {
-    //     String selected = allianceChooser.getSelected();
-    //     if ("red".equalsIgnoreCase(selected)) return "red";
-    //     if ("blue".equalsIgnoreCase(selected)) return "blue";
+    private void crop() {
+        double YawCrop = getYawCrop();
+        double PitchCrop = getPitchCrop();
+        double[] crop = { YawCrop - getCropOffset(), YawCrop + getCropOffset(), PitchCrop - getCropOffset(), PitchCrop + getCropOffset() };
+        cropEntry.setDoubleArray(crop);
+    }
 
-    //     // Auto mode = take from DS
-    //     return DriverStation.getAlliance().isPresent() &&
-    //            DriverStation.getAlliance().get() == DriverStation.Alliance.Red
-    //            ? "red" : "blue";
-    // }
+    private double getCropOffset() {
+        double crop = getDistFromCamera() *CROP_CONSTANT;
+        return MathUtil.clamp(crop, MIN_CROP, MAX_CROP);
+    }
+
+
+
+    private double getYawCrop() {
+        double cameraYaw = (camera.getYaw() - camToTagYaw) * 2 / camToTagYaw;
+        return cameraYaw;
+    }
+
+    private double getPitchCrop() {
+        double cameraPitch = camToTagPitch;
+        return pitch;
+    }
+
 
    @Override
      public void initSendable(SendableBuilder builder) {
