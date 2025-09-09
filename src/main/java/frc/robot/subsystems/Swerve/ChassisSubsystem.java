@@ -1,11 +1,11 @@
 package frc.robot.subsystems.Swerve;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.Demacia.utils.Motors.MotorCommands;
 import frc.robot.RobotContainer;
-import frc.robot.commands.ChassisDrive;
 
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
@@ -18,6 +18,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -31,6 +32,7 @@ public class ChassisSubsystem extends SubsystemBase {
     public SwerveModule FR;
     public SwerveModule BR;
     public SwerveModule BL;
+    public Pose2d pose = new Pose2d();
     public final SwerveModule[] Modules;
 
     public static int N = 0;
@@ -49,7 +51,8 @@ public class ChassisSubsystem extends SubsystemBase {
             BR,
             BL
         };
-          gyro = new AHRS(NavXComType.kMXP_SPI);
+        gyro = new AHRS(NavXComType.kMXP_SPI);
+    
         kinematics = new SwerveDriveKinematics(new Translation2d[]{
             new Translation2d(SwerveConstants.ChassisConstants.FL_X, SwerveConstants.ChassisConstants.FL_Y),
             new Translation2d(SwerveConstants.ChassisConstants.FR_X, SwerveConstants.ChassisConstants.FR_Y),
@@ -59,17 +62,29 @@ public class ChassisSubsystem extends SubsystemBase {
         poseEstimator = new SwerveDrivePoseEstimator(kinematics, getGyroAngle(), getModulePositions(), new Pose2d());
         SmartDashboard.putData("Chassis", this);
         SmartDashboard.putData("Field", field);
-        SmartDashboard.putData("Stop Chassis", new InstantCommand(()-> StopChassis()));
-        MotorCommands.showRandomPowerCommand("Steer Random Power", -8.0, 8.0, 0.2, this, FL.SteerMotor, FR.SteerMotor, BR.SteerMotor, BL.SteerMotor);
-        MotorCommands.showRandomPowerCommand("Drive Random Power", -8.0, 8.0, 0.2, this, FL.DriveMotor, FR.DriveMotor, BR.DriveMotor, BL.DriveMotor);
-        SmartDashboard.putData("Set 90 Degrees", new InstantCommand(()-> setAllModulsTo90Degrees()));
+        SmartDashboard.putData("Stop Chassis", new InstantCommand(()-> StopChassis(),this));
+        MotorCommands.showRandomPowerCommand("Steer Random Power", -6.0, 6.0, 0.2, this, FL.SteerMotor, FR.SteerMotor, BR.SteerMotor, BL.SteerMotor);
+        MotorCommands.showRandomPowerCommand("Drive Random Power", -6.0, 6.0, 0.2, this, FL.DriveMotor, FR.DriveMotor, BR.DriveMotor, BL.DriveMotor);
+        SmartDashboard.putData("Set 90 Degrees", new RunCommand(()-> setAllModulsTo(90),this));
+        SmartDashboard.putData("Set 0 Degrees", new RunCommand(()-> setAllModulsTo(0),this));
+        SmartDashboard.putData("Brake", new InstantCommand(()-> setBrake(true)).ignoringDisable(true));
+        SmartDashboard.putData("Coast", new InstantCommand(()-> setBrake(false)).ignoringDisable(true));
+    
+    }    
+
+    public void  setAllModulsTo(double angle){
+        FL.setStats(new SwerveModuleState(0, Rotation2d.fromDegrees(angle)));
+        FR.setStats(new SwerveModuleState(0, Rotation2d.fromDegrees(angle)));
+        BR.setStats(new SwerveModuleState(0, Rotation2d.fromDegrees(angle)));
+        BL.setStats(new SwerveModuleState(0, Rotation2d.fromDegrees(angle)));
     }
 
-    public void  setAllModulsTo90Degrees(){
-        FL.setStats(new SwerveModuleState(0, Rotation2d.fromDegrees(90)));
-        FR.setStats(new SwerveModuleState(0, Rotation2d.fromDegrees(90)));
-        BR.setStats(new SwerveModuleState(0, Rotation2d.fromDegrees(90)));
-        BL.setStats(new SwerveModuleState(0, Rotation2d.fromDegrees(90)));
+    public void setBrake(boolean brake) {
+        System.out.println("Set brake to " + brake);
+        for(SwerveModule module : Modules){
+            module.SteerMotor.setNeutralMode(brake);
+            module.DriveMotor.setNeutralMode(brake);
+        }
     }
 
     public void StopChassis(){
@@ -108,22 +123,26 @@ public class ChassisSubsystem extends SubsystemBase {
     }
 
     public Rotation2d getGyroAngle(){
-        return Rotation2d.fromDegrees(gyro.getAngle());
+        return Rotation2d.fromDegrees(-gyro.getAngle());
+    }
+    public Rotation2d getHeading() {
+        return pose.getRotation();
     }
 
-    public void setYaw(Rotation2d yaw){
-        gyro.setAngleAdjustment(yaw.getDegrees());
-    }
-
+   
     public void resetPose(Pose2d pose){
-        poseEstimator.resetPose(pose);
+        poseEstimator.resetPosition(getGyroAngle(), getModulePositions(), pose);
     }
 
     public Pose2d getPose(){
         return poseEstimator.getEstimatedPosition();
     }
 
-    public void setModuleStats(SwerveModuleState[] states){
+    public void setZeroHeading() {
+        resetPose(new Pose2d(pose.getTranslation(), Rotation2d.kZero));
+    }
+
+    public void setModuleStates(SwerveModuleState[] states){
         SwerveDriveKinematics.desaturateWheelSpeeds(states, SwerveConstants.ChassisConstants.Max_Linear_Speed);
         FL.setStats(states[0]);
         FR.setStats(states[1]);
@@ -156,13 +175,20 @@ public class ChassisSubsystem extends SubsystemBase {
         setVelocities(limitedVelocities);
 
     }
-
+    SwerveModuleState[] lastStates = new SwerveModuleState[4];
     public void setVelocities(ChassisSpeeds speeds){
-        speeds = ChassisSpeeds.fromFieldRelativeSpeeds(speeds, getGyroAngle());
-        SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds);
-        setModuleStats(states);
+        if(Math.abs(speeds.vxMetersPerSecond) < 0.01 && Math.abs(speeds.vyMetersPerSecond) < 0.01 && Math.abs(speeds.omegaRadiansPerSecond) < 0.01){
+            for(SwerveModule m : Modules){
+                m.setStop();;    
+            }
+        } else {
+            ChassisSpeeds rspeeds = ChassisSpeeds.fromFieldRelativeSpeeds(speeds, getHeading());
+            SwerveModuleState[] states = kinematics.toSwerveModuleStates(rspeeds);
+            setModuleStates(states);
+        }
     }
 
+    
     public boolean isRed(){
         return RobotContainer.isRed;
     }
@@ -171,7 +197,12 @@ public class ChassisSubsystem extends SubsystemBase {
     public void periodic() {
         Rotation2d gyro = getGyroAngle();
         poseEstimator.update(gyro, getModulePositions());
-        field.setRobotPose(poseEstimator.getEstimatedPosition());
+        pose = poseEstimator.getEstimatedPosition();
+        field.setRobotPose(pose);
+    }
+    @Override
+    public void initSendable(SendableBuilder builder) {
+        builder.addDoubleProperty("Gyro",()->getHeading().getDegrees(), null);
     }
 
 }

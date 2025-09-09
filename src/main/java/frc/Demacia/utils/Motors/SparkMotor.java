@@ -64,11 +64,11 @@ public class SparkMotor extends SparkMax implements Sendable, MotorInterface {
   }
 
   private void updatePID(boolean apply) {
-    cfg.closedLoop.pidf(config.pid[0].kp(), config.pid[0].ki(), config.pid[0].kd(), config.pid[0].kv(),
+    cfg.closedLoop.pidf(config.pid[0].kp()/12, config.pid[0].ki()/12, config.pid[0].kd()/12, config.pid[0].kv()/12,
         ClosedLoopSlot.kSlot0);
-    cfg.closedLoop.pidf(config.pid[1].kp(), config.pid[1].ki(), config.pid[1].kd(), config.pid[1].kv(),
+    cfg.closedLoop.pidf(config.pid[1].kp()/12, config.pid[1].ki()/12, config.pid[1].kd()/12, config.pid[1].kv()/12,
         ClosedLoopSlot.kSlot1);
-    cfg.closedLoop.pidf(config.pid[2].kp(), config.pid[2].ki(), config.pid[2].kd(), config.pid[2].kv(),
+    cfg.closedLoop.pidf(config.pid[2].kp()/12, config.pid[2].ki()/12, config.pid[2].kd()/12, config.pid[2].kv()/12,
         ClosedLoopSlot.kSlot2);
     if (apply) {
       this.configure(cfg, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
@@ -274,7 +274,7 @@ public class SparkMotor extends SparkMax implements Sendable, MotorInterface {
 
   @Override
   public void setMotion(double position) {
-    setMotion(position, config.pid[slot.value].ks()*Utilities.signumWithDeadband(position - getCurrentPosition(), 0.5));
+    setMotion(position, 12*config.pid[slot.value].ks()*Utilities.signumWithDeadband(position - getCurrentPosition(), 0.5));
   }
 
   @Override

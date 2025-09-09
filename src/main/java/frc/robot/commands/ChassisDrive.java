@@ -5,10 +5,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Constants;
-import frc.robot.RobotContainer;
 import frc.robot.subsystems.Swerve.ChassisSubsystem;
-import frc.robot.subsystems.Swerve.SwerveConstants;
 import frc.robot.subsystems.Swerve.SwerveConstants.ChassisConstants;
 
 public class ChassisDrive extends Command{
@@ -33,23 +30,19 @@ public class ChassisDrive extends Command{
     public void execute(){
         isRed = chassis.isRed();
         direction = isRed ? 1 : -1;
-        double LjoyY = controller.getLeftY() * direction;
-        double LjoyX = controller.getLeftX() * direction;
+        double LjoyX = controller.getLeftY() * direction;
+        double LjoyY = controller.getLeftX() * direction;
         double rot = controller.getLeftTriggerAxis() - controller.getRightTriggerAxis();
+        LjoyY = MathUtil.applyDeadband(LjoyY, ChassisConstants.DeadBand);
         LjoyX = MathUtil.applyDeadband(LjoyX, ChassisConstants.DeadBand);
+        rot = MathUtil.applyDeadband(rot, ChassisConstants.DeadBand);
 
         double VelX = Math.pow(LjoyX, 2) * ChassisConstants.Max_Linear_Speed * Math.signum(LjoyX);
         double VelY = Math.pow(LjoyY, 2) * ChassisConstants.Max_Linear_Speed * Math.signum(LjoyY);
         double VelRot =Math.pow(rot, 2) * ChassisConstants.Max_Rotation_Speed * Math.signum(rot);
 
         speeds = new ChassisSpeeds(VelX, VelY, VelRot);
-
-        if(precisionMode){
-           chassis.setVelocities(ChassisConstants.Max_Spees_PrecisionMode);
-        }
-        else{
-            chassis.setVelocityWithAccel(speeds);
-        }
+            chassis.setVelocities(speeds);
     }    
     
 

@@ -6,6 +6,8 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.ChassisDrive;
 import frc.robot.subsystems.Swerve.ChassisSubsystem;
@@ -27,11 +29,15 @@ public class RobotContainer {
   public RobotContainer(Robot robot) {
     RobotContainer.robot = robot;
     RobotContainer.CYCLE_TIME = robot.getPeriod();
-    chassis.setDefaultCommand(new ChassisDrive(chassis, DriverController));
+    SmartDashboard.putData("Scheduler", CommandScheduler.getInstance());
+    //chassis.setDefaultCommand(new ChassisDrive(chassis, DriverController)); 
+    SmartDashboard.putData("Drive", new ChassisDrive(chassis, DriverController));
+
     configureBindings();
   }
   
    private void configureBindings() {
+    DriverController.back().onChange(new InstantCommand(()->chassis.setZeroHeading()).ignoringDisable(true));
   }
 
   public static boolean isEnabled() {

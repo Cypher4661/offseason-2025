@@ -7,10 +7,10 @@ public class SwerveConstants {
         public static final double Diameter = 0.1016; // in meters
         public static final double gearRatioSteer = 150.0 / 7.0;
         public static final double gearRatioDrive = 6.75;
-        public static final double FL_CanCoderOffset = 0.0; // in degrees
-        public static final double FR_CanCoderOffset = 0.0; // in degrees
-        public static final double BR_CanCoderOffset = 0.0; // in degrees
-        public static final double BL_CanCoderOffset = 0.0; // in degrees
+        public static final double FL_CanCoderOffset = -82.441; // in degrees
+        public static final double FR_CanCoderOffset = 150.117; // in degrees
+        public static final double BR_CanCoderOffset = -60.908; // in degrees
+        public static final double BL_CanCoderOffset = -80.332; // in degrees
         public static final boolean FL_SteerInverted = false;
         public static final boolean FR_SteerInverted = false;
         public static final boolean BR_SteerInverted = false;
@@ -23,10 +23,10 @@ public class SwerveConstants {
 
     public static class ChassisConstants{
         public static final ModuleConfig[] Config = {
-            new ModuleConfig(ChassisConstants.FL_ModuleID, ChassisConstants.FL_SteerID, ChassisConstants.FL_DriveID, ChassisConstants.FL_CanCoderID, "Front_Laft", ModuleConstants.Diameter, ModuleConstants.FL_CanCoderOffset, ModuleConstants.FL_SteerInverted, ModuleConstants.FL_DriveInverted),
-            new ModuleConfig(ChassisConstants.FR_ModuleID, ChassisConstants.FR_SteerID, ChassisConstants.FR_DriveID, ChassisConstants.FR_CanCoderID, "Front_Right", ModuleConstants.Diameter, ModuleConstants.FR_CanCoderOffset, ModuleConstants.FR_SteerInverted, ModuleConstants.FR_DriveInverted),
-            new ModuleConfig(ChassisConstants.BR_ModuleID, ChassisConstants.BR_SteerID, ChassisConstants.BR_DriveID, ChassisConstants.BR_CanCoderID, "Back_Right", ModuleConstants.Diameter, ModuleConstants.BR_CanCoderOffset, ModuleConstants.BR_SteerInverted, ModuleConstants.BR_DriveInverted),
-            new ModuleConfig(ChassisConstants.BL_ModuleID, ChassisConstants.BL_SteerID, ChassisConstants.BL_DriveID, ChassisConstants.BL_CanCoderID, "Back_Laft", ModuleConstants.Diameter, ModuleConstants.BL_CanCoderOffset, ModuleConstants.BL_SteerInverted, ModuleConstants.BL_DriveInverted)
+            new ModuleConfig(ChassisConstants.FL_ModuleID, ChassisConstants.FL_SteerID, ChassisConstants.FL_DriveID, ChassisConstants.FL_CanCoderID, "Front_Laft", ModuleConstants.Diameter, ModuleConstants.FL_CanCoderOffset),
+            new ModuleConfig(ChassisConstants.FR_ModuleID, ChassisConstants.FR_SteerID, ChassisConstants.FR_DriveID, ChassisConstants.FR_CanCoderID, "Front_Right", ModuleConstants.Diameter, ModuleConstants.FR_CanCoderOffset),
+            new ModuleConfig(ChassisConstants.BR_ModuleID, ChassisConstants.BR_SteerID, ChassisConstants.BR_DriveID, ChassisConstants.BR_CanCoderID, "Back_Right", ModuleConstants.Diameter, ModuleConstants.BR_CanCoderOffset),
+            new ModuleConfig(ChassisConstants.BL_ModuleID, ChassisConstants.BL_SteerID, ChassisConstants.BL_DriveID, ChassisConstants.BL_CanCoderID, "Back_Laft", ModuleConstants.Diameter, ModuleConstants.BL_CanCoderOffset)
         };
         public static final int GyroID = 0;
         public static final int FL_ModuleID = 0;
@@ -45,17 +45,18 @@ public class SwerveConstants {
         public static final int FR_DriveID = 4;
         public static final int BR_DriveID = 6;
         public static final int BL_DriveID = 8;
+        public static final double X_Y = 0.308325;
         public static final double FL_Y = 0.308325;
-        public static final double FL_X = -0.308325;
-        public static final double FR_Y = 0.308325;
+        public static final double FL_X = 0.308325;
+        public static final double FR_Y = -0.308325;
         public static final double FR_X = 0.308325;
         public static final double BR_Y = -0.308325;
-        public static final double BR_X = 0.308325;
-        public static final double BL_Y = -0.308325;
+        public static final double BR_X = -0.308325;
+        public static final double BL_Y = 0.308325;
         public static final double BL_X = -0.308325;
-        public static final double Max_Linear_Speed = 5.0; // in meters per second
+        public static final double Max_Linear_Speed = 2.0; // in meters per second
         public static final double Max_Linear_Accel = 4.0; // in meters per second squared
-        public static final double Max_Rotation_Speed = 4.0; // in meters per second
+        public static final double Max_Rotation_Speed = 2.0; // in meters per second
         public static final ChassisSpeeds Max_Spees_PrecisionMode = new ChassisSpeeds(1.0, 1.0, 1.0); // in meters per second and radians per second
         public static final double DeadBand = 0.1;
     }

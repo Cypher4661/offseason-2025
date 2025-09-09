@@ -1,6 +1,5 @@
 package frc.Demacia.utils.Motors;
 
-import org.opencv.core.MatOfFloat;
 
 import com.ctre.phoenix6.CANBus;
 

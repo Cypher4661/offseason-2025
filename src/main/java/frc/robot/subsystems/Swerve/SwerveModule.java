@@ -1,20 +1,19 @@
 package frc.robot.subsystems.Swerve;
 
+import java.io.ObjectInputFilter.Config;
+
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.Demacia.utils.Motors.SparkMotor;
 import frc.Demacia.utils.Motors.TalonMotor;
 import frc.Demacia.utils.Sensors.Cancoder;
-import frc.robot.subsystems.Swerve.SwerveConstants.ModuleConstants;
 
-public class SwerveModule extends SubsystemBase{
+public class SwerveModule implements Sendable{
     protected TalonMotor DriveMotor;
     protected SparkMotor SteerMotor;
     private Cancoder CanCoder;
@@ -22,15 +21,15 @@ public class SwerveModule extends SubsystemBase{
 
     SwerveModule(ModuleConfig config) {
         super();
+        this.moduleConfig = config;
         this.DriveMotor = new TalonMotor(config.DriveConfig);
         System.out.println("steer id = " + config.SteerConfig.id);
         this.SteerMotor = new SparkMotor(config.SteerConfig);
         System.out.println("Init cancoder " + config.CancoderConfig.id);
         this.CanCoder = new Cancoder(config.CancoderConfig);
+        SteerMotor.setEncoderPosition(getAbsoluteAngle() - config.CanCoderOffset);
+        SmartDashboard.putData(config.Name, this);
         
-        SteerMotor.setAngle(getAbsoluteAngle() - config.CanCoderOffset);
-
-        SmartDashboard.putData(config.Name + " Steer ABS", new InstantCommand(()-> getAbsoluteAngle()));
     }
 
     public void setNeutralMode(boolean isBrake){
@@ -55,7 +54,7 @@ public class SwerveModule extends SubsystemBase{
        DriveMotor.setVelocity(velocityMeterPerSec);
     }
     public void setSteerAngle(double angleDegrees){
-        SteerMotor.setAngle(angleDegrees);
+        SteerMotor.setPositionVoltage(angleDegrees);
     }
        
     public double getAngle(){
@@ -97,19 +96,25 @@ public class SwerveModule extends SubsystemBase{
 
     public void setStats(SwerveModuleState state){
         double wantesAngle = state.angle.getDegrees();
-        double diff = wantesAngle - getAngle();
+        double angle = getAbsoluteAngle() - moduleConfig.CanCoderOffset;
+        double diff = wantesAngle - angle;
         double vel = state.speedMetersPerSecond;
-        diff = MathUtil.angleModulus(diff);
-        if(diff > 0.5 * Math.PI){
+        diff = MathUtil.inputModulus(diff,-180, 180);
+        if(diff > 90){
             vel = -vel;
-            diff = diff - Math.PI;
+            diff = diff - 180;
         }
-        else if(diff < -0.5 * Math.PI){
+        else if(diff < -90){
             vel = -vel;
-            diff = diff + Math.PI;
+            diff = diff + 180;
         }
-        setSteerAngle(getAngle() + diff);
+        setSteerAngle(SteerMotor.getCurrentPosition() + diff);
         setDriveVelocity(vel);  
+    }
+
+    public void setStop() {
+        SteerMotor.setDuty(0);
+        DriveMotor.setDuty(0);
     }
 
     public SwerveModulePosition gModulePosition(){
@@ -117,6 +122,11 @@ public class SwerveModule extends SubsystemBase{
     }
     public SwerveModuleState getModuleState(){
         return new SwerveModuleState(getDriveVelocity(), getSteerRotation());
+    }
+
+    @Override
+    public void initSendable(SendableBuilder builder) {
+        builder.addDoubleProperty("Abs", this::getAbsoluteAngle, null);
     }
 
     
