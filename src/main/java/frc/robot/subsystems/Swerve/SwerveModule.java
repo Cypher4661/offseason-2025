@@ -114,7 +114,7 @@ public class SwerveModule implements Sendable{
             vel = -vel;
             diff = diff + 180;
         }
-        SmartDashboard.putNumber(" DEBUG dif2", diff);
+        SmartDashboard.putNumber(" DEBUG dif3", diff);
         setSteerAngle(SteerMotor.getCurrentPosition() + diff);
         SmartDashboard.putNumber(" DEBUG tgt", SteerMotor.getCurrentPosition() + diff);
         setDriveVelocity(vel);  
