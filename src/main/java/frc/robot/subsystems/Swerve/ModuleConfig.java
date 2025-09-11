@@ -41,7 +41,7 @@ public class ModuleConfig {
             .withPID(0.2, 0.000, 0, 0.3, 0.0072425, 0.00067, 0)
             .withRampTime(0.2)
             .withMotionParam(720, .11200, 2000)
-            .withMaxPositionError(0.5);
+            .withMaxPositionError(0.1);
 
         DriveConfig = new TalonConfig(driveID, Canbus.Rio, name + "/Drive")
             .withBrake(true)
