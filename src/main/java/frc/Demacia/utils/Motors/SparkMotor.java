@@ -7,10 +7,6 @@ import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Timer;
@@ -38,19 +34,12 @@ public class SparkMotor extends SparkMax implements Sendable, MotorInterface {
   private int lastCycleNum = 0;
   private double lastTime = 0;
 
-  private PIDController pidController;
-  private SimpleMotorFeedforward ffController;
-  private TrapezoidProfile trapezoidProfile;
-
   public SparkMotor(SparkConfig config) {
     super(config.id, SparkLowLevel.MotorType.kBrushless);
     this.config = config;
     name = config.name;
     configMotor();
     addLog();
-    pidController = new PIDController(config.pid[0].kp(), config.pid[0].ki(), config.pid[0].ks());
-    ffController = new SimpleMotorFeedforward(config.pid[0].ks(), config.pid[0].kv(), config.pid[0].ka());
-    trapezoidProfile = new TrapezoidProfile(new Constraints(config.maxVelocity, config.maxAcceleration));
 
     SmartDashboard.putData(name, this);
     LogManager.log(name + " motor initialized");    
@@ -68,7 +57,7 @@ public class SparkMotor extends SparkMax implements Sendable, MotorInterface {
     cfg.encoder.velocityConversionFactor(1/config.motorRatio / 60);
     updatePID(false);
     if (config.maxVelocity != 0) {
-      cfg.closedLoop.maxMotion.maxVelocity(config.maxVelocity).maxAcceleration(config.maxAcceleration);
+      cfg.closedLoop.maxMotion.maxVelocity(config.maxVelocity*60).maxAcceleration(config.maxAcceleration*60);
     }
     getEncoder();
     getClosedLoopController();
@@ -76,12 +65,13 @@ public class SparkMotor extends SparkMax implements Sendable, MotorInterface {
   }
 
   private void updatePID(boolean apply) {
-    cfg.closedLoop.pidf(config.pid[0].kp()/12, config.pid[0].ki()/12, config.pid[0].kd()/12, config.pid[0].kv(),
+    cfg.closedLoop.pidf(config.pid[0].kp(), config.pid[0].ki(), config.pid[0].kd()/60, config.pid[0].kv()/60,
         ClosedLoopSlot.kSlot0);
-    cfg.closedLoop.pidf(config.pid[1].kp()/12, config.pid[1].ki()/12, config.pid[1].kd()/12, config.pid[1].kv(),
+    cfg.closedLoop.pidf(config.pid[1].kp(), config.pid[1].ki(), config.pid[1].kd()/60, config.pid[1].kv()/60,
         ClosedLoopSlot.kSlot1);
-    cfg.closedLoop.pidf(config.pid[2].kp()/12, config.pid[2].ki()/12, config.pid[2].kd()/12, config.pid[2].kv(),
+    cfg.closedLoop.pidf(config.pid[2].kp(), config.pid[2].ki(), config.pid[2].kd()/60, config.pid[2].kv()/60,
         ClosedLoopSlot.kSlot2);
+    cfg.closedLoop.iZone(config.iZone);
     if (apply) {
       this.configure(cfg, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
     }
@@ -149,6 +139,9 @@ public class SparkMotor extends SparkMax implements Sendable, MotorInterface {
   }
 
   public void setPositionVoltage(double position, double feedForward) {
+    if(Math.abs(getCurrentPosition() - position) > config.iZone) {
+      super.closedLoopController.setIAccum(0);
+    }
     super.closedLoopController.setReference(position, ControlType.kPosition, slot, feedForward);
     controlType = ControlType.kPosition;
     setPoint = position;
@@ -286,10 +279,7 @@ public class SparkMotor extends SparkMax implements Sendable, MotorInterface {
 
   @Override
   public void setMotion(double position) {
-    double v = (position - getCurrentPosition()) * 2;
-    double cv = getCurrentVelocity();
-    setVoltage(pidController.calculate(cv,v) + ffController.calculateWithVelocities(cv,v));
-    //setMotion(position, 0); //, config.pid[slot.value].ks()*Utilities.signumWithDeadband(position - getCurrentPosition(), 0.5));
+    setMotion(position, config.pid[slot.value].ks()*Utilities.signumWithDeadband(position - getCurrentPosition(), 0.5));
   }
 
   @Override
