@@ -1,6 +1,5 @@
 package frc.robot.subsystems.Swerve;
 
-import java.io.ObjectInputFilter.Config;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -18,6 +17,9 @@ public class SwerveModule implements Sendable{
     protected SparkMotor SteerMotor;
     private Cancoder CanCoder;
     public ModuleConfig moduleConfig;
+
+    public boolean debug = false;
+
 
     SwerveModule(ModuleConfig config) {
         super();
@@ -96,10 +98,14 @@ public class SwerveModule implements Sendable{
 
     public void setStats(SwerveModuleState state){
         double wantesAngle = state.angle.getDegrees();
+        SmartDashboard.putNumber(" DEBUG wanted", wantesAngle);
         double angle = getAbsoluteAngle() - moduleConfig.CanCoderOffset;
+        SmartDashboard.putNumber(" DEBUG angle", angle);
         double diff = wantesAngle - angle;
+        SmartDashboard.putNumber(" DEBUG dif1", diff);
         double vel = state.speedMetersPerSecond;
         diff = MathUtil.inputModulus(diff,-180, 180);
+        SmartDashboard.putNumber(" DEBUG dif2", diff);
         if(diff > 90){
             vel = -vel;
             diff = diff - 180;
@@ -108,7 +114,9 @@ public class SwerveModule implements Sendable{
             vel = -vel;
             diff = diff + 180;
         }
+        SmartDashboard.putNumber(" DEBUG dif2", diff);
         setSteerAngle(SteerMotor.getCurrentPosition() + diff);
+        SmartDashboard.putNumber(" DEBUG tgt", SteerMotor.getCurrentPosition() + diff);
         setDriveVelocity(vel);  
     }
 

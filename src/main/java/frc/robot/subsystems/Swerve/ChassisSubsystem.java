@@ -52,6 +52,7 @@ public class ChassisSubsystem extends SubsystemBase {
             BL
         };
         gyro = new AHRS(NavXComType.kMXP_SPI);
+        FR.debug = true;
     
         kinematics = new SwerveDriveKinematics(new Translation2d[]{
             new Translation2d(SwerveConstants.ChassisConstants.FL_X, SwerveConstants.ChassisConstants.FL_Y),
