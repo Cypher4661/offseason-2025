@@ -7,6 +7,10 @@ import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Timer;
@@ -34,14 +38,22 @@ public class SparkMotor extends SparkMax implements Sendable, MotorInterface {
   private int lastCycleNum = 0;
   private double lastTime = 0;
 
+  private PIDController pidController;
+  private SimpleMotorFeedforward ffController;
+  private TrapezoidProfile trapezoidProfile;
+
   public SparkMotor(SparkConfig config) {
     super(config.id, SparkLowLevel.MotorType.kBrushless);
     this.config = config;
     name = config.name;
     configMotor();
     addLog();
+    pidController = new PIDController(config.pid[0].kp(), config.pid[0].ki(), config.pid[0].ks());
+    ffController = new SimpleMotorFeedforward(config.pid[0].ks(), config.pid[0].kv(), config.pid[0].ka());
+    trapezoidProfile = new TrapezoidProfile(new Constraints(config.maxVelocity, config.maxAcceleration));
+
     SmartDashboard.putData(name, this);
-    LogManager.log(name + " motor initialized");
+    LogManager.log(name + " motor initialized");    
   }
 
   private void configMotor() {
@@ -274,7 +286,10 @@ public class SparkMotor extends SparkMax implements Sendable, MotorInterface {
 
   @Override
   public void setMotion(double position) {
-    setMotion(position, 0); //, config.pid[slot.value].ks()*Utilities.signumWithDeadband(position - getCurrentPosition(), 0.5));
+    double v = (position - getCurrentPosition()) * 2;
+    double cv = getCurrentVelocity();
+    setVoltage(pidController.calculate(cv,v) + ffController.calculateWithVelocities(cv,v));
+    //setMotion(position, 0); //, config.pid[slot.value].ks()*Utilities.signumWithDeadband(position - getCurrentPosition(), 0.5));
   }
 
   @Override
