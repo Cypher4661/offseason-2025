@@ -38,7 +38,7 @@ public class ModuleConfig {
             .withDegreesMotor(GearRatioSteer)
             .withCurrent(20)
             .withVolts(8)
-            .withPID(0.2, 0.000, 0, 0.3, 0.0072425, 0.00067, 0)
+            .withPID(0.25, 0.001, 0, 0.3, 0.0072425, 0.00067, 0)
             .withRampTime(0.2)
             .withMotionParam(720, .11200, 2000)
             .withMaxPositionError(0.1);
