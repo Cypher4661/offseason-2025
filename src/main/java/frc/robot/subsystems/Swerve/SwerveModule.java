@@ -98,14 +98,14 @@ public class SwerveModule implements Sendable{
 
     public void setStats(SwerveModuleState state){
         double wantesAngle = state.angle.getDegrees();
-        SmartDashboard.putNumber(" DEBUG wanted", wantesAngle);
+        if(debug) SmartDashboard.putNumber(" DEBUG wanted", wantesAngle);
         double angle = getAbsoluteAngle() - moduleConfig.CanCoderOffset;
-        SmartDashboard.putNumber(" DEBUG angle", angle);
+        if(debug) SmartDashboard.putNumber(" DEBUG angle", angle);
         double diff = wantesAngle - angle;
-        SmartDashboard.putNumber(" DEBUG dif1", diff);
+        if(debug) SmartDashboard.putNumber(" DEBUG dif1", diff);
         double vel = state.speedMetersPerSecond;
         diff = MathUtil.inputModulus(diff,-180, 180);
-        SmartDashboard.putNumber(" DEBUG dif2", diff);
+        if(debug) SmartDashboard.putNumber(" DEBUG dif2", diff);
         if(diff > 90){
             vel = -vel;
             diff = diff - 180;
@@ -114,9 +114,9 @@ public class SwerveModule implements Sendable{
             vel = -vel;
             diff = diff + 180;
         }
-        SmartDashboard.putNumber(" DEBUG dif3", diff);
+        if(debug) SmartDashboard.putNumber(" DEBUG dif3", diff);
         setSteerAngle(SteerMotor.getCurrentPosition() + diff);
-        SmartDashboard.putNumber(" DEBUG tgt", SteerMotor.getCurrentPosition() + diff);
+        if(debug) SmartDashboard.putNumber(" DEBUG tgt", SteerMotor.getCurrentPosition() + diff);
         setDriveVelocity(vel);  
     }
 
