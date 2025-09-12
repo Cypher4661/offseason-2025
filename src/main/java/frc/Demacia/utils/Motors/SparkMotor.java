@@ -71,7 +71,9 @@ public class SparkMotor extends SparkMax implements Sendable, MotorInterface {
         ClosedLoopSlot.kSlot1);
     cfg.closedLoop.pidf(config.pid[2].kp(), config.pid[2].ki(), config.pid[2].kd(), config.pid[2].kv(),
         ClosedLoopSlot.kSlot2);
-    cfg.closedLoop.iZone(config.iZone);
+    cfg.closedLoop.iZone(config.pid[0].iZone(),ClosedLoopSlot.kSlot0);
+    cfg.closedLoop.iZone(config.pid[1].iZone(),ClosedLoopSlot.kSlot1);
+    cfg.closedLoop.iZone(config.pid[2].iZone(),ClosedLoopSlot.kSlot2);
     if (apply) {
       this.configure(cfg, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
     }
@@ -139,7 +141,7 @@ public class SparkMotor extends SparkMax implements Sendable, MotorInterface {
   }
 
   public void setPositionVoltage(double position, double feedForward) {
-    if(Math.abs(getCurrentPosition() - position) > config.iZone) {
+    if(Math.abs(getCurrentPosition() - position) > config.pid[0].iZone()) {
       super.closedLoopController.setIAccum(0);
     }
     super.closedLoopController.setReference(position, ControlType.kPosition, slot, feedForward);

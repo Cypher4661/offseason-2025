@@ -5,9 +5,9 @@ package frc.Demacia.utils.Motors;
 *  */
 class CloseLoopParam { // calculate volts - not -1 to 1 !!!
 
-    public static String[] names= {"kp", "ki", "kd", "ks", "kv", "ka", "kg"};
+    public static String[] names= {"kp", "ki", "kd", "ks", "kv", "ka", "kg", "iZone"};
 
-    private double[] array = {0,0,0,0,0,0,0};
+    private double[] array = {0,0,0,0,0,0,0,0};
 
 
     CloseLoopParam() {
@@ -63,5 +63,13 @@ class CloseLoopParam { // calculate volts - not -1 to 1 !!!
 
     public double kg() {
         return array[6];
+    }
+
+    public double iZone() {
+        return array[7];
+    }
+
+    public void iZone(double iZone) {
+        array[7] = iZone;
     }
 }
