@@ -57,7 +57,7 @@ public class SwerveModule implements Sendable{
        DriveMotor.setVelocity(velocityMeterPerSec);
     }
     public void setSteerAngle(double angleDegrees){
-        SteerMotor.setMotion(angleDegrees);
+        SteerMotor.setPositionVoltage(angleDegrees);
     }
        
     public double getAngle(){

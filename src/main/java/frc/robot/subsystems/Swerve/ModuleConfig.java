@@ -38,12 +38,12 @@ public class ModuleConfig {
             .withDegreesMotor(GearRatioSteer)
             .withCurrent(20)
             .withVolts(8)
-             .withPID(0.2, 0.000, 0, 0.03, 0.0075, 0.00067, 0)
-            //.withPID(0.1, 0.01, 0.001, 0.0, 0.00, 0.00, 0)
+            //.withPID(0.2, 0.000, 0, 0.03, 0.0075, 0.00067, 0)
+            .withPID(0.2, 0.01, 0.000, 0.0, 0.00, 0.00, 0)
             .withIzone(25)
             .withRampTime(0.2)
             .withMotionParam(720, 1200, 2000)
-            .withMaxPositionError(0.1);
+            .withMaxPositionError(2);
 
         DriveConfig = new TalonConfig(driveID, Canbus.Rio, name + "/Drive")
             .withBrake(true)
