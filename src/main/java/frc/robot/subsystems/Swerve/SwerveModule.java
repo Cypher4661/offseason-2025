@@ -20,6 +20,7 @@ public class SwerveModule implements Sendable{
     public ModuleConfig moduleConfig;
 
     private boolean debug = false;
+    private double lastSteerPosition = 0;
 
 
     SwerveModule(ModuleConfig config) {
@@ -126,11 +127,15 @@ public class SwerveModule implements Sendable{
         DriveMotor.setDuty(0);
     }
 
-    public SwerveModulePosition gModulePosition(){
-        return new SwerveModulePosition(DriveMotor.getCurrentPosition(),Rotation2d.fromDegrees(getSteerAngle()));
+    public SwerveModulePosition getModulePosition(){
+        double currentAngle = getSteerAngle();
+        double angle = (currentAngle + lastSteerPosition) / 2;
+        lastSteerPosition = currentAngle;
+        return new SwerveModulePosition(DriveMotor.getCurrentPosition() + SteerMotor.getCurrentPosition() * SwerveConstants.ModuleConstants.SteerDriveRatio,
+            Rotation2d.fromDegrees(angle));
     }
     public SwerveModuleState getModuleState(){
-        return new SwerveModuleState(getDriveVelocity(), getSteerRotation());
+        return new SwerveModuleState(getDriveVelocity() + getSteerVelocity()*SwerveConstants.ModuleConstants.SteerDriveRatio, getSteerRotation());
     }
 
     @Override
