@@ -57,7 +57,7 @@ public class SparkMotor extends SparkMax implements Sendable, MotorInterface {
     cfg.encoder.velocityConversionFactor(1/config.motorRatio / 60);
     updatePID(false);
     if (config.maxVelocity != 0) {
-      cfg.closedLoop.maxMotion.maxVelocity(config.maxVelocity*60).maxAcceleration(config.maxAcceleration*60);
+      cfg.closedLoop.maxMotion.maxVelocity(config.maxVelocity).maxAcceleration(config.maxAcceleration);
     }
     getEncoder();
     getClosedLoopController();
