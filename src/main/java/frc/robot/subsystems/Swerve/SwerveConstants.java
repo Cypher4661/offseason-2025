@@ -54,9 +54,9 @@ public class SwerveConstants {
         public static final double BR_X = -0.308325;
         public static final double BL_Y = 0.308325;
         public static final double BL_X = -0.308325;
-        public static final double Max_Linear_Speed = 2.0; // in meters per second
-        public static final double Max_Linear_Accel = 4.0; // in meters per second squared
-        public static final double Max_Rotation_Speed = 2.0; // in meters per second
+        public static final double Max_Linear_Speed = 5.0; // in meters per second
+        public static final double Max_Linear_Accel = 7.0; // in meters per second squared
+        public static final double Max_Rotation_Speed = 8.0; // in meters per second
         public static final ChassisSpeeds Max_Spees_PrecisionMode = new ChassisSpeeds(1.0, 1.0, 1.0); // in meters per second and radians per second
         public static final double DeadBand = 0.1;
     }
