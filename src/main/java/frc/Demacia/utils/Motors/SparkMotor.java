@@ -65,11 +65,11 @@ public class SparkMotor extends SparkMax implements Sendable, MotorInterface {
   }
 
   private void updatePID(boolean apply) {
-    cfg.closedLoop.pidf(config.pid[0].kp(), config.pid[0].ki(), config.pid[0].kd()/60, config.pid[0].kv()/60,
+    cfg.closedLoop.pidf(config.pid[0].kp(), config.pid[0].ki(), config.pid[0].kd(), config.pid[0].kv(),
         ClosedLoopSlot.kSlot0);
-    cfg.closedLoop.pidf(config.pid[1].kp(), config.pid[1].ki(), config.pid[1].kd()/60, config.pid[1].kv()/60,
+    cfg.closedLoop.pidf(config.pid[1].kp(), config.pid[1].ki(), config.pid[1].kd(), config.pid[1].kv(),
         ClosedLoopSlot.kSlot1);
-    cfg.closedLoop.pidf(config.pid[2].kp(), config.pid[2].ki(), config.pid[2].kd()/60, config.pid[2].kv()/60,
+    cfg.closedLoop.pidf(config.pid[2].kp(), config.pid[2].ki(), config.pid[2].kd(), config.pid[2].kv(),
         ClosedLoopSlot.kSlot2);
     cfg.closedLoop.iZone(config.iZone);
     if (apply) {

@@ -17,6 +17,8 @@ public class MotorUtils {
             MotorCommands.showSlowPowerCommand(motor.name() + " Slow Power", 0.0, 0.01, 1, subsystem, motor);
             MotorCommands.showAngleCommand(motor.name() + " Angle Command", subsystem, motor);
         }
+        MotorCommands.showPositionCommand(motor.name() + " Position Command", subsystem, motor);
+        MotorCommands.showMotionCommand(motor.name() + " Motion Command", subsystem, motor);
     }
 
     public static double getPositionForAngle(double position, double angle, boolean isRadians) {

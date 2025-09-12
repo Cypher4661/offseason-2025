@@ -8,6 +8,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.Demacia.utils.Motors.SparkMotor;
 import frc.Demacia.utils.Motors.TalonMotor;
 import frc.Demacia.utils.Sensors.Cancoder;
@@ -18,7 +19,7 @@ public class SwerveModule implements Sendable{
     private Cancoder CanCoder;
     public ModuleConfig moduleConfig;
 
-    public boolean debug = false;
+    private boolean debug = false;
 
 
     SwerveModule(ModuleConfig config) {
@@ -135,6 +136,13 @@ public class SwerveModule implements Sendable{
     @Override
     public void initSendable(SendableBuilder builder) {
         builder.addDoubleProperty("Abs", this::getAbsoluteAngle, null);
+    }
+
+    public void debug(boolean debug, SubsystemBase subsystem) {
+        this.debug = debug;
+        if(debug) {
+            SteerMotor.showSysidCommands(subsystem);
+        }
     }
 
     

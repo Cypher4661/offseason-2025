@@ -46,6 +46,7 @@ public class MotorCommands {
         SmartDashboard.putNumber(fldName, 0);
         return new RunCommand(()->{
             double p = SmartDashboard.getNumber(fldName, 0);
+            System.out.println(name + " motion command p=" + p);
             for(MotorInterface motor : motors) {
                 motor.setMotion(p);
             }

@@ -39,8 +39,6 @@ public class ChassisSubsystem extends SubsystemBase {
 
     public ChassisSubsystem(){
         super();
-        Exception e = new Exception();
-        e.printStackTrace();
         FL  = new SwerveModule(SwerveConstants.ChassisConstants.Config[0]);
         FR  = new SwerveModule(SwerveConstants.ChassisConstants.Config[1]);
         BR = new SwerveModule(SwerveConstants.ChassisConstants.Config[2]);
@@ -52,7 +50,7 @@ public class ChassisSubsystem extends SubsystemBase {
             BL
         };
         gyro = new AHRS(NavXComType.kMXP_SPI);
-        FR.debug = true;
+        FR.debug(true, this);
     
         kinematics = new SwerveDriveKinematics(new Translation2d[]{
             new Translation2d(SwerveConstants.ChassisConstants.FL_X, SwerveConstants.ChassisConstants.FL_Y),
