@@ -50,7 +50,7 @@ public class ChassisSubsystem extends SubsystemBase {
             BL
         };
         gyro = new AHRS(NavXComType.kMXP_SPI);
-        FR.debug(true, this);
+//        FR.debug(true, this);
     
         kinematics = new SwerveDriveKinematics(new Translation2d[]{
             new Translation2d(SwerveConstants.ChassisConstants.FL_X, SwerveConstants.ChassisConstants.FL_Y),
@@ -110,10 +110,10 @@ public class ChassisSubsystem extends SubsystemBase {
 
     public SwerveModulePosition[] getModulePositions(){
         return new SwerveModulePosition[]{
-            new SwerveModulePosition(FL.getDrivePosition(), FL.getStats().angle),
-            new SwerveModulePosition(FR.getDrivePosition(), FR.getStats().angle),
-            new SwerveModulePosition(BR.getDrivePosition(), BR.getStats().angle),
-            new SwerveModulePosition(BL.getDrivePosition(), BL.getStats().angle)
+            FL.getModulePosition(),
+            FR.getModulePosition(),
+            BR.getModulePosition(),
+            BL.getModulePosition()
         };
     }
 
@@ -167,10 +167,8 @@ public class ChassisSubsystem extends SubsystemBase {
     }
 
     public void setVelocityWithAccel(ChassisSpeeds wanted_Speeds){
-        ChassisSpeeds currentSpeeds = getChassisSpeedsFieldRel();
         Translation2d limitedVelocityVector = calculateVelocityWithAccel(wanted_Speeds.vxMetersPerSecond, wanted_Speeds.vyMetersPerSecond);
         ChassisSpeeds limitedVelocities = new ChassisSpeeds(limitedVelocityVector.getX(), limitedVelocityVector.getY(), wanted_Speeds.omegaRadiansPerSecond);
-        Translation2d lastWantedSpeeds = limitedVelocityVector;
         setVelocities(limitedVelocities);
 
     }

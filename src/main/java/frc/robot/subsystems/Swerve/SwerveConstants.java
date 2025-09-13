@@ -19,6 +19,7 @@ public class SwerveConstants {
         public static final boolean FR_DriveInverted = false;
         public static final boolean BR_DriveInverted = false;
         public static final boolean BL_DriveInverted = false;
+        public static final double SteerDriveRatio = 0.14 / 360.0;
     }
 
     public static class ChassisConstants{
