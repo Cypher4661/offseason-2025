@@ -30,9 +30,11 @@ public class ChassisDrive extends Command{
     public void execute(){
         isRed = chassis.isRed();
         direction = isRed ? 1 : -1;
+        
         double LjoyX = controller.getLeftY() * direction;
         double LjoyY = controller.getLeftX() * direction;
-        double rot = controller.getLeftTriggerAxis() - controller.getRightTriggerAxis();
+        //double rot = controller.getLeftTriggerAxis() - controller.getRightTriggerAxis();
+        double rot = controller.getRightX() * -1;
         LjoyY = MathUtil.applyDeadband(LjoyY, ChassisConstants.DeadBand);
         LjoyX = MathUtil.applyDeadband(LjoyX, ChassisConstants.DeadBand);
         rot = MathUtil.applyDeadband(rot, ChassisConstants.DeadBand);
