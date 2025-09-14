@@ -15,7 +15,7 @@ public class RobotContainer {
 
     // Subsystems
 
-    private final VisionSubsystem visionSubsystem = new VisionSubsystem(Constants.CAMERA_POSITION);
+    private final VisionSubsystem visionSubsystem = new VisionSubsystem(Constants.CAMERA_POSITION, null);
 
 
     private final Field2d field = new Field2d();

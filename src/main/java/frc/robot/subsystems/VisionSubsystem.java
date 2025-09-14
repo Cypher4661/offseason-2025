@@ -155,7 +155,12 @@ public class VisionSubsystem extends SubsystemBase {
 
     private double getPitchCrop() {
         double cameraPitch = camToTagPitch;
-        return pitch;
+        return cameraPitch;
+    } 
+
+    private void stopCrop() {
+        double[] crop = { -1, 1, -1, 1 };
+        cropEntry.setDoubleArray(crop);
     }
 
 

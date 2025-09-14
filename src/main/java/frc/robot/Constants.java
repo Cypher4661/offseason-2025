@@ -23,12 +23,15 @@ public final class Constants {
 
   public static final Camera CAMERA_POSITION = new Camera("tag", new Translation3d(0.15, -0.15, 71.0), 0.0, 0.0);
   
-  // public static final double cameraAg = 0.0; // Camera angle in degrees
-  // public static final double cameraPosition = 0.0; // Camera distance from robot center in degrees
-  // public static final double cameraHeight = 0.33; // Camera height in meters
+  public static final double MIN_CROP = 0.5; // Minimum crop value
+  public static final double MAX_CROP = 0.6; // Maximum crop value
+  public static final double CROP_CONSTANT = 0.35; // Crop constant for distance calculation
+  public static final double PREDICT_Y = 0.15; // Y prediction for latency compensation in meters
+  public static final double PREDICT_X = -0.1; // X prediction for latency compensation in meters
+  public static final double PREDICT_OMEGA = 0.2; // Omega prediction for latency compensation in radians
+
   private static double BARGE_TAG_HIGHT = inchToMeter(73.54);
-  // private static double REEF_TAG_HIGHT = inchToMeter(12.13);
-  private static double REEF_TAG_HIGHT = inchToMeter(11.811);
+  private static double REEF_TAG_HIGHT = inchToMeter(12.13);
   private static double STATION_TAG_HIGHT = inchToMeter(58.50);
   private static double SIDE_TAG_HIGHT = inchToMeter(51.25);
 
