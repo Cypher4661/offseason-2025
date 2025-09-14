@@ -172,7 +172,6 @@ public class ChassisSubsystem extends SubsystemBase {
         setVelocities(limitedVelocities);
 
     }
-    SwerveModuleState[] lastStates = new SwerveModuleState[4];
     public void setVelocities(ChassisSpeeds speeds){
         if(Math.abs(speeds.vxMetersPerSecond) < 0.01 && Math.abs(speeds.vyMetersPerSecond) < 0.01 && Math.abs(speeds.omegaRadiansPerSecond) < 0.01){
             for(SwerveModule m : Modules){
