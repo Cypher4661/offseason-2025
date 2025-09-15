@@ -34,6 +34,7 @@ public class ChassisSubsystem extends SubsystemBase {
     public SwerveModule BL;
     public Pose2d pose = new Pose2d();
     public final SwerveModule[] Modules;
+    public boolean PrecisionMode = false;
 
     public static int N = 0;
 

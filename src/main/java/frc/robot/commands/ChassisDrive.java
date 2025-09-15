@@ -4,6 +4,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.Swerve.ChassisSubsystem;
 import frc.robot.subsystems.Swerve.SwerveConstants.ChassisConstants;
@@ -16,7 +17,7 @@ public class ChassisDrive extends Command{
     private ChassisSpeeds speeds;
     private double UseStike;
     private double UseTrigger;
-    private double PrecisionMode;
+    private Boolean PrecisionMode = false;
 
     public ChassisDrive(ChassisSubsystem chassis, CommandXboxController controller){
         this.chassis = chassis;
@@ -32,7 +33,9 @@ public class ChassisDrive extends Command{
         isRed = chassis.isRed();
         direction = isRed ? 1 : -1;
         UseStike = SmartDashboard.getBoolean("Use Stike", false)? 1 : -1;
-        PrecisionMode = SmartDashboard.getBoolean("Is Precision Mode", false)? 1 : -1;
+      
+        
+
 
         double rot = 0;
         double LjoyX = controller.getLeftY() * direction;
@@ -48,14 +51,27 @@ public class ChassisDrive extends Command{
         LjoyX = MathUtil.applyDeadband(LjoyX, ChassisConstants.DeadBand);
         rot = MathUtil.applyDeadband(rot, ChassisConstants.DeadBand);
 
+       
 
-
-        // if (PrecisionMode == 1){
+        if (chassis.PrecisionMode){
+            double VelX = Math.pow(LjoyX, 2) * 0.7 * Math.signum(LjoyX);
+            double VelY = Math.pow(LjoyY, 2) * 0.7 * Math.signum(LjoyY);
+            double VelRot =Math.pow(rot, 2) * 0.7 * Math.signum(rot);
+            speeds = new ChassisSpeeds(VelX, VelY, VelRot);
+            chassis.setVelocities(speeds);
+            //System.out.println("Precision Mode");
             
-        // }
-        // else{
+        }
+        else{
+            double VelX = Math.pow(LjoyX, 2) * ChassisConstants.Max_Linear_Speed * Math.signum(LjoyX);
+            double VelY = Math.pow(LjoyY, 2) * ChassisConstants.Max_Linear_Speed * Math.signum(LjoyY);
+            double VelRot =Math.pow(rot, 2) * ChassisConstants.Max_Rotation_Speed * Math.signum(rot);
+            speeds = new ChassisSpeeds(VelX, VelY, VelRot);
+            chassis.setVelocities(speeds);
+            //System.out.println("Normal Mode");
             
-        // }
+        }
+        
 
         
     }    

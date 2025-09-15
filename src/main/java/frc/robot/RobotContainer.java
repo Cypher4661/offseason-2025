@@ -38,6 +38,7 @@ public class RobotContainer {
   
    private void configureBindings() {
     DriverController.back().onChange(new InstantCommand(()->chassis.setZeroHeading()).ignoringDisable(true));
+    DriverController.a().toggleOnTrue( new InstantCommand(()->chassis.PrecisionMode = !chassis.PrecisionMode));
   }
 
   public static boolean isEnabled() {
