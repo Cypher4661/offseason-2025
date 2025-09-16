@@ -21,7 +21,7 @@ public final class Constants {
   public static final double gyroOffset = 0.32 ; // Gyro offset for blue alliance in degrees
   // public static final double gyroOffsetRed = 183.2; // Gyro offset for red alliance in degrees
 
-  public static final Camera CAMERA_POSITION = new Camera("tag", new Translation3d(0.15, -0.15, 71.0), 0.0, 0.0);
+  public static final Camera CAMERA_POSITION = new Camera("tag", new Translation3d(0.15, -0.15, 71.0), 0.0, 0.0, "limlight-tag");
   
   public static final double MIN_CROP = 0.5; // Minimum crop value
   public static final double MAX_CROP = 0.6; // Maximum crop value
