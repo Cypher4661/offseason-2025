@@ -1,7 +1,5 @@
 package frc.robot.subsystems.elevator;
 
-import java.lang.constant.Constable;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.elevator.ElevatorSubsystem.ElevatorMode;
@@ -40,7 +38,8 @@ public class ElevatorCommand extends Command {
                 break;
             default:
                 elevator.setHeight(mode.height);
-                elevator.setAngle(mode.angle);
+                if(!elevator.elevatorOnly)
+                    elevator.setAngle(mode.angle);
                 break;
         }
     }

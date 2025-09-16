@@ -3,8 +3,6 @@ package frc.robot.subsystems.elevator;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.Demacia.utils.Motors.MotorCommands;
 import frc.Demacia.utils.Motors.MotorInterface;
@@ -28,6 +26,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     private final MotorInterface motorArm;
     private final TalonConfig armConfig;
     private final Cancoder cancoder;            
+    boolean elevatorOnly = false;
 
 
     // גבהים לכל קומה (במטרים / יחידות אנקודר)
@@ -178,5 +177,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         builder.addBooleanProperty("magnet", this::IsMagnet, null);
         
         builder.addDoubleProperty("Test Height", ()->ElevatorMode.Test.height, (height)->ElevatorMode.Test.height = height);
+        builder.addDoubleProperty("Test Angle", ()->ElevatorMode.Test.angle, (angle)->ElevatorMode.Test.angle = angle);
+        builder.addBooleanProperty("Elevator Only", ()->elevatorOnly, (b)->elevatorOnly = b);
     }
 }
