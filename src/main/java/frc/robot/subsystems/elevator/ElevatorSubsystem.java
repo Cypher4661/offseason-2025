@@ -8,8 +8,12 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.Demacia.utils.Motors.MotorCommands;
 import frc.Demacia.utils.Motors.MotorInterface;
+import frc.Demacia.utils.Motors.TalonConfig;
 import frc.Demacia.utils.Motors.TalonMotor;
+import frc.Demacia.utils.Sensors.Cancoder;
+import frc.Demacia.utils.Sensors.CancoderConfig;
 import frc.robot.Constants;
+
 
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -21,17 +25,33 @@ public class ElevatorSubsystem extends SubsystemBase {
   
     private final MotorInterface leftMotor;
     private final MotorInterface rightMotor;
+    private final MotorInterface motor;
+    private final TalonConfig armConfig;
+    private final Cancoder cancoder;            
+
 
     // גבהים לכל קומה (במטרים / יחידות אנקודר)
     private static final double[] magenticHeights = { 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8}; 
 
-    public enum ElevatorMode { Idle(0), Home(0), Intake(0.2), L1(0.3), L2(0.7), 
-        L3(0.9), L4(1.2), AlgieUp(1), AlgieDown(0.4), Barge(1.2), Test(0),
-        Calibreate(0);
+    public enum ElevatorMode { 
+        Idle(0, -90), 
+        Home(0, -90), 
+        Intake(0.2, 0), 
+        L1(0.3, -20), 
+        L2(0.7, 20), 
+        L3(0.9, 50), 
+        L4(1.2,70), 
+        AlgieUp(1,60), 
+        AlgieDown(0.4, 30), 
+        Barge(1.2, 90), 
+        Test(0,0),
+        Calibreate(0, -90);
         double height;
-        private ElevatorMode(double height) {
-            this.height = height;
-        }
+        double angle;
+        private ElevatorMode(double height, double angle) {this.height = height; this.angle = angle; }
+        
+
+
     }
 
     private ElevatorMode mode = ElevatorMode.Calibreate;
@@ -50,10 +70,12 @@ public class ElevatorSubsystem extends SubsystemBase {
         mode.height = getHeight() + 0.05;
         setDefaultCommand(new ElevatorCommand(this));
         SmartDashboard.putString("SetMode", "test");
-        SmartDashboard.putData("SetModeNow", new StartEndCommand(
-        () -> setMode(SmartDashboard.getString("SetMode", "test")),
-        () -> {}));
+        this.armConfig = Constants.Arm.ARM_CONFIG;
+        CancoderConfig cancoderConfig = Constants.Arm.ARM_CANCODER;
+        this.motor = new TalonMotor(armConfig);
+        this.cancoder = new Cancoder(cancoderConfig);
     }
+    
 
     private boolean isAtButtom(){
         return !buttomSwitch.get() || getHeight() <= minHeight;
@@ -66,7 +88,31 @@ public class ElevatorSubsystem extends SubsystemBase {
         return leftMotor.getCurrentPosition();
     } 
 
-    public void setPower(double power) {
+    public double getAngle(){
+        return motor.getCurrentAngle();
+    }
+    
+
+    public void setArmPower(double percent) {
+        motor.setDuty(percent);
+    }
+
+    public void stopArm() {
+        setArmPower(0.0);
+    }
+
+
+    public void calibrateFromCancoder() {
+    
+        double absDegrees = cancoder.getCurrentAbsPosition();
+        motor.setEncoderPosition(absDegrees - Constants.Arm.ARM_CANCODER_OFFSET);
+    }
+
+    public void setAngle(double targetDeg) {
+        motor.setMotion(targetDeg);
+    }
+
+    public void setElvPower(double power) {
         if(power < 0 && isAtButtom()) power = 0;
         if(power > 0 && getHeight() > maxHeight) power = 0;
         leftMotor.setDuty(power);
@@ -106,7 +152,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         if(buttomSwitch.get()){
             calibreated = true;
             leftMotor.setEncoderPosition(minHeight);
-            setPower(0);
+            setElvPower(0);
         } else if(calibreated && IsMagnet()) {
             double h = getHeight();
             double closest = 0;

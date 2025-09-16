@@ -13,6 +13,7 @@ public class ElevatorCommand extends Command {
     public ElevatorCommand(ElevatorSubsystem elevator) {
         this.elevator = elevator;
         addRequirements(elevator);
+        
     }
 
     @Override
@@ -28,16 +29,18 @@ public class ElevatorCommand extends Command {
             case Calibreate:
                 if (elevator.getHeight() > mode.height) {
                     mode.height = 0;
-                    elevator.setPower(Constants.elevatorConfig.CalibreatePowerDown);
+                    elevator.setElvPower(Constants.elevatorConfig.CalibreatePowerDown);
                 } else {
-                    elevator.setPower(Constants.elevatorConfig.CalibreatePowerUp);
+                    elevator.setElvPower(Constants.elevatorConfig.CalibreatePowerUp);
                 }
                 break;
             case Idle:
-                elevator.setPower(0);
+                elevator.setElvPower(0);
+                elevator.setArmPower(0);
                 break;
             default:
                 elevator.setHeight(mode.height);
+                elevator.setAngle(mode.angle);
                 break;
         }
     }
