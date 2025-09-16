@@ -25,7 +25,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   
     private final MotorInterface leftMotor;
     private final MotorInterface rightMotor;
-    private final MotorInterface motor;
+    private final MotorInterface motorArm;
     private final TalonConfig armConfig;
     private final Cancoder cancoder;            
 
@@ -72,7 +72,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         SmartDashboard.putString("SetMode", "test");
         this.armConfig = Constants.Arm.ARM_CONFIG;
         CancoderConfig cancoderConfig = Constants.Arm.ARM_CANCODER;
-        this.motor = new TalonMotor(armConfig);
+        this.motorArm = new TalonMotor(armConfig);
         this.cancoder = new Cancoder(cancoderConfig);
     }
     
@@ -89,12 +89,12 @@ public class ElevatorSubsystem extends SubsystemBase {
     } 
 
     public double getAngle(){
-        return motor.getCurrentAngle();
+        return motorArm.getCurrentAngle();
     }
     
 
     public void setArmPower(double percent) {
-        motor.setDuty(percent);
+        motorArm.setDuty(percent);
     }
 
     public void stopArm() {
@@ -105,11 +105,11 @@ public class ElevatorSubsystem extends SubsystemBase {
     public void calibrateFromCancoder() {
     
         double absDegrees = cancoder.getCurrentAbsPosition();
-        motor.setEncoderPosition(absDegrees - Constants.Arm.ARM_CANCODER_OFFSET);
+        motorArm.setEncoderPosition(absDegrees - Constants.Arm.ARM_CANCODER_OFFSET);
     }
 
     public void setAngle(double targetDeg) {
-        motor.setMotion(targetDeg);
+        motorArm.setMotion(targetDeg);
     }
 
     public void setElvPower(double power) {
