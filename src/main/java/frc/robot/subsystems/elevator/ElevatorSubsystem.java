@@ -3,6 +3,7 @@ package frc.robot.subsystems.elevator;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.Demacia.utils.Motors.MotorCommands;
 import frc.Demacia.utils.Motors.MotorInterface;
@@ -18,6 +19,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 public class ElevatorSubsystem extends SubsystemBase {
     // סוויץ' מגנטי שנדלק בכל קומה
+
     private DigitalInput buttomSwitch  = new DigitalInput(Constants.elevatorConfig.LimitSwitchID);
     private DigitalInput magenticSwitch  = new DigitalInput(Constants.elevatorConfig.MagneticLimitSwitchID);
   
@@ -59,6 +61,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     private double maxHeight = 1.2;
 
     public ElevatorSubsystem() {
+        System.out.println("ElevatorSubsystem started");
         leftMotor = new TalonMotor(Constants.elevatorConfig.LeftMotor);
         rightMotor = new TalonMotor(Constants.elevatorConfig.RightMotor);
         ((TalonFX)rightMotor).setControl(new Follower(Constants.elevatorConfig.LeftMotor.id, true));
@@ -69,6 +72,10 @@ public class ElevatorSubsystem extends SubsystemBase {
         mode.height = getHeight() + 0.05;
         setDefaultCommand(new ElevatorCommand(this));
         SmartDashboard.putString("SetMode", "test");
+        SmartDashboard.putData("SetModeNow", new RunCommand(
+        () -> setMode(SmartDashboard.getString("SetMode", "test")),
+        
+        this));
         this.armConfig = Constants.Arm.ARM_CONFIG;
         CancoderConfig cancoderConfig = Constants.Arm.ARM_CANCODER;
         this.motorArm = new TalonMotor(armConfig);
@@ -78,6 +85,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     private boolean isAtButtom(){
         return !buttomSwitch.get() || getHeight() <= minHeight;
+        
     }
     private boolean IsMagnet(){
         return !magenticSwitch.get();
@@ -87,12 +95,12 @@ public class ElevatorSubsystem extends SubsystemBase {
         return leftMotor.getCurrentPosition();
     } 
 
-    public double getAngle(){
-        return motorArm.getCurrentAngle();
-    }
-    public double getAbsAngle(){
-        return cancoder.getCurrentAbsPosition();
-    }
+    // public double getAngle(){
+    //     return motorArm.getCurrentAngle();
+    // }
+    // public double getAbsAngle(){
+    //     return cancoder.getCurrentAbsPosition();
+    // }
     
 
     public void setArmPower(double percent) {
@@ -153,7 +161,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if(buttomSwitch.get()){
+        if(isAtButtom()){
             calibreated = true;
             leftMotor.setEncoderPosition(minHeight);
             setElvPower(0);
@@ -180,8 +188,8 @@ public class ElevatorSubsystem extends SubsystemBase {
         builder.addBooleanProperty("Calibreated", () -> calibreated, null);
         builder.addBooleanProperty("buttom", this::isAtButtom, null);
         builder.addBooleanProperty("magnet", this::IsMagnet, null);
-        builder.addDoubleProperty("Angle", this::getAngle, null);
-        builder.addDoubleProperty("AbsAngle", this::getAbsAngle, null);
+        //builder.addDoubleProperty("Angle", this::getAngle, null);
+        //builder.addDoubleProperty("AbsAngle", this::getAbsAngle, null);
         
         builder.addDoubleProperty("Test Height", ()->ElevatorMode.Test.height, (height)->ElevatorMode.Test.height = height);
         builder.addDoubleProperty("Test Angle", ()->ElevatorMode.Test.angle, (angle)->ElevatorMode.Test.angle = angle);

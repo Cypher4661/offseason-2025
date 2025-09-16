@@ -24,7 +24,7 @@ public  final class Constants {
     public  static final class elevatorConfig{
         public static final double kg = 0.5;
 
-            public static final TalonConfig LeftMotor = new TalonConfig(7, Canbus.Rio, "ElevatorLeft")
+            public static final TalonConfig LeftMotor = new TalonConfig(30, Canbus.Rio, "ElevatorLeft")
             .withBrake(true)
             .withInvert(false)
             .withMeterMotor(60, 2*0.045)
@@ -32,10 +32,10 @@ public  final class Constants {
             .withCurrent(30)
             .withRampTime(0.5)
             .withVolts(12);
-    public static final TalonConfig RightMotor = new TalonConfig(2, "ElevatorRight", LeftMotor)
+    public static final TalonConfig RightMotor = new TalonConfig(31, "ElevatorRight", LeftMotor)
             .withInvert(true);
 
-    public static final int MagneticLimitSwitchID = 0;
+    public static final int MagneticLimitSwitchID = 9;
     public static final int LimitSwitchID = 1;
     public static final double CalibreatePowerUp = 0.2;
     public static final double CalibreatePowerDown = 0.05;           
