@@ -90,6 +90,9 @@ public class ElevatorSubsystem extends SubsystemBase {
     public double getAngle(){
         return motorArm.getCurrentAngle();
     }
+    public double getAbsAngle(){
+        return cancoder.getCurrentAbsPosition();
+    }
     
 
     public void setArmPower(double percent) {
@@ -99,6 +102,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     public void stopArm() {
         setArmPower(0.0);
     }
+
+
 
 
     public void calibrateFromCancoder() {
@@ -175,6 +180,8 @@ public class ElevatorSubsystem extends SubsystemBase {
         builder.addBooleanProperty("Calibreated", () -> calibreated, null);
         builder.addBooleanProperty("buttom", this::isAtButtom, null);
         builder.addBooleanProperty("magnet", this::IsMagnet, null);
+        builder.addDoubleProperty("Angle", this::getAngle, null);
+        builder.addDoubleProperty("AbsAngle", this::getAbsAngle, null);
         
         builder.addDoubleProperty("Test Height", ()->ElevatorMode.Test.height, (height)->ElevatorMode.Test.height = height);
         builder.addDoubleProperty("Test Angle", ()->ElevatorMode.Test.angle, (angle)->ElevatorMode.Test.angle = angle);
