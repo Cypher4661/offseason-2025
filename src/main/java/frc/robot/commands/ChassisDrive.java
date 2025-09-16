@@ -4,9 +4,9 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.Swerve.ChassisSubsystem;
+import frc.robot.subsystems.Swerve.SwerveConstants;
 import frc.robot.subsystems.Swerve.SwerveConstants.ChassisConstants;
 
 public class ChassisDrive extends Command{
@@ -15,16 +15,13 @@ public class ChassisDrive extends Command{
     private double direction;
     private boolean isRed;
     private ChassisSpeeds speeds;
-    private double UseStike;
-    private double UseTrigger;
-    private Boolean PrecisionMode = false;
-
+    private boolean UseStick;
+    
     public ChassisDrive(ChassisSubsystem chassis, CommandXboxController controller){
         this.chassis = chassis;
         this.controller = controller;
         addRequirements(chassis);
-        SmartDashboard.putBoolean("Use Stike", false);
-        SmartDashboard.putBoolean("Is Precision Mode", false);
+        SmartDashboard.putBoolean("Use Stick", false);
         
     }
 
@@ -32,18 +29,14 @@ public class ChassisDrive extends Command{
     public void execute(){
         isRed = chassis.isRed();
         direction = isRed ? 1 : -1;
-        UseStike = SmartDashboard.getBoolean("Use Stike", false)? 1 : -1;
-      
-        
-
+        UseStick = SmartDashboard.getBoolean("Use Stick", false);
 
         double rot = 0;
         double LjoyX = controller.getLeftY() * direction;
         double LjoyY = controller.getLeftX() * direction;
-        if(UseStike == 1){
+        if(UseStick){
             rot = controller.getRightX() * direction;
-        }
-        else {
+        } else {
             rot  = controller.getLeftTriggerAxis() - controller.getRightTriggerAxis();
         }
 
@@ -51,7 +44,14 @@ public class ChassisDrive extends Command{
         LjoyX = MathUtil.applyDeadband(LjoyX, ChassisConstants.DeadBand);
         rot = MathUtil.applyDeadband(rot, ChassisConstants.DeadBand);
 
-       
+        double multiplier = chassis.PrecisionMode ? SwerveConstants.ChassisConstants.PrecisionModeMultiplier : 1;
+        double VelX = Math.pow(LjoyX, 2) * multiplier * Math.signum(LjoyX);
+        double VelY = Math.pow(LjoyY, 2) * multiplier * Math.signum(LjoyY);
+        double VelRot =Math.pow(rot, 2) * multiplier * Math.signum(rot);
+        speeds = new ChassisSpeeds(VelX, VelY, VelRot);
+        chassis.setVelocities(speeds);
+
+        /* 
 
         if (chassis.PrecisionMode){
             double VelX = Math.pow(LjoyX, 2) * 0.7 * Math.signum(LjoyX);
@@ -71,6 +71,7 @@ public class ChassisDrive extends Command{
             //System.out.println("Normal Mode");
             
         }
+        */
         
 
         

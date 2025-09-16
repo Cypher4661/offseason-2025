@@ -60,5 +60,6 @@ public class SwerveConstants {
         public static final double Max_Rotation_Speed = 8.0; // in meters per second
         public static final ChassisSpeeds Max_Speed_PrecisionMode = new ChassisSpeeds(1.0, 1.0, 1.0); // in meters per second and radians per second
         public static final double DeadBand = 0.1;
+        public static final double PrecisionModeMultiplier = 0.7;
     }
 }
