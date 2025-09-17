@@ -20,12 +20,16 @@ import frc.robot.subsystems.Arm.ArmSubsystem.ArmMode;
 public class ArmSubsystem extends SubsystemBase {
 
   public enum ArmMode {
-    Idle(0),       
-    L2(30),      
-    L1(-30),     
-    Intake(30),
+    Idle(-90),
+    L1(-30),       
+    L2(5),      
     L3(75),
-    L4(105);
+    L4(105),
+    AlgieUp(20),
+    AlgieDown(-20),
+    Barge(90),
+    Intake(-145);
+    
 
     double angle;
     ArmMode(double angle) { this.angle = angle; }
