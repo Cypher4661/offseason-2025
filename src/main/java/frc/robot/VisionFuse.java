@@ -4,5 +4,17 @@
 
 package frc.robot;
 
+import frc.robot.subsystems.VisionSubsystem;
+
 /** Add your docs here. */
-public class VisionFuse {}
+public class VisionFuse{
+    public VisionSubsystem reefRightCamera;
+    public VisionSubsystem reefLeftCamera;
+    public VisionSubsystem feederCamera;
+
+    public VisionFuse(VisionSubsystem reefRightCamera, VisionSubsystem reefLeftCamera, VisionSubsystem feederCamera) {
+        this.reefRightCamera = reefRightCamera;
+        this.reefLeftCamera = reefLeftCamera;
+        this.feederCamera = feederCamera;
+    }
+}

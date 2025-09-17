@@ -30,6 +30,9 @@ public final class Constants {
   public static final double PREDICT_X = -0.1; // X prediction for latency compensation in meters
   public static final double PREDICT_OMEGA = 0.2; // Omega prediction for latency compensation in radians
 
+  public static final double WORST_RELIABLE_DIST = 4; //max distance for reliable pose estimation in meters
+  public static final double BEST_RELIABLE_DIST = 1; // best distance for reliable pose estimation in meters
+
   private static double BARGE_TAG_HIGHT = inchToMeter(73.54);
   private static double REEF_TAG_HIGHT = inchToMeter(12.13);
   private static double STATION_TAG_HIGHT = inchToMeter(58.50);
