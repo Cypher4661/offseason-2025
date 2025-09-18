@@ -95,12 +95,12 @@ public class ElevatorSubsystem extends SubsystemBase {
         return leftMotor.getCurrentPosition();
     } 
 
-    // public double getAngle(){
-    //     return motorArm.getCurrentAngle();
-    // }
-    // public double getAbsAngle(){
-    //     return cancoder.getCurrentAbsPosition();
-    // }
+    public double getAngle(){
+        return motorArm.getCurrentAngle();
+    }
+    public double getAbsAngle(){
+        return cancoder.getCurrentAbsPosition();
+    }
     
 
     public void setArmPower(double percent) {
@@ -161,6 +161,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        SmartDashboard.putNumber("angle", getAngle());
         if(isAtButtom()){
             calibreated = true;
             leftMotor.setEncoderPosition(minHeight);
