@@ -3,14 +3,12 @@ package frc.robot.subsystems.elevator;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.Demacia.utils.Log.LogManager;
 import frc.Demacia.utils.Motors.MotorCommands;
 import frc.Demacia.utils.Motors.MotorInterface;
-import frc.Demacia.utils.Motors.TalonConfig;
 import frc.Demacia.utils.Motors.TalonMotor;
 import frc.Demacia.utils.Sensors.Cancoder;
-import frc.Demacia.utils.Sensors.CancoderConfig;
 import frc.robot.Constants;
 
 
@@ -25,9 +23,9 @@ public class ElevatorSubsystem extends SubsystemBase {
   
     private final MotorInterface leftMotor;
     private final MotorInterface rightMotor;
-    private final MotorInterface motorArm;
-    private final TalonConfig armConfig;
+    private final MotorInterface armMotor;
     private final Cancoder cancoder;            
+    private double armOffset = Constants.Arm.ARM_CANCODER_OFFSET;
     boolean elevatorOnly = false;
 
 
@@ -50,9 +48,6 @@ public class ElevatorSubsystem extends SubsystemBase {
         double height;
         double angle;
         private ElevatorMode(double height, double angle) {this.height = height; this.angle = angle; }
-        
-
-
     }
 
     private ElevatorMode mode = ElevatorMode.Calibreate;
@@ -61,25 +56,31 @@ public class ElevatorSubsystem extends SubsystemBase {
     private double maxHeight = 1.2;
 
     public ElevatorSubsystem() {
-        System.out.println("ElevatorSubsystem started");
+        LogManager.log("ElevatorSubsystem started");
         leftMotor = new TalonMotor(Constants.elevatorConfig.LeftMotor);
         rightMotor = new TalonMotor(Constants.elevatorConfig.RightMotor);
         ((TalonFX)rightMotor).setControl(new Follower(Constants.elevatorConfig.LeftMotor.id, true));
-        
-        SmartDashboard.putData("Elevetor", this);
-        MotorCommands.showPowerCommand("Elevator Power", this, leftMotor);
+        armMotor = new TalonMotor(Constants.Arm.ARM_CONFIG);
+        cancoder = new Cancoder(Constants.Arm.ARM_CANCODER);
+        calibrateFromCancoder();
+
+        // start mode
         mode = ElevatorMode.Calibreate;
         mode.height = getHeight() + 0.05;
-        setDefaultCommand(new ElevatorCommand(this));
-        SmartDashboard.putString("SetMode", "test");
-        SmartDashboard.putData("SetModeNow", new RunCommand(
-        () -> setMode(SmartDashboard.getString("SetMode", "test")),
         
-        this));
-        this.armConfig = Constants.Arm.ARM_CONFIG;
-        CancoderConfig cancoderConfig = Constants.Arm.ARM_CANCODER;
-        this.motorArm = new TalonMotor(armConfig);
-        this.cancoder = new Cancoder(cancoderConfig);
+        // Elastic 
+        leftMotor.showConfigPIDFSlotCommand(0);
+        leftMotor.showConfigMotionVelocitiesCommand();
+        armMotor.showConfigPIDFSlotCommand(0);
+        armMotor.showConfigMotionVelocitiesCommand();
+
+        MotorCommands.showPowerCommand("Elevator Power", this, leftMotor);
+        MotorCommands.showPositionCommand("Elevator Position", this, leftMotor);
+        MotorCommands.showPowerCommand("Arm Power", this, armMotor);
+        MotorCommands.showAngleCommand("Arm Angle cmd", this, armMotor);
+        SmartDashboard.putData("Elecator Command",new ElevatorCommand(this));
+        // setDefaultCommand(new ElevatorCommand(this));
+        SmartDashboard.putData("Elevetor", this);
     }
     
 
@@ -96,7 +97,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     } 
 
     public double getAngle(){
-        return motorArm.getCurrentAngle();
+        return armMotor.getCurrentAngle();
     }
     public double getAbsAngle(){
         return cancoder.getCurrentAbsPosition();
@@ -104,24 +105,20 @@ public class ElevatorSubsystem extends SubsystemBase {
     
 
     public void setArmPower(double percent) {
-        motorArm.setDuty(percent);
+        armMotor.setDuty(percent);
     }
 
     public void stopArm() {
         setArmPower(0.0);
     }
 
-
-
-
     public void calibrateFromCancoder() {
-    
         double absDegrees = cancoder.getCurrentAbsPosition();
-        motorArm.setEncoderPosition(absDegrees - Constants.Arm.ARM_CANCODER_OFFSET);
+        armMotor.setEncoderPosition(absDegrees - armOffset);
     }
 
     public void setAngle(double targetDeg) {
-        motorArm.setMotion(targetDeg);
+        armMotor.setMotion(targetDeg);
     }
 
     public void setElvPower(double power) {
@@ -176,6 +173,7 @@ public class ElevatorSubsystem extends SubsystemBase {
                     closest = mh;
                 }
             }
+            LogManager.log("Elevator magnet at height " + closest + " corrected " + (closest - h));
             leftMotor.setEncoderPosition(closest);
         }
     }
@@ -184,16 +182,17 @@ public class ElevatorSubsystem extends SubsystemBase {
     public void initSendable(SendableBuilder builder) {
         super.initSendable(builder);
     
-        builder.addStringProperty("Mode", this::getModeString, null);
+        builder.addStringProperty("Mode", this::getModeString, this::setMode);
         builder.addDoubleProperty("Height", this::getHeight, null);
         builder.addBooleanProperty("Calibreated", () -> calibreated, null);
         builder.addBooleanProperty("buttom", this::isAtButtom, null);
         builder.addBooleanProperty("magnet", this::IsMagnet, null);
-        //builder.addDoubleProperty("Angle", this::getAngle, null);
-        //builder.addDoubleProperty("AbsAngle", this::getAbsAngle, null);
+        builder.addDoubleProperty("Angle", this::getAngle, null);
+        builder.addDoubleProperty("AbsAngle", this::getAbsAngle, null);
         
         builder.addDoubleProperty("Test Height", ()->ElevatorMode.Test.height, (height)->ElevatorMode.Test.height = height);
         builder.addDoubleProperty("Test Angle", ()->ElevatorMode.Test.angle, (angle)->ElevatorMode.Test.angle = angle);
         builder.addBooleanProperty("Elevator Only", ()->elevatorOnly, (b)->elevatorOnly = b);
+        builder.addDoubleProperty("Arm Offset", ()->armOffset, (o)->{armOffset = 0; calibrateFromCancoder();});
     }
 }
