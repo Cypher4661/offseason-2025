@@ -2,12 +2,9 @@ package frc.robot.subsystems.Examples;
 
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.Demacia.utils.Motors.BaseMotorConfig.Canbus;
 import frc.Demacia.utils.Motors.MotorInterface;
 import frc.Demacia.utils.Motors.SparkConfig;
 import frc.Demacia.utils.Motors.SparkMotor;
-import frc.Demacia.utils.Motors.TalonConfig;
-import frc.Demacia.utils.Motors.TalonMotor;
 
 /*
  * This class is an example of demacia lib

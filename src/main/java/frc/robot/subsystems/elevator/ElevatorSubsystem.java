@@ -1,7 +1,9 @@
 package frc.robot.subsystems.elevator;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.Demacia.utils.Log.LogManager;
@@ -25,26 +27,26 @@ public class ElevatorSubsystem extends SubsystemBase {
     private final MotorInterface rightMotor;
     private final MotorInterface armMotor;
     private final Cancoder cancoder;            
-    private double armOffset = Constants.Arm.ARM_CANCODER_OFFSET;
-    boolean elevatorOnly = false;
-
+    private double armOffset = Constants.Arm.ARM_CANCODER_OFFSET; // used to set the offset from Elastic
+    boolean elevatorOnly = true; // in testing - only move the elevator and not the arm
+    SendableChooser<ElevatorMode> modeChooser;
 
     // גבהים לכל קומה (במטרים / יחידות אנקודר)
-    private static final double[] magenticHeights = { 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8}; 
+    private static final double[] magenticHeights = { 0.1, 0.15, 0.22, 0.29, 0.35, 0.40, 0.5, 0.6}; 
 
     public enum ElevatorMode { 
-        Idle(0, -90), 
-        Home(0, -90), 
-        Intake(0.2, 0), 
-        L1(0.3, -20), 
-        L2(0.7, 20), 
-        L3(0.9, 50), 
-        L4(1.2,70), 
-        AlgieUp(1,60), 
-        AlgieDown(0.4, 30), 
-        Barge(1.2, 90), 
+        Idle(0, -70), 
+        Home(0, -70), 
+        Intake(0.2, -50), 
+        L1(0.4, -20), 
+        L2(0.2, 20), 
+        L3(0.3, 50), 
+        L4(0.6,40), 
+        AlgieUp(0.3,60), 
+        AlgieDown(0.22, 30), 
+        Barge(0.6, 90), 
         Test(0,0),
-        Calibreate(0, -90);
+        Calibreate(0, -70);
         double height;
         double angle;
         private ElevatorMode(double height, double angle) {this.height = height; this.angle = angle; }
@@ -53,7 +55,9 @@ public class ElevatorSubsystem extends SubsystemBase {
     private ElevatorMode mode = ElevatorMode.Calibreate;
     private boolean calibreated = false;
     private double minHeight = 0;
-    private double maxHeight = 1.2;
+    private double maxHeight = 0.6;
+    private double minAngle = -70;
+    private double  maxAngle = 90;
 
     public ElevatorSubsystem() {
         LogManager.log("ElevatorSubsystem started");
@@ -66,19 +70,19 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         // start mode
         mode = ElevatorMode.Calibreate;
-        mode.height = getHeight() + 0.05;
+        mode.height = getHeight() + 0.05; // set the height so that the elevatro will move up 5 cm before going doen to the sensor
         
-        // Elastic 
+        // Elastic - sysid/testing data
         leftMotor.showConfigPIDFSlotCommand(0);
         leftMotor.showConfigMotionVelocitiesCommand();
         armMotor.showConfigPIDFSlotCommand(0);
         armMotor.showConfigMotionVelocitiesCommand();
-
         MotorCommands.showPowerCommand("Elevator Power", this, leftMotor);
         MotorCommands.showPositionCommand("Elevator Position", this, leftMotor);
         MotorCommands.showPowerCommand("Arm Power", this, armMotor);
         MotorCommands.showAngleCommand("Arm Angle cmd", this, armMotor);
         SmartDashboard.putData("Elecator Command",new ElevatorCommand(this));
+        // set the default command
         // setDefaultCommand(new ElevatorCommand(this));
         SmartDashboard.putData("Elevetor", this);
     }
@@ -88,7 +92,8 @@ public class ElevatorSubsystem extends SubsystemBase {
         return !buttomSwitch.get() || getHeight() <= minHeight;
         
     }
-    private boolean IsMagnet(){
+
+    private boolean IsAtMagnet(){
         return !magenticSwitch.get();
     }
 
@@ -105,6 +110,10 @@ public class ElevatorSubsystem extends SubsystemBase {
     
 
     public void setArmPower(double percent) {
+        double angle = getAngle();
+        if((percent < 0 && angle <= minAngle) || (percent > 0 && angle >= maxAngle)) {
+            percent = 0;
+        }
         armMotor.setDuty(percent);
     }
 
@@ -118,7 +127,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public void setAngle(double targetDeg) {
-        armMotor.setMotion(targetDeg);
+        armMotor.setMotion(MathUtil.clamp(targetDeg, minAngle, maxAngle));
     }
 
     public void setElvPower(double power) {
@@ -158,12 +167,11 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("angle", getAngle());
         if(isAtButtom()){
             calibreated = true;
             leftMotor.setEncoderPosition(minHeight);
             setElvPower(0);
-        } else if(calibreated && IsMagnet()) {
+        } else if(calibreated && IsAtMagnet()) {
             double h = getHeight();
             double closest = 0;
             double error = Double.MAX_VALUE;
@@ -178,15 +186,26 @@ public class ElevatorSubsystem extends SubsystemBase {
         }
     }
 
+    private void addModeChooser() {
+        modeChooser = new SendableChooser<>();
+        modeChooser.setDefaultOption(ElevatorMode.Idle.name(), ElevatorMode.Idle);
+        for(ElevatorMode mode : ElevatorMode.values()) {
+            if(mode != ElevatorMode.Idle)
+                modeChooser.addOption(mode.name(), mode);
+        }
+        modeChooser.onChange((mode)->setMode(mode));
+        SmartDashboard.putData("Mode",modeChooser);
+    }
+
     @Override
     public void initSendable(SendableBuilder builder) {
         super.initSendable(builder);
-    
-        builder.addStringProperty("Mode", this::getModeString, this::setMode);
+        addModeChooser();
+        builder.addStringProperty("Mode", this::getModeString, null);
         builder.addDoubleProperty("Height", this::getHeight, null);
         builder.addBooleanProperty("Calibreated", () -> calibreated, null);
         builder.addBooleanProperty("buttom", this::isAtButtom, null);
-        builder.addBooleanProperty("magnet", this::IsMagnet, null);
+        builder.addBooleanProperty("magnet", this::IsAtMagnet, null);
         builder.addDoubleProperty("Angle", this::getAngle, null);
         builder.addDoubleProperty("AbsAngle", this::getAbsAngle, null);
         
