@@ -127,7 +127,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public void setAngle(double targetDeg) {
-        armMotor.setMotion(MathUtil.clamp(targetDeg, minAngle, maxAngle));
+        armMotor.setMotion(MathUtil.clamp(targetDeg, minAngle, maxAngle), Constants.Arm.kG * Math.cos(Math.toRadians(getAngle())));
     }
 
     public void setElvPower(double power) {
@@ -139,7 +139,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     public void setHeight(double height) {
         if(!calibreated) return;
         height = Math.max(minHeight, Math.min(maxHeight, height));
-        leftMotor.setPositionVoltage(height, isAtButtom()? 0 :  Constants.elevatorConfig.kg);
+        leftMotor.setMotion(height, isAtButtom()? 0 :  Constants.elevatorConfig.KG);
     }
 
     public void setMode(ElevatorMode mode) {
