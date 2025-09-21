@@ -45,17 +45,17 @@ public class ElevatorOffset {
     public void process() {
         if(buttom() != lastButtom) {
             if(up()) {
-                SmartDashboard.putNumber("up buttom height", height());
+                SmartDashboard.putNumber("up " + (lastButtom?"Off":"On") + " buttom height", height());
             } else {
-                SmartDashboard.putNumber("down buttom height", height());
+                SmartDashboard.putNumber("down " + (lastButtom?"Off":"On") + " buttom height", height());
             }
             lastButtom = !lastButtom;
         }
         if(magnet() != lastMagnet) {
             if(up()) {
-                SmartDashboard.putNumber("up magnet height", height());
+                SmartDashboard.putNumber("up " + (lastMagnet?"Off":"On") + " magnet height", height());
             } else {
-                SmartDashboard.putNumber("down magent height", height());
+                SmartDashboard.putNumber("down " + (lastMagnet?"Off":"On") + " magent height", height());
             }
             lastMagnet = !lastMagnet;
         }
