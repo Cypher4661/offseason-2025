@@ -21,10 +21,12 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     boolean haveArm = false; // if arm motor and encoder exists
     boolean elevatorOnly = true; // in testing - only move the elevator and not the arm
-    // סוויץ' מגנטי שנדלק בכל קומה
+    
 
-    private DigitalInput buttomSwitch  = new DigitalInput(Constants.elevatorConfig.LimitSwitchID);
+    // Magnetic sensor heights
+    private static final double[] magenticHeights = { 0.1, 0.15, 0.22, 0.29, 0.35, 0.40, 0.5, 0.6}; 
     private DigitalInput magenticSwitch  = new DigitalInput(Constants.elevatorConfig.MagneticLimitSwitchID);
+    private DigitalInput buttomSwitch  = new DigitalInput(Constants.elevatorConfig.LimitSwitchID);
   
     private final MotorInterface leftMotor;
     private final MotorInterface rightMotor;
@@ -32,10 +34,9 @@ public class ElevatorSubsystem extends SubsystemBase {
     private final Cancoder cancoder;            
     private double armOffset = Constants.Arm.ARM_CANCODER_OFFSET; // used to set the offset from Elastic
     SendableChooser<ElevatorMode> modeChooser;
+    ElevatorOffset elevatorOffset;
 
-    // גבהים לכל קומה (במטרים / יחידות אנקודר)
-    private static final double[] magenticHeights = { 0.1, 0.15, 0.22, 0.29, 0.35, 0.40, 0.5, 0.6}; 
-
+    
     public enum ElevatorMode { 
         Idle(0, -70), 
         Home(0, -70), 
@@ -93,6 +94,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         // set the default command
         // setDefaultCommand(new ElevatorCommand(this));
         SmartDashboard.putData("Elevetor", this);
+        elevatorOffset = new ElevatorOffset(buttomSwitch, magenticSwitch, leftMotor);
     }
     
 
@@ -198,6 +200,7 @@ public class ElevatorSubsystem extends SubsystemBase {
             LogManager.log("Elevator magnet at height " + closest + " corrected " + (closest - h));
             leftMotor.setEncoderPosition(closest);
         }
+        elevatorOffset.process();
     }
 
     private void addModeChooser() {
