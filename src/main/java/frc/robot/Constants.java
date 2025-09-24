@@ -52,5 +52,24 @@ public final class Constants {
         new CancoderConfig(ARM_CANCODER_ID, Canbus.Rio, "arm/cancoder")
           .withOffset(0)
           .withInvert(ARM_CANCODER_INVERTED);
+
+        
+  }
+
+  public static final class Gripper {
+    public static final int     MotorID       = 21;
+    public static final boolean MotorInverted = false;
+    public static final boolean MotorBrake    = true;  
+    public static final double MaxVoltage   = 12.0;  
+    public static final double RAMP_TIME_S = 0.25;  
+    public static final int    MaxCurrent = 35;    
+    public static final int UltrasonicPingDIO = 0;  
+    public static final int UltrasonicEchoDIO = 1;  
+    public static final int BackAnalogChannel = 0;  
+    public static final double FrontMinimumDistance   = 0.18; 
+    public static final double BackMinimumDistance = 2.6;  
+    public static final double MaxDistance  = 1.0; 
+    public static final double RampTime = 0;
   }
 }
+
