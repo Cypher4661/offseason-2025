@@ -34,7 +34,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     private final Cancoder cancoder;            
     private double armOffset = Constants.Arm.ARM_CANCODER_OFFSET; // used to set the offset from Elastic
     SendableChooser<ElevatorMode> modeChooser;
-    ElevatorOffset elevatorOffset;
+    double encoderOffset;
 
     
     public enum ElevatorMode { 
@@ -58,7 +58,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     private ElevatorMode mode = ElevatorMode.Calibreate;
     private boolean calibreated = false;
     private double minHeight = 0;
-    private double maxHeight = 0.6;
+    private double maxHeight = 0.8;
     private double minAngle = -70;
     private double  maxAngle = 90;
 
@@ -69,8 +69,10 @@ public class ElevatorSubsystem extends SubsystemBase {
         ((TalonFX)rightMotor).setControl(new Follower(Constants.elevatorConfig.LeftMotor.id, true));
 
         // start mode
-        mode = ElevatorMode.Calibreate;
-        mode.height = getHeight() + 0.05; // set the height so that the elevatro will move up 5 cm before going doen to the sensor
+        mode = ElevatorMode.Idle;
+        ElevatorMode.Calibreate.height = getHeight() + 0.05; // set the height so that the elevatro will move up 5 cm before going doen to the sensor
+        calibreated = true;
+        encoderOffset = minHeight - leftMotor.getCurrentPosition();
 
         if(haveArm) {
             armMotor = new TalonMotor(Constants.Arm.ARM_CONFIG);
@@ -94,13 +96,16 @@ public class ElevatorSubsystem extends SubsystemBase {
         // set the default command
         // setDefaultCommand(new ElevatorCommand(this));
         SmartDashboard.putData("Elevetor", this);
-        elevatorOffset = new ElevatorOffset(buttomSwitch, magenticSwitch, leftMotor);
+        encoderOffset = 0;
     }
     
 
     private boolean isAtButtom(){
         return !buttomSwitch.get() || getHeight() <= minHeight;
-        
+    }
+
+    private boolean buttomSwitch() {
+        return !buttomSwitch.get();
     }
 
     private boolean IsAtMagnet(){
@@ -108,7 +113,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public double getHeight(){
-        return leftMotor.getCurrentPosition();
+        return leftMotor.getCurrentPosition() + encoderOffset;
     } 
 
     public double getAngle() {
@@ -157,7 +162,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     public void setHeight(double height) {
         if(!calibreated) return;
         height = Math.max(minHeight, Math.min(maxHeight, height));
-        leftMotor.setMotion(height, isAtButtom()? 0 :  Constants.elevatorConfig.KG);
+        leftMotor.setPositionVoltage(height-encoderOffset, isAtButtom()? 0 :  Constants.elevatorConfig.KG);
     }
 
     public void setMode(ElevatorMode mode) {
@@ -185,9 +190,9 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if(isAtButtom()){
+        if(buttomSwitch()){
             calibreated = true;
-            leftMotor.setEncoderPosition(minHeight);
+            encoderOffset = minHeight - leftMotor.getCurrentPosition();
             setElvPower(0);
         } else if(calibreated && IsAtMagnet()) {
             double h = getHeight();
@@ -200,9 +205,8 @@ public class ElevatorSubsystem extends SubsystemBase {
                 }
             }
             LogManager.log("Elevator magnet at height " + closest + " corrected " + (closest - h));
-            leftMotor.setEncoderPosition(closest);
+            encoderOffset = closest - leftMotor.getCurrentPosition();
         }
-        elevatorOffset.process();
     }
 
     private void addModeChooser() {
@@ -223,7 +227,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         builder.addStringProperty("Mode", this::getModeString, null);
         builder.addDoubleProperty("Height", this::getHeight, null);
         builder.addBooleanProperty("Calibreated", () -> calibreated, null);
-        builder.addBooleanProperty("buttom", this::isAtButtom, null);
+        builder.addBooleanProperty("buttom", this::buttomSwitch, null);
         builder.addBooleanProperty("magnet", this::IsAtMagnet, null);
         if(haveArm) {
             builder.addDoubleProperty("Angle", this::getAngle, null);
