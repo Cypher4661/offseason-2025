@@ -1,30 +1,23 @@
 package frc.robot.GripperSubsystem;
-
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.Demacia.utils.Motors.SparkConfig;
 import frc.Demacia.utils.Motors.SparkMotor;
-import frc.robot.Constants.Gripper;
-import frc.Demacia.utils.Log.LogEntry;
-import frc.Demacia.utils.Log.LogManager;
-import frc.Demacia.utils.Log.LogSupplier;
-import frc.Demacia.utils.Log.LogManager.LOG_TARGET;
-
-import static frc.robot.Constants.Gripper;
+import frc.robot.Constants.Gripper; 
 
 public class GripperSubsystem extends SubsystemBase {
   private final SparkMotor motor;
-  private final Ultrasonic frontsensor;
-  private final AnalogInput backsensor;
+  private final Ultrasonic frontSensor; 
+  private final AnalogInput backSensor;  
 
   public GripperSubsystem() {
     setName("Gripper");
 
     Ultrasonic.setAutomaticMode(true); 
-    frontsensor   = new Ultrasonic(Gripper.UltrasonicPingDIO, Gripper.UltrasonicEchoDIO); // לא הבנתי מה זה
-    backsensor = new AnalogInput(Gripper.BackAnalogChannel);// לא הבנתי מה זה אומר
+    frontSensor = new Ultrasonic(Gripper.UltrasonicPingDIO, Gripper.UltrasonicEchoDIO);
+    backSensor  = new AnalogInput(Gripper.BackAnalogChannel);
 
     SparkConfig cfg = new SparkConfig(Gripper.MotorID, "Gripper Motor")
         .withInvert(Gripper.MotorInverted)
@@ -33,50 +26,50 @@ public class GripperSubsystem extends SubsystemBase {
         .withRampTime(Gripper.RampTime);
     cfg.maxCurrent = Gripper.MaxCurrent;
 
-    motor = new SparkMotor(cfg);  
-
-    addNT();
+    motor = new SparkMotor(cfg);
   }
 
-  public void setPower(double power) { motor.setDuty(power); }
-  public void stop() { motor.setDuty(0); }
-  public void setNeutralMode(boolean isBrake) { motor.setNeutralMode(isBrake); }
+  public void setPower(double power) {
+    motor.setDuty(power); }
+    
+  public void stop() { 
+    motor.setDuty(0); }
 
-  public double getfrontDistanceMeters() {
-    return frontsensor.getRangeMM() / 1000.0;
+  public void setNeutralMode(boolean isBrake) {
+     motor.setNeutralMode(isBrake); }
+
+  public double getFrontDistanceMeters() {
+    return frontSensor.getRangeMM() / 1000.0;
   }
 
-  public double getbackVoltage() {
-    return backsensor.getAverageVoltage();
+  public double getBackVoltage() {
+    return backSensor.getAverageVoltage();
   }
 
   public boolean isCoralFront() {
-    double d = getfrontDistanceMeters();
-    if (d <= 0) return false;                               
-    if (d > Gripper.MaxDistance) return false;    
-    return d < Gripper.FrontMinimumDistance;              
+    double d = getFrontDistanceMeters();
+    if (d <= 0) return false;                      
+    if (d > Gripper.MaxDistance) return false;     
+    return d < Gripper.FrontMinimumDistance;       
   }
 
   public boolean isCoralBack() {
-    return getbackVoltage() < Gripper.BackMinimumDistance;
+    return getBackVoltage() < Gripper.BackMinimumDistance;
   }
 
   public boolean isCoral() {
     return isCoralFront() && isCoralBack();
   }
 
-  private void addNT() {
-    LogManager.addEntry(getName() + "/get up sensor", this::getfrontSensor, 3);
-    LogManager.addEntry(getName() + "/get down sensor", this::getbackSensor, 3);
-    LogManager.addEntry(getName() + "/Is Coral", this::isCoral, 4);
-  }
-
   @Override
   public void initSendable(SendableBuilder builder) {
     super.initSendable(builder);
-  }
+    builder.setSmartDashboardType("Subsystem");
 
-  @Override
-  public void periodic() {
-  }
-}
+    builder.addDoubleProperty("FrontDistance(m)", this::getFrontDistanceMeters, null);
+    builder.addDoubleProperty("BackVoltage(V)",   this::getBackVoltage,        null);
+    builder.addBooleanProperty("IsCoralFront", this::isCoralFront, null);
+    builder.addBooleanProperty("IsCoralBack",  this::isCoralBack,  null);
+    builder.addBooleanProperty("IsCoral",      this::isCoral,      null);
+
+}}
