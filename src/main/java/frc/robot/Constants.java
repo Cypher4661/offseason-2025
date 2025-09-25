@@ -54,9 +54,9 @@ public final class Constants {
     public static final TalonConfig ARM_CONFIG = new TalonConfig(32, Canbus.Rio, "Arm/Motor")
         .withBrake(true)
         .withInvert(false)
-        .withDegreesMotor(100) // -> setAngle/getCurrentAngle במעלות
-        .withMotionParam(90, 150, 300) // deg/s
-        .withPID(0.3, 0.0, 0.001, 0.0, 0.0, 0.0, kG) // כייל בשטח
+        .withDegreesMotor(100) 
+        .withMotionParam(90, 150, 300) 
+        .withPID(0.3, 0.0, 0.001, 0.0, 0.0, 0.0, kG) 
         .withVolts(12)
         .withCurrent(30)
         .withRampTime(0.3);

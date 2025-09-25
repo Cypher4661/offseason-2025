@@ -132,6 +132,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     public void stopArm() {
         setArmPower(0);
     }
+    
+    
 
     public void calibrateFromCancoder() {
         if(haveArm) {
