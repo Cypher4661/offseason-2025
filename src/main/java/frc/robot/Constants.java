@@ -31,7 +31,7 @@ public final class Constants {
     public static final TalonConfig LeftMotor = new TalonConfig(30, Canbus.Rio, "Elevator/Left")
         .withBrake(true)
         .withInvert(false)
-        .withMeterMotor(60, 2 * 0.045)
+        .withMeterMotor(15, 0.047)
         .withPID(4, 0.1, 0.01, 0, 0, 0, KG)
         .withCurrent(12)
         .withRampTime(0.5)
@@ -54,9 +54,9 @@ public final class Constants {
     public static final TalonConfig ARM_CONFIG = new TalonConfig(32, Canbus.Rio, "Arm/Motor")
         .withBrake(true)
         .withInvert(false)
-        .withDegreesMotor(100) // -> setAngle/getCurrentAngle במעלות
-        .withMotionParam(90, 150, 300) // deg/s
-        .withPID(0.3, 0.0, 0.001, 0.0, 0.0, 0.0, kG) // כייל בשטח
+        .withDegreesMotor(100) 
+        .withMotionParam(90, 150, 300) 
+        .withPID(0.3, 0.0, 0.001, 0.0, 0.0, 0.0, kG) 
         .withVolts(12)
         .withCurrent(30)
         .withRampTime(0.3);
