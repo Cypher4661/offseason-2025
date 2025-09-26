@@ -26,13 +26,13 @@ public final class Constants {
 
   public static final class elevatorConfig {
 
-    public static final double KG = 0.5;
+    public static final double KG = 0.265;
 
     public static final TalonConfig LeftMotor = new TalonConfig(30, Canbus.Rio, "Elevator/Left")
         .withBrake(true)
         .withInvert(false)
         .withMeterMotor(15, 0.047)
-        .withPID(4, 0.1, 0.01, 0, 0, 0, KG)
+        .withPID(10.95, 0, 0., 0.25, 11.5, 0.145, KG)
         .withCurrent(30)
         .withRampTime(0.5)
         .withVolts(12);
@@ -49,9 +49,9 @@ public final class Constants {
   public static final class Arm {
 
     public static final double ARM_CANCODER_OFFSET = 0.0;
-    public static final double kG = 0.60;
+    public static final double kG = 0.20;
 
-    public static final TalonConfig ARM_CONFIG = new TalonConfig(32, Canbus.Rio, "Arm/Motor")
+    public static final TalonConfig ARM_CONFIG = new TalonConfig(16, Canbus.Rio, "Arm/Motor")
         .withBrake(true)
         .withInvert(false)
         .withDegreesMotor(100) 
