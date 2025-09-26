@@ -20,7 +20,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 public class ElevatorSubsystem extends SubsystemBase {
 
     boolean haveArm = false; // if arm motor and encoder exists
-    boolean elevatorOnly = true; // in testing - only move the elevator and not the arm
+    boolean elevatorOnly = false; // in testing - only move the elevator and not the arm
     
 
     // Magnetic sensor heights
