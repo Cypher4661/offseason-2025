@@ -76,9 +76,14 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         if(haveArm) {
             armMotor = new TalonMotor(Constants.Arm.ARM_CONFIG);
-            cancoder = new Cancoder(Constants.Arm.ARM_CANCODER);
+            
             if (haveCancoder){
+                cancoder = new Cancoder(Constants.Arm.ARM_CANCODER);
                 calibrateFromCancoder();
+            }
+            else {
+                cancoder = null;
+                LogManager.log("No Cancoder found for the arm");
             }
             
             armMotor.showConfigPIDFSlotCommand(0);
