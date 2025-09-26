@@ -19,9 +19,9 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 public class ElevatorSubsystem extends SubsystemBase {
 
-    boolean haveArm = false; // if arm motor and encoder exists
+    boolean haveArm = true; // if arm motor and encoder exists
     boolean elevatorOnly = false; // in testing - only move the elevator and not the arm
-    
+    boolean haveCancoder = false;    
 
     // Magnetic sensor heights
     private static final double[] magenticHeights = { 0.1, 0.15, 0.22, 0.29, 0.35, 0.40, 0.5, 0.6}; 
@@ -77,7 +77,10 @@ public class ElevatorSubsystem extends SubsystemBase {
         if(haveArm) {
             armMotor = new TalonMotor(Constants.Arm.ARM_CONFIG);
             cancoder = new Cancoder(Constants.Arm.ARM_CANCODER);
-            calibrateFromCancoder();
+            if (haveCancoder){
+                calibrateFromCancoder();
+            }
+            
             armMotor.showConfigPIDFSlotCommand(0);
             armMotor.showConfigMotionVelocitiesCommand();
             MotorCommands.showPowerCommand("Arm Power", this, armMotor);
@@ -151,6 +154,11 @@ public class ElevatorSubsystem extends SubsystemBase {
         if(haveArm) {
             armMotor.setMotion(MathUtil.clamp(targetDeg, minAngle, maxAngle), Constants.Arm.kG * Math.cos(Math.toRadians(getAngle())));
         }
+    }
+
+    public void setZero() {
+        armMotor.setEncoderPosition(0);
+
     }
 
     public void setElvPower(double power) {
@@ -229,6 +237,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         builder.addBooleanProperty("Calibreated", () -> calibreated, null);
         builder.addBooleanProperty("buttom", this::buttomSwitch, null);
         builder.addBooleanProperty("magnet", this::IsAtMagnet, null);
+
         if(haveArm) {
             builder.addDoubleProperty("Angle", this::getAngle, null);
             builder.addDoubleProperty("AbsAngle", this::getAbsAngle, null);
@@ -238,5 +247,6 @@ public class ElevatorSubsystem extends SubsystemBase {
         
         builder.addDoubleProperty("Test Height", ()->ElevatorMode.Test.height, (height)->ElevatorMode.Test.height = height);
         builder.addDoubleProperty("Test Angle", ()->ElevatorMode.Test.angle, (angle)->ElevatorMode.Test.angle = angle);
+        builder.addDoubleProperty("set zero", ()->0, (v)->setZero());
     }
 }
