@@ -32,7 +32,7 @@ public final class Constants {
         .withBrake(true)
         .withInvert(false)
         .withMeterMotor(15, 0.047)
-        .withPID(4, 0.1, 0.01, 0, 0, 0, KG)
+        .withPID(10.95, 0, 0, 0.25, 11.5, 0.145, KG)
         .withCurrent(30)
         .withRampTime(0.5)
         .withVolts(12);
