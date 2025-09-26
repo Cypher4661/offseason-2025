@@ -5,6 +5,7 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.Demacia.utils.Log.LogManager;
 import frc.Demacia.utils.Motors.MotorCommands;
@@ -105,6 +106,12 @@ public class ElevatorSubsystem extends SubsystemBase {
         // setDefaultCommand(new ElevatorCommand(this));
         SmartDashboard.putData("Elevetor", this);
         encoderOffset = 0;
+        SmartDashboard.putData("set 0" ,new InstantCommand(
+            ()-> { 
+                setZero();
+            }
+        ));
+        
     }
     
 
@@ -236,6 +243,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     @Override
     public void initSendable(SendableBuilder builder) {
         super.initSendable(builder);
+
         addModeChooser();
         builder.addStringProperty("Mode", this::getModeString, null);
         builder.addDoubleProperty("Height", this::getHeight, null);
@@ -245,13 +253,17 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         if(haveArm) {
             builder.addDoubleProperty("Angle", this::getAngle, null);
-            builder.addDoubleProperty("AbsAngle", this::getAbsAngle, null);
+           
             builder.addBooleanProperty("Elevator Only", ()->elevatorOnly, (b)->elevatorOnly = b);
+            
+        }
+        if (haveCancoder){
+            builder.addDoubleProperty("Abs Angle", this::getAbsAngle, null);
             builder.addDoubleProperty("Arm Offset", ()->armOffset, (o)->{armOffset = 0; calibrateFromCancoder();});
         }
         
         builder.addDoubleProperty("Test Height", ()->ElevatorMode.Test.height, (height)->ElevatorMode.Test.height = height);
         builder.addDoubleProperty("Test Angle", ()->ElevatorMode.Test.angle, (angle)->ElevatorMode.Test.angle = angle);
-        builder.addDoubleProperty("set zero", ()->0, (v)->setZero());
+        
     }
 }
