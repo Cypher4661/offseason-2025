@@ -7,10 +7,10 @@ public class SwerveConstants {
         public static final double Diameter = 0.1016; // in meters
         public static final double gearRatioSteer = 150.0 / 7.0;
         public static final double gearRatioDrive = 6.75;
-        public static final double FL_CanCoderOffset = -170-90; // in degrees
-        public static final double FR_CanCoderOffset = -171.4 - 90; // in degrees
-        public static final double BR_CanCoderOffset = 124 - 90; // in degrees
-        public static final double BL_CanCoderOffset = 146.6 -90; // in degrees
+        public static final double FL_CanCoderOffset = 11.7; // in degrees
+        public static final double FR_CanCoderOffset = 8.1; // in degrees
+        public static final double BR_CanCoderOffset = -53.9 ; // in degrees
+        public static final double BL_CanCoderOffset = -29.9 ; // in degrees
         public static final boolean FL_SteerInverted = false;
         public static final boolean FR_SteerInverted = false;
         public static final boolean BR_SteerInverted = false;

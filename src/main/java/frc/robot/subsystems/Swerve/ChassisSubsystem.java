@@ -64,7 +64,7 @@ public class ChassisSubsystem extends SubsystemBase {
         SmartDashboard.putData("Field", field);
         SmartDashboard.putData("Stop Chassis", new InstantCommand(()-> StopChassis(),this));
         MotorCommands.showRandomPowerCommand("Steer Random Power", -6.0, 6.0, 0.2, this, FL.SteerMotor, FR.SteerMotor, BR.SteerMotor, BL.SteerMotor);
-        MotorCommands.showRandomPowerCommand("Drive Random Power", -6.0, 6.0, 0.2, this, FL.DriveMotor, FR.DriveMotor, BR.DriveMotor, BL.DriveMotor);
+        MotorCommands.showRandomPowerCommand("Drive Random Power", -3, 3, 0.2, this, FL.DriveMotor, FR.DriveMotor, BR.DriveMotor, BL.DriveMotor);
         SmartDashboard.putData("Set 90 Degrees", new RunCommand(()-> setAllModulsTo(90),this));
         SmartDashboard.putData("Set 0 Degrees", new RunCommand(()-> setAllModulsTo(0),this));
         SmartDashboard.putData("Brake", new InstantCommand(()-> setBrake(true)).ignoringDisable(true));
