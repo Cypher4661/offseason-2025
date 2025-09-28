@@ -51,7 +51,7 @@ public class ModuleConfig {
             .withMeterMotor(GearRatioDrive, diameter)
             .withCurrent(20)
             .withVolts(6)
-            .withPID(8, 0, 0, 0.27, 2.37251, 0.1251425, 0)
+            .withPID(5, 0, 0, 0.29, 2.5, 0.1, 0)
             .withRampTime(0.2)
             .withMotionParam(720, 1200, 2000);
 
