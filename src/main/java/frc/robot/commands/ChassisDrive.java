@@ -45,9 +45,9 @@ public class ChassisDrive extends Command{
         rot = MathUtil.applyDeadband(rot, ChassisConstants.DeadBand);
 
         double multiplier = chassis.PrecisionMode ? SwerveConstants.ChassisConstants.PrecisionModeMultiplier : 1;
-        double VelX = Math.pow(LjoyX, 2) * multiplier * Math.signum(LjoyX);
-        double VelY = Math.pow(LjoyY, 2) * multiplier * Math.signum(LjoyY);
-        double VelRot =Math.pow(rot, 2) * multiplier * Math.signum(rot);
+        double VelX = Math.pow(LjoyX, 2) * multiplier * Math.signum(LjoyX) * ChassisConstants.Max_Linear_Speed;
+        double VelY = Math.pow(LjoyY, 2) * multiplier * Math.signum(LjoyY) * ChassisConstants.Max_Linear_Speed;
+        double VelRot =Math.pow(rot, 2) * multiplier * Math.signum(rot) * ChassisConstants.Max_Rotation_Speed;
         speeds = new ChassisSpeeds(VelX, VelY, VelRot);
         chassis.setVelocities(speeds);
 
