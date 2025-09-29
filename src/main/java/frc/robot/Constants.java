@@ -48,13 +48,13 @@ public final class Constants {
 
   public static final class Arm {
 
-    public static final double ARM_CANCODER_OFFSET = 0.0;
+    public static final double ARM_CANCODER_OFFSET = 226.0;
     public static final double kG = 0.20;
 
-    public static final TalonConfig ARM_CONFIG = new TalonConfig(16, Canbus.Rio, "Arm/Motor")
+    public static final TalonConfig ARM_CONFIG = new TalonConfig(16, Canbus.CANIvore, "Arm/Motor")
         .withBrake(true)
-        .withInvert(false)
-        .withDegreesMotor(100) 
+        .withInvert(true)
+        .withDegreesMotor(108) 
         .withMotionParam(90, 150, 300) 
         .withPID(0.3, 0.0, 0.001, 0.0, 0.0, 0.0, kG) 
         .withVolts(12)

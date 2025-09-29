@@ -3,6 +3,7 @@ package frc.robot.subsystems.elevator;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -22,7 +23,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     boolean haveArm = true; // if arm motor and encoder exists
     boolean elevatorOnly = false; // in testing - only move the elevator and not the arm
-    boolean haveCancoder = false;    
+    boolean haveCancoder = true;    
 
     // Magnetic sensor heights
     private static final double[] magenticHeights = { 0.1, 0.15, 0.22, 0.29, 0.35, 0.40, 0.5, 0.6}; 
@@ -32,7 +33,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     private final MotorInterface leftMotor;
     private final MotorInterface rightMotor;
     private final MotorInterface armMotor;
-    private final Cancoder cancoder;            
+    private final DutyCycleEncoder armEncoder;            
     private double armOffset = Constants.Arm.ARM_CANCODER_OFFSET; // used to set the offset from Elastic
     SendableChooser<ElevatorMode> modeChooser;
     double encoderOffset;
@@ -74,16 +75,16 @@ public class ElevatorSubsystem extends SubsystemBase {
         ElevatorMode.Calibreate.height = getHeight() + 0.05; // set the height so that the elevatro will move up 5 cm before going doen to the sensor
         calibreated = true;
         encoderOffset = minHeight - leftMotor.getCurrentPosition();
-
+          // Initializes a duty cycle encoder on DIO pins 0
         if(haveArm) {
             armMotor = new TalonMotor(Constants.Arm.ARM_CONFIG);
             
             if (haveCancoder){
-                cancoder = new Cancoder(Constants.Arm.ARM_CANCODER);
+                armEncoder = new DutyCycleEncoder(0);
                 calibrateFromCancoder();
             }
             else {
-                cancoder = null;
+                armEncoder = null;
                 LogManager.log("No Cancoder found for the arm");
             }
             
@@ -93,7 +94,7 @@ public class ElevatorSubsystem extends SubsystemBase {
             MotorCommands.showAngleCommand("Arm Angle cmd", this, armMotor);
         } else {
             armMotor = null;
-            cancoder = null;
+            armEncoder = null;
         }
        
         // Elastic - sysid/testing data
@@ -113,8 +114,6 @@ public class ElevatorSubsystem extends SubsystemBase {
         ));
         
     }
-    
-
     private boolean isAtButtom(){
         return !buttomSwitch.get() || getHeight() <= minHeight;
     }
@@ -135,7 +134,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         return haveArm ? armMotor.getCurrentAngle() : 0;
     }
     public double getAbsAngle(){
-        return haveArm ? cancoder.getCurrentAbsPosition() : 0;
+        return haveArm ? armEncoder.get()*360.0 : 0;
     }
     
 
@@ -157,7 +156,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     public void calibrateFromCancoder() {
         if(haveArm) {
-            double absDegrees = cancoder.getCurrentAbsPosition();
+            double absDegrees = getAbsAngle();
             armMotor.setEncoderPosition(absDegrees - armOffset);
         }
     }
@@ -193,6 +192,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         }   
     }
     public void setMode(String mode) {
+
         try{
             setMode(ElevatorMode.valueOf(mode));
         } catch(Exception e){
@@ -253,13 +253,11 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         if(haveArm) {
             builder.addDoubleProperty("Angle", this::getAngle, null);
-           
             builder.addBooleanProperty("Elevator Only", ()->elevatorOnly, (b)->elevatorOnly = b);
-            
         }
         if (haveCancoder){
             builder.addDoubleProperty("Abs Angle", this::getAbsAngle, null);
-            builder.addDoubleProperty("Arm Offset", ()->armOffset, (o)->{armOffset = 0; calibrateFromCancoder();});
+            builder.addDoubleProperty("Arm Offset", ()->armOffset, (o)->{armOffset = o; calibrateFromCancoder();});
         }
         
         builder.addDoubleProperty("Test Height", ()->ElevatorMode.Test.height, (height)->ElevatorMode.Test.height = height);
