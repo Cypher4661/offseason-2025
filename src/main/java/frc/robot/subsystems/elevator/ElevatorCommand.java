@@ -36,6 +36,13 @@ public class ElevatorCommand extends Command {
                 elevator.setElvPower(0);
                 elevator.setArmPower(0);
                 break;
+            case Intake:
+                elevator.setGripperPower(0.25);
+
+                if(elevator.isCoralBack()){
+                    elevator.setGripperPower(0);
+
+                }
             default:
                 elevator.setHeight(mode.height);
                 if(!elevator.elevatorOnly)

@@ -48,8 +48,16 @@ public final class Constants {
   }
 
   public static final class Arm {
+    public static final TalonConfig GripperConfig = new TalonConfig(0, Canbus.CANIvore, "Arm/Gripper")
+        .withBrake(true)
+        .withInvert(false)
+        .withMeterMotor(0.7, 0.0762)
+        .withPID(0.2, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0) 
+        .withVolts(12)
+        .withCurrent(20)
+        .withRampTime(0.2);
 
-    public static final double ARM_CANCODER_OFFSET = 302;
+    public static final double ARM_CANCODER_OFFSET = 288;
     public static final double kG = 0.20;
 
     public static final TalonConfig ARM_CONFIG = new TalonConfig(16, Canbus.CANIvore, "Arm/Motor")

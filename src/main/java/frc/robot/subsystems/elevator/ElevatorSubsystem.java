@@ -2,11 +2,13 @@ package frc.robot.subsystems.elevator;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.Demacia.utils.Log.LogManager;
 import frc.Demacia.utils.Motors.MotorCommands;
@@ -29,11 +31,12 @@ public class ElevatorSubsystem extends SubsystemBase {
     private static final double[] magenticHeights = { 0.1, 0.15, 0.22, 0.29, 0.35, 0.40, 0.5, 0.6}; 
     private DigitalInput magenticSwitch  = new DigitalInput(Constants.elevatorConfig.MagneticLimitSwitchID);
     private DigitalInput buttomSwitch  = new DigitalInput(Constants.elevatorConfig.LimitSwitchID);
-  
+    private final AnalogInput backSensor;  
     private final MotorInterface leftMotor;
     private final MotorInterface rightMotor;
     private final MotorInterface armMotor;
-    private final DutyCycleEncoder armEncoder;            
+    private final DutyCycleEncoder armEncoder;     
+    private final MotorInterface gripperMotor;       
     private double armOffset = Constants.Arm.ARM_CANCODER_OFFSET; // used to set the offset from Elastic
     SendableChooser<ElevatorMode> modeChooser;
     double encoderOffset;
@@ -42,10 +45,10 @@ public class ElevatorSubsystem extends SubsystemBase {
     public enum ElevatorMode { 
         Idle(0, -70), 
         Home(0, -70), 
-        Intake(0.2, -50), 
+        Intake(0.2, -110), 
         L1(0.4, -20), 
         L2(0.2, 20), 
-        L3(0.3, 50), 
+        L3(0, 60), 
         L4(0.6,40), 
         AlgieUp(0.3,60), 
         AlgieDown(0.22, 30), 
@@ -61,13 +64,16 @@ public class ElevatorSubsystem extends SubsystemBase {
     private boolean calibreated = false;
     private double minHeight = 0;
     private double maxHeight = 0.8;
-    private double minAngle = -70;
+    private double minAngle = -110;
     private double  maxAngle = 90;
 
     public ElevatorSubsystem() {
         LogManager.log("ElevatorSubsystem started");
         leftMotor = new TalonMotor(Constants.elevatorConfig.LeftMotor);
         rightMotor = new TalonMotor(Constants.elevatorConfig.RightMotor);
+        backSensor  = new AnalogInput(0);
+        gripperMotor = new TalonMotor(Constants.Arm.GripperConfig);
+
         ((TalonFX)rightMotor).setControl(new Follower(Constants.elevatorConfig.LeftMotor.id, true));
 
         // start mode
@@ -100,9 +106,11 @@ public class ElevatorSubsystem extends SubsystemBase {
         // Elastic - sysid/testing data
         leftMotor.showConfigPIDFSlotCommand(0);
         leftMotor.showConfigMotionVelocitiesCommand();
+        
         MotorCommands.showPowerCommand("Elevator Power", this, leftMotor);
         MotorCommands.showPositionCommand("Elevator Position", this, leftMotor);
         SmartDashboard.putData("Elecator Command",new ElevatorCommand(this));
+
         // set the default command
         // setDefaultCommand(new ElevatorCommand(this));
         SmartDashboard.putData("Elevetor", this);
@@ -113,10 +121,22 @@ public class ElevatorSubsystem extends SubsystemBase {
             }
         ));
         
+        SmartDashboard.putData("OUT" ,new StartEndCommand(
+            ()-> { 
+                setGripperPower(-0.3);
+            }
+            , ()-> setGripperPower(0)
+        ));
+
+        
+        
     }
     private boolean isAtButtom(){
         return !buttomSwitch.get() || getHeight() <= minHeight;
     }
+    public double getBackVoltage() {
+        return backSensor.getAverageVoltage();
+      }
 
     private boolean buttomSwitch() {
         return !buttomSwitch.get();
@@ -136,7 +156,10 @@ public class ElevatorSubsystem extends SubsystemBase {
     public double getAbsAngle(){
         return haveArm ? armEncoder.get()*360.0 : 0;
     }
-    
+    public void setGripperPower(double power) {
+        gripperMotor.setDuty(power);
+    }    
+
 
     public void setArmPower(double percent) {
         if(haveArm) {
@@ -207,9 +230,13 @@ public class ElevatorSubsystem extends SubsystemBase {
     public String getModeString() {
         return mode.toString();
     }
+    public boolean isCoralBack() {
+        return getBackVoltage() < 3.4;
+      }
 
     @Override
     public void periodic() {
+
         if(buttomSwitch()){
             calibreated = true;
             encoderOffset = minHeight - leftMotor.getCurrentPosition();
@@ -250,6 +277,8 @@ public class ElevatorSubsystem extends SubsystemBase {
         builder.addBooleanProperty("Calibreated", () -> calibreated, null);
         builder.addBooleanProperty("buttom", this::buttomSwitch, null);
         builder.addBooleanProperty("magnet", this::IsAtMagnet, null);
+        builder.addDoubleProperty("BackVoltage", this::getBackVoltage, null);
+        builder.addBooleanProperty("IsCoralBack", this::isCoralBack, null);
 
         if(haveArm) {
             builder.addDoubleProperty("Angle", this::getAngle, null);
