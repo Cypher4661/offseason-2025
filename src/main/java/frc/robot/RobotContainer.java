@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.GripperSubsystem.GripperSubsystem;
 import frc.robot.subsystems.Arm.ArmSubsystem;
 import frc.robot.subsystems.Examples.DemaciaMotorExample;
 
@@ -18,6 +19,7 @@ public class RobotContainer {
   
  // public DemaciaMotorExample demaciaMotorExample = new DemaciaMotorExample();
   public ArmSubsystem armSubsystem = new ArmSubsystem();
+  public GripperSubsystem gripperSubsystem = new GripperSubsystem();
   public RobotContainer(Robot robot) {
     RobotContainer.robot = robot;
     RobotContainer.CYCLE_TIME = robot.getPeriod();
