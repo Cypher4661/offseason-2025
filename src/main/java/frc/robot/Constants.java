@@ -57,7 +57,7 @@ public final class Constants {
         .withCurrent(20)
         .withRampTime(0.2);
 
-    public static final double ARM_CANCODER_OFFSET = 288;
+    public static final double ARM_CANCODER_OFFSET = 289;
     public static final double kG = 0.20;
 
     public static final TalonConfig ARM_CONFIG = new TalonConfig(16, Canbus.CANIvore, "Arm/Motor")
