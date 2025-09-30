@@ -69,7 +69,7 @@ public class VisionSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // cropEntry = Table.getEntry("crop");
+        cropEntry = Table.getEntry("crop");
 
         if (Table.getEntry("tv").getDouble(0.0) != 0) {
             camToTagPitch = Table.getEntry("ty").getDouble(0.0);
@@ -78,7 +78,7 @@ public class VisionSubsystem extends SubsystemBase {
           if (id > 0 && id < TAG_HEIGHT.length) {
                 pose = new Pose2d(getOriginToRobot(), getAngle());
                 field.setRobotPose(pose);
-                confidence = getConfidence();
+                // confidence = getConfidence();
             } 
         } else {
             pose = null;
@@ -95,8 +95,7 @@ public class VisionSubsystem extends SubsystemBase {
         alpha = camToTagPitch + camera.getPitch();
         height = TAG_HEIGHT[(int) id];
 
-        alpha = camToTagPitch + camera.getPitch();
-        dist = (Math.abs(height - camera.getHeight())) / Math.tan(Math.toRadians(alpha));
+       dist = (Math.abs(height - camera.getHeight())) / Math.tan(Math.toRadians(alpha));
         
         return Math.abs(dist);
     } 
@@ -141,55 +140,55 @@ public class VisionSubsystem extends SubsystemBase {
         return Rotation2d.fromDegrees(-gyro.getYaw() + Constants.gyroOffset);
     }
 
-    // private void crop() {
-    //     double YawCrop = getYawCrop();
-    //     double PitchCrop = getPitchCrop();
-    //     double[] crop = { YawCrop - getCropOffset(), YawCrop + getCropOffset(), PitchCrop - getCropOffset(), PitchCrop + getCropOffset() };
-    //     cropEntry.setDoubleArray(crop);
-    // }
-
-    // private double getCropOffset() {
-    //     double crop = getDistFromCamera() *CROP_CONSTANT;
-    //     return MathUtil.clamp(crop, MIN_CROP, MAX_CROP);
-    // }
-
-
-
-    // private double getYawCrop() {
-    //     double cameraYaw = (camera.getYaw() - camToTagYaw) * 2 / camToTagYaw;
-    //     return cameraYaw;
-    // }
-
-    // private double getPitchCrop() {
-    //     double cameraPitch = camToTagPitch;
-    //     return cameraPitch;
-    // } 
-
-    // private void stopCrop() {
-    //     double[] crop = { -1, 1, -1, 1 };
-    //     cropEntry.setDoubleArray(crop);
-    // }
-    private double getConfidence() {
-        //get distance from robot to tag
-        double distance = getRobotToTagVector().getNorm();
-        
-        //if dist is too big return 0
-        if (distance > (is3D ? 20 : WORST_RELIABLE_DIST)) {
-            return 0;
-        }
-        //if dist is close return high confidence
-        if (distance <= BEST_RELIABLE_DIST) {
-            return 1.0;
-          }
-          
-        // Calculate how far we are into the falloff range (0 to 1)
-        double normalizedDist = (distance - BEST_RELIABLE_DIST)
-        / ((is3D ? 20 : WORST_RELIABLE_DIST) - BEST_RELIABLE_DIST);
-
-        // higher confidence for closer distances
-        return Math.pow(1 - normalizedDist, 3);
-
+    private void crop() {
+        double YawCrop = getYawCrop();
+        double PitchCrop = getPitchCrop();
+        double[] crop = { YawCrop - getCropOffset(), YawCrop + getCropOffset(), PitchCrop - getCropOffset(), PitchCrop + getCropOffset() };
+        cropEntry.setDoubleArray(crop);
     }
+
+    private double getCropOffset() {
+        double crop = getDistFromCamera() *CROP_CONSTANT;
+        return MathUtil.clamp(crop, MIN_CROP, MAX_CROP);
+    }
+
+
+
+    private double getYawCrop() {
+        double cameraYaw = (camera.getYaw() - camToTagYaw) * 2 / camToTagYaw;
+        return cameraYaw;
+    }
+
+    private double getPitchCrop() {
+        double cameraPitch = camToTagPitch;
+        return cameraPitch;
+    } 
+
+    private void stopCrop() {
+        double[] crop = { -1, 1, -1, 1 };
+        cropEntry.setDoubleArray(crop);
+    }
+    // private double getConfidence() {
+    //     //get distance from robot to tag
+    //     double distance = getRobotToTagVector().getNorm();
+        
+    //     //if dist is too big return 0
+    //     if (distance > (is3D ? 20 : WORST_RELIABLE_DIST)) {
+    //         return 0;
+    //     }
+    //     //if dist is close return high confidence
+    //     if (distance <= BEST_RELIABLE_DIST) {
+    //         return 1.0;
+    //       }
+          
+    //     // Calculate how far we are into the falloff range (0 to 1)
+    //     double normalizedDist = (distance - BEST_RELIABLE_DIST)
+    //     / ((is3D ? 20 : WORST_RELIABLE_DIST) - BEST_RELIABLE_DIST);
+
+    //     // higher confidence for closer distances
+    //     return Math.pow(1 - normalizedDist, 3);
+
+    // }
 
    @Override
      public void initSendable(SendableBuilder builder) {
