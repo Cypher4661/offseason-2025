@@ -32,10 +32,11 @@ public final class Constants {
         .withBrake(true)
         .withInvert(false)
         .withMeterMotor(15, 0.047)
-        .withPID(10.95, 0, 0, 0.25, 11.5, 0.145, KG)
+        .withPID(15, 0, 0, 0.25, 11.5, 0.145, KG)
         .withCurrent(30)
         .withRampTime(0.5)
         .withVolts(12);
+        
     
     public static final TalonConfig RightMotor = new TalonConfig(31, "Elevator/Right", LeftMotor)
         .withInvert(!LeftMotor.inverted);
@@ -48,7 +49,7 @@ public final class Constants {
 
   public static final class Arm {
 
-    public static final double ARM_CANCODER_OFFSET = 226.0;
+    public static final double ARM_CANCODER_OFFSET = 302;
     public static final double kG = 0.20;
 
     public static final TalonConfig ARM_CONFIG = new TalonConfig(16, Canbus.CANIvore, "Arm/Motor")

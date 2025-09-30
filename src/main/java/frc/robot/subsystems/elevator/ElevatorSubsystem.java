@@ -260,6 +260,7 @@ public class ElevatorSubsystem extends SubsystemBase {
             builder.addDoubleProperty("Arm Offset", ()->armOffset, (o)->{armOffset = o; calibrateFromCancoder();});
         }
         
+        
         builder.addDoubleProperty("Test Height", ()->ElevatorMode.Test.height, (height)->ElevatorMode.Test.height = height);
         builder.addDoubleProperty("Test Angle", ()->ElevatorMode.Test.angle, (angle)->ElevatorMode.Test.angle = angle);
         
