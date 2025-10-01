@@ -5,6 +5,7 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -28,7 +29,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     boolean haveCancoder = true;    
 
     // Magnetic sensor heights
-    private static final double[] magenticHeights = { 0.1, 0.15, 0.22, 0.29, 0.35, 0.40, 0.5, 0.6}; 
+    private static final double[] magenticHeights = { 0.09, 0.2, 0.33, 0.435, 0.545, 0.65}; 
     private DigitalInput magenticSwitch  = new DigitalInput(Constants.elevatorConfig.MagneticLimitSwitchID);
     private DigitalInput buttomSwitch  = new DigitalInput(Constants.elevatorConfig.LimitSwitchID);
     private final AnalogInput backSensor;  
@@ -36,7 +37,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     private final MotorInterface rightMotor;
     private final MotorInterface armMotor;
     private final DutyCycleEncoder armEncoder;     
-    private final MotorInterface gripperMotor;       
+    private final MotorInterface gripperMotor;   
+    private final Ultrasonic frontSensor;     
     private double armOffset = Constants.Arm.ARM_CANCODER_OFFSET; // used to set the offset from Elastic
     SendableChooser<ElevatorMode> modeChooser;
     double encoderOffset;
@@ -73,6 +75,8 @@ public class ElevatorSubsystem extends SubsystemBase {
         rightMotor = new TalonMotor(Constants.elevatorConfig.RightMotor);
         backSensor  = new AnalogInput(0);
         gripperMotor = new TalonMotor(Constants.Arm.GripperConfig);
+        Ultrasonic.setAutomaticMode(true); 
+        frontSensor = new Ultrasonic(3,4);
 
         ((TalonFX)rightMotor).setControl(new Follower(Constants.elevatorConfig.LeftMotor.id, true));
 
@@ -131,6 +135,9 @@ public class ElevatorSubsystem extends SubsystemBase {
         
         
     }
+    public double getFrontDistance() {
+        return frontSensor.getRangeMM();
+      }
     private boolean isAtButtom(){
         return !buttomSwitch.get() || getHeight() <= minHeight;
     }
@@ -279,6 +286,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         builder.addBooleanProperty("magnet", this::IsAtMagnet, null);
         builder.addDoubleProperty("BackVoltage", this::getBackVoltage, null);
         builder.addBooleanProperty("IsCoralBack", this::isCoralBack, null);
+        builder.addDoubleProperty("FrontDistance(m)", this::getFrontDistance, null);
 
         if(haveArm) {
             builder.addDoubleProperty("Angle", this::getAngle, null);
@@ -292,6 +300,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         
         builder.addDoubleProperty("Test Height", ()->ElevatorMode.Test.height, (height)->ElevatorMode.Test.height = height);
         builder.addDoubleProperty("Test Angle", ()->ElevatorMode.Test.angle, (angle)->ElevatorMode.Test.angle = angle);
+
         
     }
 }
