@@ -31,7 +31,7 @@ public final class Constants {
     public static final TalonConfig LeftMotor = new TalonConfig(30, Canbus.Rio, "Elevator/Left")
         .withBrake(true)
         .withInvert(false)
-        .withMeterMotor(15, 0.047)
+        .withMeterMotor(15, 0.0364)
         .withPID(15, 0, 0, 0.25, 11.5, 0.145, KG)
         .withCurrent(30)
         .withRampTime(0.5)
