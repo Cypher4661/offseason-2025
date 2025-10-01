@@ -26,13 +26,13 @@ public final class Constants {
 
   public static final class elevatorConfig {
 
-    public static final double KG = 0.265;
+    public static final double KG = 0.2;
 
     public static final TalonConfig LeftMotor = new TalonConfig(30, Canbus.Rio, "Elevator/Left")
         .withBrake(true)
         .withInvert(false)
         .withMeterMotor(15, 0.0364)
-        .withPID(18, 0, 0, 0.25, 11.5, 0.145, KG)
+        .withPID(15, 0, 0, 0.6, 15, 0.35, KG)
         .withCurrent(30)
         .withRampTime(0.5)
         .withVolts(12);
