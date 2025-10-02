@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.Demacia.utils.Motors.MotorCommands;
+import frc.robot.Constants;
 import frc.robot.RobotContainer;
 
 import com.studica.frc.AHRS;
@@ -200,6 +201,28 @@ public class ChassisSubsystem extends SubsystemBase {
     @Override
     public void initSendable(SendableBuilder builder) {
         builder.addDoubleProperty("Gyro",()->getHeading().getDegrees(), null);
+    }
+
+    public static Pose2d getTargetForReef(int tagId, boolean left, boolean isBlue) {
+        if((isBlue &&  (tagId < 17 || tagId > 22)) || (!isBlue && (tagId < 6 || tagId > 11))) {
+            return null;
+        }
+        Translation2d tagPos = Constants.O_TO_TAG[tagId];
+        Rotation2d tagRot = Constants.TAG_ANGLE[tagId];
+        Translation2d vec = left ? Constants.LeftReefVector : Constants.RightReefVector;
+        return new Pose2d(tagPos.plus(vec.rotateBy(tagRot)), tagRot.plus(Rotation2d.k180deg));
+    }
+
+    public static int redReefTag(int blueReefTag) {
+        switch (blueReefTag) {
+            case 17: return 8;
+            case 18: return 7;
+            case 19: return 6;
+            case 20: return 11;
+            case 21: return 10;
+            case 22: return 9;
+            default: return 0;
+        }
     }
 
 }
