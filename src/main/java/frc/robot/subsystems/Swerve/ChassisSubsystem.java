@@ -200,7 +200,8 @@ public class ChassisSubsystem extends SubsystemBase {
     }
     @Override
     public void initSendable(SendableBuilder builder) {
-        builder.addDoubleProperty("Gyro",()->getHeading().getDegrees(), null);
+        builder.addDoubleProperty("Heading",()->getHeading().getDegrees(), null);
+        builder.addDoubleProperty("Gyro",()->gyro.getAngle(), null);
     }
 
     public static Pose2d getTargetForReef(int tagId, boolean left, boolean isBlue) {
