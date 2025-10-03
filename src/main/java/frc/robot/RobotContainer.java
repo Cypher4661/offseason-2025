@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.ChassisDrive;
 import frc.robot.subsystems.Swerve.ChassisSubsystem;
+import frc.robot.subsystems.elevator.ElevatorSubsystem;
 
 public class RobotContainer {
 
@@ -25,6 +26,8 @@ public class RobotContainer {
   public static double CYCLE_TIME = 0.02;
 
   
+  
+  public final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
 
   public RobotContainer(Robot robot) {
     RobotContainer.robot = robot;

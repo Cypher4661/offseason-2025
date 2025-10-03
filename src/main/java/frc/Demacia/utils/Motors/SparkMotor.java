@@ -40,7 +40,7 @@ public class SparkMotor extends SparkMax implements Sendable, MotorInterface {
     name = config.name;
     configMotor();
     addLog();
-
+    super.getClosedLoopController();
     SmartDashboard.putData(name, this);
     LogManager.log(name + " motor initialized");    
   }
@@ -65,11 +65,11 @@ public class SparkMotor extends SparkMax implements Sendable, MotorInterface {
   }
 
   private void updatePID(boolean apply) {
-    cfg.closedLoop.pidf(config.pid[0].kp(), config.pid[0].ki(), config.pid[0].kd(), config.pid[0].kv(),
+    cfg.closedLoop.pidf(config.pid[0].kp()/12, config.pid[0].ki()/12, config.pid[0].kd()/12, config.pid[0].kv()/12,
         ClosedLoopSlot.kSlot0);
-    cfg.closedLoop.pidf(config.pid[1].kp(), config.pid[1].ki(), config.pid[1].kd(), config.pid[1].kv(),
+    cfg.closedLoop.pidf(config.pid[1].kp()/12, config.pid[1].ki()/12, config.pid[1].kd()/12, config.pid[1].kv()/12,
         ClosedLoopSlot.kSlot1);
-    cfg.closedLoop.pidf(config.pid[2].kp(), config.pid[2].ki(), config.pid[2].kd(), config.pid[2].kv(),
+    cfg.closedLoop.pidf(config.pid[2].kp()/12, config.pid[2].ki()/12, config.pid[2].kd()/11, config.pid[2].kv()/12,
         ClosedLoopSlot.kSlot2);
     cfg.closedLoop.iZone(config.pid[0].iZone(),ClosedLoopSlot.kSlot0);
     cfg.closedLoop.iZone(config.pid[1].iZone(),ClosedLoopSlot.kSlot1);
@@ -81,6 +81,7 @@ public class SparkMotor extends SparkMax implements Sendable, MotorInterface {
 
   private void addLog() {
     MotorLogEntry.add(this);
+
 
   }
 
@@ -131,13 +132,13 @@ public class SparkMotor extends SparkMax implements Sendable, MotorInterface {
    *                    defaults to 0
    */
   public void setVelocity(double velocity, double feedForward) {
-    super.closedLoopController.setReference(velocity, ControlType.kMAXMotionVelocityControl, slot, feedForward);
+    super.closedLoopController.setReference(velocity, ControlType.kVelocity, slot, feedForward);
     controlType = ControlType.kMAXMotionVelocityControl;
     setPoint = velocity;
   }
 
   public void setVelocity(double velocity) {
-    setVelocity(velocity, config.pid[slot.value].ks()*Math.signum(velocity));
+    setVelocity(velocity, config.pid[slot.value].ks()/12*Math.signum(velocity));
   }
 
   public void setPositionVoltage(double position, double feedForward) {

@@ -9,7 +9,7 @@ import com.ctre.phoenix6.CANBus;
  */
 public abstract class BaseMotorConfig<T extends BaseMotorConfig<T>> {
 
-    public static enum Canbus { Rio("rio"), CANIvore("CANIvore");
+    public static enum Canbus { Rio("rio"), CANIvore("canivoreCypher");
     
         public CANBus canbus;
         private Canbus(String name) {

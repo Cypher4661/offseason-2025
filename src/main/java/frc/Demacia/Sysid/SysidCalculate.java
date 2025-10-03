@@ -127,7 +127,11 @@ public class SysidCalculate {
                 }
                 maxError[i] = maxErr;
                 avgError[i] = avgErr;
-                kp[i] = CalculateFeedbackGains.calculateFeedbackGains(k[KTypes.KV.ordinal()][i], k[KTypes.KA.ordinal()][i]);
+                if(k[KTypes.KA.ordinal()][i] > 0.0001) {
+                    kp[i] = CalculateFeedbackGains.calculateFeedbackGains(k[KTypes.KV.ordinal()][i], k[KTypes.KA.ordinal()][i]);
+                } else {
+                    kp[i] = 0;
+                }
                 // print the worst cases
                 for(int e = 0; e < error.getNumRows(); e++) {
                     MotorTimeData md = dataArray.get(e);
