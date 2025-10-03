@@ -90,6 +90,7 @@ public static Rotation2d[] TAG_ANGLE = { null, // 0
   
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
+  }
 
   public static final class elevatorConfig {
 
@@ -142,4 +143,4 @@ public static Rotation2d[] TAG_ANGLE = { null, // 0
         .withInvert(false);
 
   }
-}}
+}
