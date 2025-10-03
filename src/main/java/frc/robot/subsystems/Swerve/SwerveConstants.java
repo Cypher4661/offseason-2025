@@ -62,4 +62,10 @@ public class SwerveConstants {
         public static final double DeadBand = 0.1;
         public static final double PrecisionModeMultiplier = 0.1;
     }
+
+    public static class AutonomousConstants{
+        public static final double KDistance = 2.0;
+        public static final double KOmega = 1.0;
+        public static final double Max_Erorr_Riff = 0.05;
+    }
 }
