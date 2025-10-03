@@ -45,13 +45,13 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     
     public enum ElevatorMode { 
-        Idle(0, -70), 
-        Home(0, -70), 
-        Intake(0, -108), 
-        L1(0.4, -20), 
-        L2(0.2, 20), 
+        Idle(0, -90), 
+        Home(0, -90), 
+        Intake(0, -104), 
+        L1(0.01, -104), 
+        L2(0.48, -85), 
         L3(0, 60), 
-        L4(0.6,40), 
+        L4(0.7,40), 
         AlgieUp(0.3,60), 
         AlgieDown(0.22, 30), 
         Barge(0.6, 90), 
@@ -128,6 +128,18 @@ public class ElevatorSubsystem extends SubsystemBase {
         SmartDashboard.putData("OUT" ,new StartEndCommand(
             ()-> { 
                 setGripperPower(-0.3);
+            }
+            , ()-> setGripperPower(0)
+        ));
+        SmartDashboard.putData("OUTL2" ,new StartEndCommand(
+            ()-> { 
+                setGripperPower(0.3);
+            }
+            , ()-> setGripperPower(0)
+        ));
+        SmartDashboard.putData("OUTL1" ,new StartEndCommand(
+            ()-> { 
+                setGripperPower(-1);
             }
             , ()-> setGripperPower(0)
         ));
