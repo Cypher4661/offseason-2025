@@ -23,6 +23,7 @@ public class ElevatorCommand extends Command {
     @Override
     public void execute() {
         ElevatorMode mode = elevator.getMode();
+        
         switch(mode) {
             case Calibreate:
                 if (elevator.getHeight() > mode.height) {
@@ -31,6 +32,7 @@ public class ElevatorCommand extends Command {
                 } else {
                     elevator.setElvPower(Constants.elevatorConfig.CalibreatePowerUp);
                 }
+
                 break;
             case Idle:
                 elevator.setElvPower(0);
@@ -47,6 +49,9 @@ public class ElevatorCommand extends Command {
                 elevator.setHeight(mode.height);
                 if(!elevator.elevatorOnly)
                     elevator.setAngle(mode.angle);
+                if (elevator.getHeight() > 0.1){
+                    
+                }
                 break;
         }
     }

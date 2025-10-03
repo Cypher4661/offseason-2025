@@ -66,7 +66,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     private boolean calibreated = false;
     private double minHeight = 0;
     private double maxHeight = 0.8;
-    private double minAngle = -110;
+    private double minAngle = -104;
     private double  maxAngle = 90;
 
     public ElevatorSubsystem() {
@@ -139,7 +139,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         ));
         SmartDashboard.putData("OUTL1" ,new StartEndCommand(
             ()-> { 
-                setGripperPower(-11);
+                setGripperPower(-1);
             }
             , ()-> setGripperPower(0)
         ));
@@ -255,6 +255,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+
 
         if(buttomSwitch()){
             calibreated = true;
