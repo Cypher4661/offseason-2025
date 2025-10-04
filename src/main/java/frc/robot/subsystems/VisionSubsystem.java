@@ -38,9 +38,6 @@ public class VisionSubsystem extends SubsystemBase {
     public Pose2d pose;
     private Translation2d robotToTag;
     private ChassisSubsystem chassis;
-    
-
-
     private Camera camera;
     
     public VisionSubsystem(Camera camera, NetworkTableEntry cropEntry, ChassisSubsystem chassis) {
@@ -53,11 +50,8 @@ public class VisionSubsystem extends SubsystemBase {
         SmartDashboard.putData("Camera Field", field);
     }
 
-
-
     @Override
     public void periodic() {
-
         seeTag = Table.getEntry("tv").getDouble(0.0) != 0;
         //if there is'nt a tag in view, dont do anything 
         if (seeTag) {
@@ -77,9 +71,8 @@ public class VisionSubsystem extends SubsystemBase {
             id = 0;
             robotToTag = null;
         }
-
-
     }
+
     //get the id of the tag you're looking at
     public int getTagId() {
         return (int) Table.getEntry("tid").getDouble(0.0);
@@ -141,7 +134,7 @@ public class VisionSubsystem extends SubsystemBase {
     }
 
     public Rotation2d getAngle() {
-        return Rotation2d.fromDegrees(-chassis.gyro.getYaw() + Constants.gyroOffset);
+        return chassis.getHeading();
     }
 
     @Override
