@@ -22,7 +22,7 @@ public class Camera {
         this.robotToCamPosition = robotToCamPosition;
         this.pitch = pitch;
         this.yaw = yaw;
-        this.tableName = "limelight-"+tableName;
+        this.tableName = "limelight-" + tableName;
     }
 
     public Translation3d getRobotToCamPosition() {

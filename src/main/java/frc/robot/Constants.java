@@ -21,7 +21,7 @@ public final class Constants {
   public static final double gyroOffset = 0.32 ; // Gyro offset for blue alliance in degrees
   // public static final double gyroOffsetRed = 183.2; // Gyro offset for red alliance in degrees
 
-  public static final Camera CAMERA_POSITION = new Camera("tag", new Translation3d(0.15, -0.15, 0.40), 0.0, 0.0, "reeftwo");
+  public static final Camera CAMERA_POSITION = new Camera("tag", new Translation3d(0.358, -0.06, 0.646), -50.0, 0.0, "reef");
   
   public static final double MIN_CROP = 0.5; // Minimum crop value
   public static final double MAX_CROP = 0.6; // Maximum crop value
@@ -43,7 +43,8 @@ public final class Constants {
          * Each value is the (x, y) position of the center of the tag on the field in meters.
          * Index corresponds to AprilTag ID (0 is unused).
          */
-  public static Translation2d[] O_TO_TAG = { // 0
+  public static Translation2d[] O_TO_TAG = { 
+    new Translation2d(0, 0), // 0;
     new Translation2d(inchToMeter(657.37), inchToMeter(25.80)), // 1
     new Translation2d(inchToMeter(657.37), inchToMeter(291.20)), // 2
     new Translation2d(inchToMeter(455.15), inchToMeter(317.15)), // 3

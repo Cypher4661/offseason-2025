@@ -112,13 +112,18 @@ public class VisionSubsystem extends SubsystemBase {
     private Translation2d getOriginToRobot() {
 
         Translation2d origintoTag = O_TO_TAG[id];
+        
     
         height = TAG_HEIGHT[id];
+        
         //   Get vector from robot to tag
         Translation2d getRobotToTagVector = getRobotToTagVector();
+       
     
         Translation2d robotToTagField = getRobotToTagVector.rotateBy(getAngle());
+       
         Translation2d originToRobot = origintoTag.plus(robotToTagField.rotateBy(Rotation2d.kPi));
+        
     
         return originToRobot;
     }
