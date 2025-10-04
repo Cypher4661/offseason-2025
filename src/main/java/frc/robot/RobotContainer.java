@@ -19,6 +19,7 @@ public class RobotContainer {
   public static Robot robot;
   public CommandXboxController DriverController = new CommandXboxController(0);
   public ChassisSubsystem chassis = new ChassisSubsystem();
+  public ElevatorSubsystem elevator = new ElevatorSubsystem();
 
 
   
@@ -34,7 +35,7 @@ public class RobotContainer {
     RobotContainer.CYCLE_TIME = robot.getPeriod();
     SmartDashboard.putData("Scheduler", CommandScheduler.getInstance());
     //chassis.setDefaultCommand(new ChassisDrive(chassis, DriverController)); 
-    SmartDashboard.putData("Drive", new ChassisDrive(chassis, DriverController));
+    SmartDashboard.putData("Drive", new ChassisDrive(chassis, elevator, DriverController));
 
     configureBindings();
   }
