@@ -125,7 +125,7 @@ public static Rotation2d[] TAG_ANGLE = { null, // 0
         .withCurrent(20)
         .withRampTime(0.2);
 
-    public static final double ARM_CANCODER_OFFSET = 146.4;
+    public static final double ARM_CANCODER_OFFSET = 141.8;
     public static final double kG = 0.20;
 
 

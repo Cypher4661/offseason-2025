@@ -18,7 +18,7 @@ public class ChassisDrive extends Command{
     private ChassisSpeeds speeds;
     private boolean UseStick;
     private ElevatorSubsystem Elevator;
-    private double Kheight;
+    private double Kheight = 1;
     
     public ChassisDrive(ChassisSubsystem chassis, ElevatorSubsystem elevator, CommandXboxController controller){
         this.chassis = chassis;
@@ -28,8 +28,6 @@ public class ChassisDrive extends Command{
         SmartDashboard.putBoolean("Use Stick", false);
         
     }
-
-
 
 
     @Override
@@ -47,7 +45,7 @@ public class ChassisDrive extends Command{
             rot  = controller.getLeftTriggerAxis() - controller.getRightTriggerAxis();
         }
 
-        Kheight = 0.45 * Elevator.getHeight() - 0.1;
+        //Kheight = 0.45 * Elevator.getHeight() - 0.1;
 
         LjoyY = MathUtil.applyDeadband(LjoyY, ChassisConstants.DeadBand);
         LjoyX = MathUtil.applyDeadband(LjoyX, ChassisConstants.DeadBand);
