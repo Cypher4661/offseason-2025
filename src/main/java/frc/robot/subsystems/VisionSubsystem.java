@@ -52,7 +52,6 @@ public class VisionSubsystem extends SubsystemBase {
 
 
     private Camera camera;
-    private AHRS gyro;
     
     public VisionSubsystem(Camera camera, NetworkTableEntry cropEntry, ChassisSubsystem chassis) {
         super();
@@ -62,10 +61,6 @@ public class VisionSubsystem extends SubsystemBase {
         Table = NetworkTableInstance.getDefault().getTable(camera.getTableName());
         field = new Field2d();
 
-        //gyro initialization
-        gyro = new AHRS(NavXComType.kMXP_SPI);
-        gyro.reset();
-        
         is3D = Table.getEntry("pipeline").getInteger(0) == 1;
         SmartDashboard.putData("Vision", this);
         SmartDashboard.putData("Camera Field", field);
@@ -156,7 +151,7 @@ public class VisionSubsystem extends SubsystemBase {
     }
 
     public Rotation2d getAngle() {
-        return Rotation2d.fromDegrees(-gyro.getYaw() + Constants.gyroOffset);
+        return Rotation2d.fromDegrees(-chassis.gyro.getYaw() + Constants.gyroOffset);
     }
 
     //start cropping the camera view to only see the tag and a little around it
@@ -227,13 +222,5 @@ public class VisionSubsystem extends SubsystemBase {
         builder.addDoubleProperty("Robot Y", () -> getOriginToRobot().getY(), null);
         builder.addDoubleProperty("Robot to Tag X", () -> getRobotToTagVector().getX(), null);
         builder.addDoubleProperty("Robot to Tag Y", () -> getRobotToTagVector().getY(), null);
-
-        
-        // Add gyro diagnostics
-        builder.addBooleanProperty("Gyro Connected", () -> gyro.isConnected(), null);
-        builder.addBooleanProperty("Gyro Calibrating", () -> gyro.isCalibrating(), null);
-        builder.addDoubleProperty("Gyro Yaw", () -> gyro.getYaw(), null);
-
-        // builder.addStringProperty("Alliance Color", () -> getAllianceColor(), null);
    }
 }
