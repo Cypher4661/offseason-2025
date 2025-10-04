@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.Swerve.ChassisSubsystem;
 import frc.robot.subsystems.Swerve.SwerveConstants;
 import frc.robot.subsystems.Swerve.SwerveConstants.ChassisConstants;
+import frc.robot.subsystems.elevator.ElevatorSubsystem;
 
 public class ChassisDrive extends Command{
     private ChassisSubsystem chassis;
@@ -16,14 +17,20 @@ public class ChassisDrive extends Command{
     private boolean isRed;
     private ChassisSpeeds speeds;
     private boolean UseStick;
+    private ElevatorSubsystem Elevator;
+    private double Kheight;
     
-    public ChassisDrive(ChassisSubsystem chassis, CommandXboxController controller){
+    public ChassisDrive(ChassisSubsystem chassis, ElevatorSubsystem elevator, CommandXboxController controller){
         this.chassis = chassis;
         this.controller = controller;
+        this.Elevator = elevator;
         addRequirements(chassis);
         SmartDashboard.putBoolean("Use Stick", false);
         
     }
+
+
+
 
     @Override
     public void execute(){
@@ -40,17 +47,20 @@ public class ChassisDrive extends Command{
             rot  = controller.getLeftTriggerAxis() - controller.getRightTriggerAxis();
         }
 
+        Kheight = 0.45 * Elevator.getHeight() - 0.1;
+
         LjoyY = MathUtil.applyDeadband(LjoyY, ChassisConstants.DeadBand);
         LjoyX = MathUtil.applyDeadband(LjoyX, ChassisConstants.DeadBand);
         rot = MathUtil.applyDeadband(rot, ChassisConstants.DeadBand);
 
         double multiplier = chassis.PrecisionMode ? SwerveConstants.ChassisConstants.PrecisionModeMultiplier : 1;
-        double VelX = Math.pow(LjoyX, 2) * multiplier * Math.signum(LjoyX) * ChassisConstants.Max_Linear_Speed;
-        double VelY = Math.pow(LjoyY, 2) * multiplier * Math.signum(LjoyY) * ChassisConstants.Max_Linear_Speed;
-        double VelRot =Math.pow(rot, 2) * multiplier * Math.signum(rot) * ChassisConstants.Max_Rotation_Speed;
+        double VelX = Math.pow(LjoyX, 2) * multiplier * Math.signum(LjoyX) * ChassisConstants.Max_Linear_Speed * Kheight;
+        double VelY = Math.pow(LjoyY, 2) * multiplier * Math.signum(LjoyY) * ChassisConstants.Max_Linear_Speed * Kheight;
+        double VelRot =Math.pow(rot, 2) * multiplier * Math.signum(rot) * ChassisConstants.Max_Rotation_Speed * Kheight;
         speeds = new ChassisSpeeds(VelX, VelY, VelRot);
         chassis.setVelocities(speeds);
 
+        }
         /* 
 
         if (chassis.PrecisionMode){
@@ -75,5 +85,5 @@ public class ChassisDrive extends Command{
         
 
         
-    }    
-}
+    }  
+

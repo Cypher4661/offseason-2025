@@ -27,9 +27,9 @@ public class TuneToRiff extends Command{
         addRequirements(chassis);
     }
 
-    double TargetX = SmartDashboard.getNumber("Enter Target X", 0);
-    double TargetY = SmartDashboard.getNumber("Enter Target Y", 0);
-    Rotation2d TargetAngle = new Rotation2d(SmartDashboard.getNumber("Enter Target Angle", 0));
+    //double TargetX = SmartDashboard.getNumber("Enter Target X", 0);
+    //double TargetY = SmartDashboard.getNumber("Enter Target Y", 0);
+    //Rotation2d TargetAngle = new Rotation2d(SmartDashboard.getNumber("Enter Target Angle", 0));
 
 
     public Pose2d EnterToTarget(double X, double Y){
