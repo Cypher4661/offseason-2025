@@ -4,12 +4,14 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.ChassisDrive;
+import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.Swerve.ChassisSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 
@@ -20,7 +22,8 @@ public class RobotContainer {
   public CommandXboxController DriverController = new CommandXboxController(0);
   public ChassisSubsystem chassis = new ChassisSubsystem();
   public ElevatorSubsystem elevator = new ElevatorSubsystem();
-
+  private final VisionSubsystem visionSubsystem = new VisionSubsystem(Constants.CAMERA_POSITION, null);
+  private final Field2d field = new Field2d();
 
   
   public static int N_CYCLE = 0;
@@ -35,7 +38,7 @@ public class RobotContainer {
     SmartDashboard.putData("Scheduler", CommandScheduler.getInstance());
     //chassis.setDefaultCommand(new ChassisDrive(chassis, DriverController)); 
     SmartDashboard.putData("Drive", new ChassisDrive(chassis, elevator, DriverController));
-
+    field.setRobotPose(visionSubsystem.getPose());
     configureBindings();
   }
   
@@ -51,10 +54,16 @@ public class RobotContainer {
   }
 
   public void periodic() {
-    N_CYCLE++;
+    if (visionSubsystem.getPose() != null) {
+      field.setRobotPose(visionSubsystem.getPose());
+  }
   }
 
   public Command getAutonomousCommand() {
     return null;
   }
+      public VisionSubsystem getVisionSubsystem() {
+        return visionSubsystem;
+    }
+  
 }
