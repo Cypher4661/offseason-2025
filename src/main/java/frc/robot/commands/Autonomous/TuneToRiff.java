@@ -12,7 +12,7 @@ import frc.robot.Constants;
 
 public class TuneToRiff extends Command{
     private Pose2d target;
-    private double velocity;
+    private double velocity = SwerveConstants.ChassisConstants.Max_Linear_Speed;
     private ChassisSubsystem chassis;
     private double distanceToTarget = 0;
     //private VisionSubsystem vision;
@@ -21,12 +21,16 @@ public class TuneToRiff extends Command{
     private final static double kOmega = SwerveConstants.AutonomousConstants.KOmega;
     private final static double MAX_ERROR = SwerveConstants.AutonomousConstants.Max_Erorr_Riff;
 
-    public TuneToRiff(Pose2d target, double velocity, ChassisSubsystem chassis) {
+    public TuneToRiff(Pose2d target, ChassisSubsystem chassis) {
         this.target  = target;
         this.chassis = chassis;
-        this.velocity = velocity;
         addRequirements(chassis);
     }
+
+    double TargetX = SmartDashboard.getNumber("Enter Target X", 0);
+    double TargetY = SmartDashboard.getNumber("Enter Target Y", 0);
+    Rotation2d TargetAngle = new Rotation2d(SmartDashboard.getNumber("Enter Target Angle", 0));
+
 
     public Pose2d EnterToTarget(double X, double Y){
         return new Pose2d(X, Y, chassis.getHeading());
@@ -36,8 +40,8 @@ public class TuneToRiff extends Command{
     @Override
     public void execute(){
         //int aprilID = vision.getTagId();
-        //double aprilPosition = Constants.Translation2d(O_T0_TAG = aprilID);
-        //double aprilOmega = Constants.Rotation2d(TAG_ANGLE = aprilID);
+        //Translation2d aprilPosition = Constants.Translation2d(O_T0_TAG = aprilID);
+        //Rotation2d aprilOmega = Constants.Rotation2d(TAG_ANGLE = aprilID);
         //target = new Pose2d(aprilPosition, aprilOmega);
 
 
