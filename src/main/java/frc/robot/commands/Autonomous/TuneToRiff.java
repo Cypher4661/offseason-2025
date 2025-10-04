@@ -52,13 +52,17 @@ public class TuneToRiff extends Command{
                 tagRotation.plus(Rotation2d.k180deg));
         }
 
-        Pose2d currentPosition = chassis.getPose();
-        Translation2d toTarget = target.getTranslation().minus(currentPosition.getTranslation());
-        distanceToTarget = toTarget.getNorm();
-        double Vel = Math.min(velocity, distanceToTarget * kDistance);
-        toTarget.times(Vel/distanceToTarget);
-        double omega = toTarget.getAngle().minus(currentPosition.getRotation()).getRadians()*kOmega;
-        chassis.setVelocities(new ChassisSpeeds(toTarget.getX(), toTarget.getY(), omega));
+        if(target != null) {
+            Pose2d currentPosition = chassis.getPose();
+            Translation2d toTarget = target.getTranslation().minus(currentPosition.getTranslation());
+            distanceToTarget = toTarget.getNorm();
+            double Vel = Math.min(velocity, distanceToTarget * kDistance);
+            toTarget.times(Vel/distanceToTarget);
+            double omega = toTarget.getAngle().minus(currentPosition.getRotation()).getRadians()*kOmega;
+            chassis.setVelocities(new ChassisSpeeds(toTarget.getX(), toTarget.getY(), omega));
+        } else {
+            chassis.setVelocities(new ChassisSpeeds(0,0,0));
+        }
     }
 
     @Override
