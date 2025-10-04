@@ -33,7 +33,7 @@ public class RobotContainer {
     SmartDashboard.putData("Scheduler", CommandScheduler.getInstance());
     //chassis.setDefaultCommand(new ChassisDrive(chassis, DriverController)); 
     SmartDashboard.putData("Drive", new ChassisDrive(chassis, DriverController));
-    SmartDashboard.putData("Tune in to the Riff", new TuneToRiff(null, CYCLE_TIME, chassis));
+    //SmartDashboard.putData("Tune in to the Riff", new TuneToRiff(null, CYCLE_TIME, chassis));
 
     configureBindings();
   }
