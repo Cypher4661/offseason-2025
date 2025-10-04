@@ -28,7 +28,6 @@ public class RobotContainer {
 
   
   
-  public final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
 
   public RobotContainer(Robot robot) {
     RobotContainer.robot = robot;
