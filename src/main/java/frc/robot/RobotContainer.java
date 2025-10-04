@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.ChassisDrive;
+import frc.robot.commands.Autonomous.TuneToRiff;
 import frc.robot.subsystems.Swerve.ChassisSubsystem;
 
 public class RobotContainer {
@@ -32,6 +33,7 @@ public class RobotContainer {
     SmartDashboard.putData("Scheduler", CommandScheduler.getInstance());
     //chassis.setDefaultCommand(new ChassisDrive(chassis, DriverController)); 
     SmartDashboard.putData("Drive", new ChassisDrive(chassis, DriverController));
+    SmartDashboard.putData("Tune in to the Riff", new TuneToRiff(null, CYCLE_TIME, chassis));
 
     configureBindings();
   }
