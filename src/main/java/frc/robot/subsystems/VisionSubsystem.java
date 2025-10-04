@@ -82,7 +82,7 @@ public class VisionSubsystem extends SubsystemBase {
         if(id >= 0  && id < TAG_HEIGHT.length) {
             alpha = camToTagPitch + camera.getPitch();
             height = TAG_HEIGHT[(int) id];
-            dist = Math.abs(Math.abs(height - camera.getHeight())) / Math.tan(Math.toRadians(alpha));
+            dist = Math.abs(Math.abs(height - camera.getHeight()) / Math.tan(Math.toRadians(alpha)));
         } else {
             dist = 0;
         }
@@ -91,10 +91,12 @@ public class VisionSubsystem extends SubsystemBase {
     
     //get the 2d vector from the robot to the tag
     public Translation2d getRobotToTagVector() {
-        Translation2d cameraToTag = new Translation2d(getDistFromCamera(),
+        if(seeTag) {
+            Translation2d cameraToTag = new Translation2d(getDistFromCamera(),
                 Rotation2d.fromDegrees(camToTagYaw));
-        robotToTag = new Translation2d(camera.getRobotToCamPosition().getX(),
+            robotToTag = new Translation2d(camera.getRobotToCamPosition().getX(),
                 camera.getRobotToCamPosition().getY()).plus(cameraToTag);
+        }
         return robotToTag;
     }
 
@@ -102,19 +104,12 @@ public class VisionSubsystem extends SubsystemBase {
     private Translation2d getOriginToRobot() {
         //get the placement on the field of the tag you're looking at
         Translation2d origintoTag = O_TO_TAG[id];
-        
         //get the height of the tag you're looking at
         height = TAG_HEIGHT[id];
-        
         //   Get vector from robot to tag
         Translation2d getRobotToTagVector = getRobotToTagVector();
-       
-    
         Translation2d robotToTagField = getRobotToTagVector.rotateBy(getAngle());
-       
-        Translation2d originToRobot = origintoTag.plus(robotToTagField.rotateBy(Rotation2d.kPi));
-        
-    
+        Translation2d originToRobot = origintoTag.minus(robotToTagField);
         return originToRobot;
     }
 
@@ -125,12 +120,12 @@ public class VisionSubsystem extends SubsystemBase {
     
     //check if you see a specific tag within a specific distance
     public boolean isSeeTag(int id, double distance) {
-        return Table.getEntry("tid").getDouble(0.0) == id && getRobotToTagVector().getNorm() <= distance;
+        return seeTag && dist <= distance;
     }
 
     //check if you see any tag
     public boolean isSeeTag() {
-        return Table.getEntry("tid").getDouble(0.0) > 0;
+        return seeTag;
     }
 
     public Rotation2d getAngle() {
