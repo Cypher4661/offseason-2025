@@ -42,12 +42,7 @@ public class RobotContainer {
    private void configureBindings() {
     DriverController.back().onChange(new InstantCommand(()->chassis.setZeroHeading()).ignoringDisable(true));
     DriverController.a().toggleOnTrue( new InstantCommand(()->chassis.PrecisionMode = !chassis.PrecisionMode));
-    if (elevatorSubsystem.getHeight() > 0.1){
-      new InstantCommand(()->chassis.PrecisionMode = true);
-    }
-    else{
-      new InstantCommand(()->chassis.PrecisionMode = false);
-    }
+
 
   }
 

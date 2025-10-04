@@ -14,6 +14,7 @@ public class ElevatorCommand extends Command {
         
     }
 
+
     @Override
     public boolean isFinished() {
         return false;
@@ -39,7 +40,7 @@ public class ElevatorCommand extends Command {
                 elevator.setArmPower(0);
                 break;
             case Intake:
-                elevator.setGripperPower(0.25);
+                elevator.setGripperPower(0.3);
 
                 if(elevator.isCoralBack()){
                     elevator.setGripperPower(0);
@@ -47,11 +48,10 @@ public class ElevatorCommand extends Command {
                 }
             default:
                 elevator.setHeight(mode.height);
+                
                 if(!elevator.elevatorOnly)
                     elevator.setAngle(mode.angle);
-                if (elevator.getHeight() > 0.1){
-                    
-                }
+                
                 break;
         }
     }

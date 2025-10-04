@@ -125,8 +125,9 @@ public static Rotation2d[] TAG_ANGLE = { null, // 0
         .withCurrent(20)
         .withRampTime(0.2);
 
-    public static final double ARM_CANCODER_OFFSET = 157.16;
+    public static final double ARM_CANCODER_OFFSET = 146.4;
     public static final double kG = 0.20;
+
 
     public static final TalonConfig ARM_CONFIG = new TalonConfig(16, Canbus.CANIvore, "Arm/Motor")
         .withBrake(true)
