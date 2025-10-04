@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.networktables.*;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -22,6 +23,9 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.Camera;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
+import frc.robot.subsystems.Swerve.ChassisSubsystem;
+
 import static frc.robot.Constants.*;
 
 
@@ -43,15 +47,17 @@ public class VisionSubsystem extends SubsystemBase {
     private double dist;
     public Pose2d pose;
     private double confidence;
+    private ChassisSubsystem chassis;
     
 
 
     private Camera camera;
     private AHRS gyro;
     
-    public VisionSubsystem(Camera camera, NetworkTableEntry cropEntry) {
+    public VisionSubsystem(Camera camera, NetworkTableEntry cropEntry, ChassisSubsystem chassis) {
         super();
         this.cropEntry = cropEntry;
+        this.chassis = chassis;
         this.camera = camera;
         Table = NetworkTableInstance.getDefault().getTable(camera.getTableName());
         field = new Field2d();
@@ -80,6 +86,7 @@ public class VisionSubsystem extends SubsystemBase {
           if (id > 0 && id < TAG_HEIGHT.length) {
                 pose = new Pose2d(getOriginToRobot(), getAngle());
                 field.setRobotPose(pose);
+                chassis.poseEstimator.addVisionMeasurement(pose, Timer.getFPGATimestamp() - 0.03);
                 // confidence = getConfidence();
             } 
         } else {

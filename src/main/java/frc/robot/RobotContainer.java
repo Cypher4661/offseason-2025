@@ -22,7 +22,7 @@ public class RobotContainer {
   public CommandXboxController DriverController = new CommandXboxController(0);
   public ChassisSubsystem chassis = new ChassisSubsystem();
   public ElevatorSubsystem elevator = new ElevatorSubsystem();
-  private final VisionSubsystem visionSubsystem = new VisionSubsystem(Constants.CAMERA_POSITION, null);
+  private final VisionSubsystem visionSubsystem = new VisionSubsystem(Constants.CAMERA_POSITION, null, chassis);
   private final Field2d field = new Field2d();
 
   
