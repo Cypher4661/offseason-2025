@@ -27,7 +27,7 @@ import static frc.robot.Constants.*;
 
 public class VisionSubsystem extends SubsystemBase {
 
-
+    //all of the variables that are used more than in one method in this class 
     private double alpha;
     private Field2d field;
 
@@ -56,7 +56,7 @@ public class VisionSubsystem extends SubsystemBase {
         Table = NetworkTableInstance.getDefault().getTable(camera.getTableName());
         field = new Field2d();
 
-
+        //gyro initialization
         gyro = new AHRS(NavXComType.kMXP_SPI);
         gyro.reset();
         
@@ -71,7 +71,9 @@ public class VisionSubsystem extends SubsystemBase {
     public void periodic() {
         cropEntry = Table.getEntry("crop");
 
+        //if there is'nt a tag in view, dont do anything 
         if (Table.getEntry("tv").getDouble(0.0) != 0) {
+            //get yaw and pitch from camera to tag
             camToTagPitch = Table.getEntry("ty").getDouble(0.0);
             camToTagYaw = (-Table.getEntry("tx").getDouble(0.0)) + camera.getYaw();
             id = getTagId();
@@ -86,11 +88,11 @@ public class VisionSubsystem extends SubsystemBase {
 
 
     }
-
+    //get the id of the tag you're looking at
     public int getTagId() {
         return (int) Table.getEntry("tid").getDouble(0.0);
     }
-
+    //get the 2d distance from the camera to the tag
     public double getDistFromCamera() {
         alpha = camToTagPitch + camera.getPitch();
         height = TAG_HEIGHT[(int) id];
@@ -99,7 +101,8 @@ public class VisionSubsystem extends SubsystemBase {
         
         return Math.abs(dist);
     } 
-
+    
+    //get the 2d vector from the robot to the tag
     public Translation2d getRobotToTagVector() {
         Translation2d cameraToTag = new Translation2d(getDistFromCamera(),
                 Rotation2d.fromDegrees(camToTagYaw));
@@ -108,12 +111,12 @@ public class VisionSubsystem extends SubsystemBase {
         return robotToTag;
     }
 
-
+    //get robot pose on the field
     private Translation2d getOriginToRobot() {
-
+        //get the placement on the field of the tag you're looking at
         Translation2d origintoTag = O_TO_TAG[id];
         
-    
+        //get the height of the tag you're looking at
         height = TAG_HEIGHT[id];
         
         //   Get vector from robot to tag
@@ -128,15 +131,17 @@ public class VisionSubsystem extends SubsystemBase {
         return originToRobot;
     }
 
-
+    //get pose
     public Pose2d getPose() {
         return this.pose;
     }
-
+    
+    //check if you see a specific tag within a specific distance
     public boolean isSeeTag(int id, double distance) {
         return Table.getEntry("tid").getDouble(0.0) == id && getRobotToTagVector().getNorm() <= distance;
     }
 
+    //check if you see any tag
     public boolean isSeeTag() {
         return Table.getEntry("tid").getDouble(0.0) > 0;
     }
@@ -145,6 +150,7 @@ public class VisionSubsystem extends SubsystemBase {
         return Rotation2d.fromDegrees(-gyro.getYaw() + Constants.gyroOffset);
     }
 
+    //start cropping the camera view to only see the tag and a little around it
     private void crop() {
         double YawCrop = getYawCrop();
         double PitchCrop = getPitchCrop();
@@ -152,23 +158,26 @@ public class VisionSubsystem extends SubsystemBase {
         cropEntry.setDoubleArray(crop);
     }
 
+    //calculate how much will you see around the tag based on the distance from the camera to the tag
     private double getCropOffset() {
         double crop = getDistFromCamera() *CROP_CONSTANT;
         return MathUtil.clamp(crop, MIN_CROP, MAX_CROP);
     }
 
 
-
+    //get the yaw from the camera to the tag for cropping
     private double getYawCrop() {
         double cameraYaw = (camera.getYaw() - camToTagYaw) * 2 / camToTagYaw;
         return cameraYaw;
     }
 
+    //get the pitch from the camera to the tag for cropping
     private double getPitchCrop() {
         double cameraPitch = camToTagPitch;
         return cameraPitch;
     } 
 
+    //stop cropping the camera view
     private void stopCrop() {
         double[] crop = { -1, 1, -1, 1 };
         cropEntry.setDoubleArray(crop);

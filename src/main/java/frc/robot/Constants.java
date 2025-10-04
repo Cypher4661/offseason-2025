@@ -33,6 +33,7 @@ public final class Constants {
   public static final double WORST_RELIABLE_DIST = 4; //max distance for reliable pose estimation in meters
   public static final double BEST_RELIABLE_DIST = 1; // best distance for reliable pose estimation in meters
 
+  //height of every tag type from the ground in meters
   private static double BARGE_TAG_HIGHT = inchToMeter(73.54);
   private static double REEF_TAG_HIGHT = inchToMeter(12.13);
   private static double STATION_TAG_HIGHT = inchToMeter(58.50);
@@ -69,6 +70,7 @@ public final class Constants {
     new Translation2d(inchToMeter(193.10), inchToMeter(130.17)),// 22
 };
 
+//angle of every tag reletive to the field
 public static Rotation2d[] TAG_ANGLE = { null, // 0
   Rotation2d.fromDegrees(126), // 1
   Rotation2d.fromDegrees(234), // 2
