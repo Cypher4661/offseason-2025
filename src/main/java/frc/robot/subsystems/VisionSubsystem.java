@@ -6,24 +6,17 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.networktables.*;
 import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 
-import com.studica.frc.AHRS;
-import com.studica.frc.AHRS.NavXComType;
-
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.Camera;
 import frc.robot.Constants;
-import frc.robot.RobotContainer;
 import frc.robot.subsystems.Swerve.ChassisSubsystem;
 
 import static frc.robot.Constants.*;
@@ -35,18 +28,15 @@ public class VisionSubsystem extends SubsystemBase {
     private double alpha;
     private Field2d field;
 
-    private NetworkTableEntry cropEntry;
-    private NetworkTableEntry pipeEntry;
-
-    private boolean is3D;
     private NetworkTable Table;
     private double camToTagYaw;
     private double camToTagPitch;
     private int id;
+    private boolean seeTag = false;
     private double height;
     private double dist;
     public Pose2d pose;
-    private double confidence;
+    private Translation2d robotToTag;
     private ChassisSubsystem chassis;
     
 
@@ -55,13 +45,10 @@ public class VisionSubsystem extends SubsystemBase {
     
     public VisionSubsystem(Camera camera, NetworkTableEntry cropEntry, ChassisSubsystem chassis) {
         super();
-        this.cropEntry = cropEntry;
         this.chassis = chassis;
         this.camera = camera;
         Table = NetworkTableInstance.getDefault().getTable(camera.getTableName());
         field = new Field2d();
-
-        is3D = Table.getEntry("pipeline").getInteger(0) == 1;
         SmartDashboard.putData("Vision", this);
         SmartDashboard.putData("Camera Field", field);
     }
@@ -70,15 +57,15 @@ public class VisionSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        cropEntry = Table.getEntry("crop");
 
+        seeTag = Table.getEntry("tv").getDouble(0.0) != 0;
         //if there is'nt a tag in view, dont do anything 
-        if (Table.getEntry("tv").getDouble(0.0) != 0) {
+        if (seeTag) {
             //get yaw and pitch from camera to tag
             camToTagPitch = Table.getEntry("ty").getDouble(0.0);
             camToTagYaw = (-Table.getEntry("tx").getDouble(0.0)) + camera.getYaw();
             id = getTagId();
-          if (id > 0 && id < TAG_HEIGHT.length) {
+            if (id > 0 && id < TAG_HEIGHT.length) {
                 pose = new Pose2d(getOriginToRobot(), getAngle());
                 field.setRobotPose(pose);
                 chassis.poseEstimator.addVisionMeasurement(pose, Timer.getFPGATimestamp() - 0.03);
@@ -86,6 +73,9 @@ public class VisionSubsystem extends SubsystemBase {
             } 
         } else {
             pose = null;
+            dist = 0;
+            id = 0;
+            robotToTag = null;
         }
 
 
@@ -99,18 +89,18 @@ public class VisionSubsystem extends SubsystemBase {
         if(id >= 0  && id < TAG_HEIGHT.length) {
             alpha = camToTagPitch + camera.getPitch();
             height = TAG_HEIGHT[(int) id];
-            dist = (Math.abs(height - camera.getHeight())) / Math.tan(Math.toRadians(alpha));
-            return Math.abs(dist);
+            dist = Math.abs(Math.abs(height - camera.getHeight())) / Math.tan(Math.toRadians(alpha));
         } else {
-            return 0;
+            dist = 0;
         }
+        return dist;
     } 
     
     //get the 2d vector from the robot to the tag
     public Translation2d getRobotToTagVector() {
         Translation2d cameraToTag = new Translation2d(getDistFromCamera(),
                 Rotation2d.fromDegrees(camToTagYaw));
-        Translation2d robotToTag = new Translation2d(camera.getRobotToCamPosition().getX(),
+        robotToTag = new Translation2d(camera.getRobotToCamPosition().getX(),
                 camera.getRobotToCamPosition().getY()).plus(cameraToTag);
         return robotToTag;
     }
@@ -154,73 +144,19 @@ public class VisionSubsystem extends SubsystemBase {
         return Rotation2d.fromDegrees(-chassis.gyro.getYaw() + Constants.gyroOffset);
     }
 
-    //start cropping the camera view to only see the tag and a little around it
-    private void crop() {
-        double YawCrop = getYawCrop();
-        double PitchCrop = getPitchCrop();
-        double[] crop = { YawCrop - getCropOffset(), YawCrop + getCropOffset(), PitchCrop - getCropOffset(), PitchCrop + getCropOffset() };
-        cropEntry.setDoubleArray(crop);
-    }
-
-    //calculate how much will you see around the tag based on the distance from the camera to the tag
-    private double getCropOffset() {
-        double crop = getDistFromCamera() *CROP_CONSTANT;
-        return MathUtil.clamp(crop, MIN_CROP, MAX_CROP);
-    }
-
-
-    //get the yaw from the camera to the tag for cropping
-    private double getYawCrop() {
-        double cameraYaw = (camera.getYaw() - camToTagYaw) * 2 / camToTagYaw;
-        return cameraYaw;
-    }
-
-    //get the pitch from the camera to the tag for cropping
-    private double getPitchCrop() {
-        double cameraPitch = camToTagPitch;
-        return cameraPitch;
-    } 
-
-    //stop cropping the camera view
-    private void stopCrop() {
-        double[] crop = { -1, 1, -1, 1 };
-        cropEntry.setDoubleArray(crop);
-    }
-    // private double getConfidence() {
-    //     //get distance from robot to tag
-    //     double distance = getRobotToTagVector().getNorm();
-        
-    //     //if dist is too big return 0
-    //     if (distance > (is3D ? 20 : WORST_RELIABLE_DIST)) {
-    //         return 0;
-    //     }
-    //     //if dist is close return high confidence
-    //     if (distance <= BEST_RELIABLE_DIST) {
-    //         return 1.0;
-    //       }
-          
-    //     // Calculate how far we are into the falloff range (0 to 1)
-    //     double normalizedDist = (distance - BEST_RELIABLE_DIST)
-    //     / ((is3D ? 20 : WORST_RELIABLE_DIST) - BEST_RELIABLE_DIST);
-
-    //     // higher confidence for closer distances
-    //     return Math.pow(1 - normalizedDist, 3);
-
-    // }
-
-   @Override
+    @Override
      public void initSendable(SendableBuilder builder) {
     super.initSendable(builder);
 
         // Your existing entries (fixed syntax)
-        builder.addDoubleProperty("Tag ID", () -> getTagId(), null);
-        builder.addDoubleProperty("Tag Dist", () -> getDistFromCamera(), null);
+        builder.addDoubleProperty("Tag ID", () -> id, null);
+        builder.addDoubleProperty("Tag Dist", () -> dist, null);
         builder.addDoubleProperty("Tag Yaw", () -> camToTagYaw, null);
         builder.addDoubleProperty("Tag Pitch", () -> camToTagPitch, null);
-        builder.addBooleanProperty("See Tag", () -> isSeeTag(), null);
-        builder.addDoubleProperty("Robot X", () -> getOriginToRobot().getX(), null);
-        builder.addDoubleProperty("Robot Y", () -> getOriginToRobot().getY(), null);
-        builder.addDoubleProperty("Robot to Tag X", () -> getRobotToTagVector().getX(), null);
-        builder.addDoubleProperty("Robot to Tag Y", () -> getRobotToTagVector().getY(), null);
+        builder.addBooleanProperty("See Tag", () -> seeTag, null);
+        builder.addDoubleProperty("Robot X", () -> pose != null ? pose.getX() : 0, null);
+        builder.addDoubleProperty("Robot Y", () -> pose != null ? pose.getY() : 0, null);
+        builder.addDoubleProperty("Robot to Tag X", () -> robotToTag != null ? robotToTag.getX() : 0, null);
+        builder.addDoubleProperty("Robot to Tag Y", () -> robotToTag != null ? robotToTag.getY() : 0, null);
    }
 }
