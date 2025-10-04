@@ -2,9 +2,12 @@ package frc.robot.commands.Autonomous;
 
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
+import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.Swerve.ChassisSubsystem;
 import frc.robot.subsystems.Swerve.SwerveConstants;
 
@@ -13,15 +16,16 @@ public class TuneToRiff extends Command{
     private double velocity = SwerveConstants.ChassisConstants.Max_Linear_Speed;
     private ChassisSubsystem chassis;
     private double distanceToTarget = 0;
-    //private VisionSubsystem vision;
+    private VisionSubsystem vision;
 
     private final static double kDistance = SwerveConstants.AutonomousConstants.KDistance;
     private final static double kOmega = SwerveConstants.AutonomousConstants.KOmega;
     private final static double MAX_ERROR = SwerveConstants.AutonomousConstants.Max_Erorr_Riff;
 
-    public TuneToRiff(Pose2d target, ChassisSubsystem chassis) {
+    public TuneToRiff(Pose2d target, ChassisSubsystem chassis, VisionSubsystem vision) {
         this.target  = target;
         this.chassis = chassis;
+        this.vision = vision;
         addRequirements(chassis);
     }
 
@@ -37,13 +41,16 @@ public class TuneToRiff extends Command{
 
     @Override
     public void execute(){
-        //int aprilID = vision.getTagId();
-        //Translation2d aprilPosition = Constants.Translation2d(O_T0_TAG = aprilID);
-        //Rotation2d aprilOmega = Constants.Rotation2d(TAG_ANGLE = aprilID);
-        //target = new Pose2d(aprilPosition, aprilOmega);
-
-
-
+        if(vision.isSeeTag()) {
+            int id = vision.getTagId();
+            Translation2d tagPosition = Constants.O_TO_TAG[id];
+            Rotation2d tagRotation = Constants.TAG_ANGLE[id];
+            // need code for left/right and level
+            double xOffset = 0.52; // 52 cm from reef
+            double yOffset = -0.06; // 6 cm left of reef
+            target = new Pose2d(tagPosition.plus(new Translation2d(xOffset, yOffset).rotateBy(tagRotation)), 
+                tagRotation.plus(Rotation2d.k180deg));
+        }
 
         Pose2d currentPosition = chassis.getPose();
         Translation2d toTarget = target.getTranslation().minus(currentPosition.getTranslation());
