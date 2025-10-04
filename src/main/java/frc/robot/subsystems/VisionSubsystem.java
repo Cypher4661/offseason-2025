@@ -68,7 +68,7 @@ public class VisionSubsystem extends SubsystemBase {
         
         is3D = Table.getEntry("pipeline").getInteger(0) == 1;
         SmartDashboard.putData("Vision", this);
-        SmartDashboard.putData("Field", field);
+        SmartDashboard.putData("Camera Field", field);
     }
 
 
