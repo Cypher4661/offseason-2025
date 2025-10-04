@@ -101,12 +101,14 @@ public class VisionSubsystem extends SubsystemBase {
     }
     //get the 2d distance from the camera to the tag
     public double getDistFromCamera() {
-        alpha = camToTagPitch + camera.getPitch();
-        height = TAG_HEIGHT[(int) id];
-
-       dist = (Math.abs(height - camera.getHeight())) / Math.tan(Math.toRadians(alpha));
-        
-        return Math.abs(dist);
+        if(id >= 0  && id < TAG_HEIGHT.length) {
+            alpha = camToTagPitch + camera.getPitch();
+            height = TAG_HEIGHT[(int) id];
+            dist = (Math.abs(height - camera.getHeight())) / Math.tan(Math.toRadians(alpha));
+            return Math.abs(dist);
+        } else {
+            return 0;
+        }
     } 
     
     //get the 2d vector from the robot to the tag
