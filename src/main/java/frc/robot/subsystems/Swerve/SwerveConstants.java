@@ -10,7 +10,7 @@ public class SwerveConstants {
         public static final double FL_CanCoderOffset = 10; // in degrees
         public static final double FR_CanCoderOffset = 9.2; // in degrees
         public static final double BR_CanCoderOffset = -56.1 ; // in degrees
-        public static final double BL_CanCoderOffset = -28.5; // in degrees
+        public static final double BL_CanCoderOffset = -28.5 ; // in degrees
         public static final boolean FL_SteerInverted = false;
         public static final boolean FR_SteerInverted = false;
         public static final boolean BR_SteerInverted = false;
@@ -61,5 +61,11 @@ public class SwerveConstants {
         public static final ChassisSpeeds Max_Speed_PrecisionMode = new ChassisSpeeds(1.0, 1.0, 1.0); // in meters per second and radians per second
         public static final double DeadBand = 0.1;
         public static final double PrecisionModeMultiplier = 0.1;
+    }
+
+    public static class AutonomousConstants{
+        public static final double KDistance = 2.0;
+        public static final double KOmega = 1.0;
+        public static final double Max_Erorr_Riff = 0.05;
     }
 }
