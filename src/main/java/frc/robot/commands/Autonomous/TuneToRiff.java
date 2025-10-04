@@ -52,6 +52,9 @@ public class TuneToRiff extends Command{
             target = new Pose2d(tagPosition.plus(new Translation2d(xOffset, yOffset).rotateBy(tagRotation)), 
                 tagRotation.plus(Rotation2d.k180deg));
             SmartDashboard.putString("ToReef Target", " id=" + id + " x=" + target.getX() + " y=" + target.getY() + " angle=" + target.getRotation().getDegrees());
+            SmartDashboard.putBoolean("ToReef see", true);
+        } else {
+            SmartDashboard.putBoolean("ToReef see", false);
         }
 
         if(target != null) {
@@ -69,6 +72,8 @@ public class TuneToRiff extends Command{
             chassis.setVelocities(new ChassisSpeeds(toTarget.getX(), toTarget.getY(), omega));
         } else {
             chassis.setVelocities(new ChassisSpeeds(0,0,0));
+            SmartDashboard.putNumber("ToReef dist", 0);
+            SmartDashboard.putNumber("ToReef Vel", 0);
         }
     }
 
