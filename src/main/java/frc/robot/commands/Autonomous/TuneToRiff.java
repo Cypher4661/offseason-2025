@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.VisionSubsystem;
@@ -50,6 +51,7 @@ public class TuneToRiff extends Command{
             double yOffset = -0.06; // 6 cm left of reef
             target = new Pose2d(tagPosition.plus(new Translation2d(xOffset, yOffset).rotateBy(tagRotation)), 
                 tagRotation.plus(Rotation2d.k180deg));
+            SmartDashboard.putString("ToReef Target", " id=" + id + " x=" + target.getX() + " y=" + target.getY() + " angle=" + target.getRotation().getDegrees());
         }
 
         if(target != null) {
@@ -59,6 +61,11 @@ public class TuneToRiff extends Command{
             double Vel = Math.min(velocity, distanceToTarget * kDistance);
             toTarget.times(Vel/distanceToTarget);
             double omega = toTarget.getAngle().minus(currentPosition.getRotation()).getRadians()*kOmega;
+            SmartDashboard.putNumber("ToReef dist", distanceToTarget);
+            SmartDashboard.putNumber("ToReef Vel", Vel);
+            SmartDashboard.putNumber("ToReef omega", omega);
+            SmartDashboard.putNumber("ToReef vx", toTarget.getX());
+            SmartDashboard.putNumber("ToReef vy", toTarget.getY());
             chassis.setVelocities(new ChassisSpeeds(toTarget.getX(), toTarget.getY(), omega));
         } else {
             chassis.setVelocities(new ChassisSpeeds(0,0,0));
