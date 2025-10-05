@@ -1,5 +1,7 @@
 package frc.robot.commands;
 
+import java.lang.module.ModuleDescriptor.Builder;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -26,6 +28,7 @@ public class ChassisDrive extends Command{
         this.Elevator = elevator;
         addRequirements(chassis);
         SmartDashboard.putBoolean("Use Stick", false);
+        SmartDashboard.putNumber("Kheight", Kheight);
         
     }
 
@@ -45,20 +48,23 @@ public class ChassisDrive extends Command{
             rot  = controller.getLeftTriggerAxis() - controller.getRightTriggerAxis();
         }
 
-        //Kheight = 0.45 * Elevator.getHeight() - 0.1;
+        Kheight = -(0.45 * Elevator.getHeight() - 0.1);
+        System.out.println(Kheight);
+        
 
         LjoyY = MathUtil.applyDeadband(LjoyY, ChassisConstants.DeadBand);
         LjoyX = MathUtil.applyDeadband(LjoyX, ChassisConstants.DeadBand);
         rot = MathUtil.applyDeadband(rot, ChassisConstants.DeadBand);
 
         double multiplier = chassis.PrecisionMode ? SwerveConstants.ChassisConstants.PrecisionModeMultiplier : 1;
-        double VelX = Math.pow(LjoyX, 2) * multiplier * Math.signum(LjoyX) * ChassisConstants.Max_Linear_Speed * Kheight;
-        double VelY = Math.pow(LjoyY, 2) * multiplier * Math.signum(LjoyY) * ChassisConstants.Max_Linear_Speed * Kheight;
-        double VelRot =Math.pow(rot, 2) * multiplier * Math.signum(rot) * ChassisConstants.Max_Rotation_Speed * Kheight;
+        double VelX = Math.pow(LjoyX, 2) * multiplier * Math.signum(LjoyX) * ChassisConstants.Max_Linear_Speed;// * Kheight;
+        double VelY = Math.pow(LjoyY, 2) * multiplier * Math.signum(LjoyY) * ChassisConstants.Max_Linear_Speed;// * Kheight;
+        double VelRot =Math.pow(rot, 2) * multiplier * Math.signum(rot) * ChassisConstants.Max_Rotation_Speed;// * Kheight;
         speeds = new ChassisSpeeds(VelX, VelY, VelRot);
         chassis.setVelocities(speeds);
 
         }
+        
         /* 
 
         if (chassis.PrecisionMode){
@@ -80,6 +86,7 @@ public class ChassisDrive extends Command{
             
         }
         */
+        
         
 
         
