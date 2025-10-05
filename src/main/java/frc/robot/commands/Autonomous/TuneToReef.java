@@ -1,6 +1,7 @@
 package frc.robot.commands.Autonomous;
 
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -94,7 +95,7 @@ public class TuneToReef extends Command{
             distanceToTarget = toTarget.getNorm();
             double Vel = Math.min(velocity, distanceToTarget * kDistance);
             toTarget.times(Vel/distanceToTarget);
-            double omega = toTarget.getAngle().minus(currentPosition.getRotation()).getRadians()*kOmega;
+            double omega = MathUtil.inputModulus(target.getRotation().minus(currentPosition.getRotation()).getRadians(), -Math.PI, Math.PI)*kOmega;
             if(debug) {
                 SmartDashboard.putNumber("ToReef dist", distanceToTarget);
                 SmartDashboard.putNumber("ToReef Vel", Vel);
