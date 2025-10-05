@@ -51,10 +51,8 @@ public class RobotContainer {
    private void configureBindings() {
     DriverController.back().onChange(new InstantCommand(()->chassis.setZeroHeading()).ignoringDisable(true));
     DriverController.a().toggleOnTrue( new InstantCommand(()->chassis.PrecisionMode = !chassis.PrecisionMode));
-    DriverController.b().toggleOnTrue(new TuneToReef(chassis, visionSubsystem, elevator, false));
-    DriverController.x().toggleOnTrue(new TuneToReef(chassis, visionSubsystem, elevator, true));
-
-
+    DriverController.x().onTrue(new TuneToReef(chassis, visionSubsystem, elevator, true));
+    DriverController.b().onTrue(new TuneToReef(chassis, visionSubsystem, elevator, false));
   }
 
   public static boolean isEnabled() {
