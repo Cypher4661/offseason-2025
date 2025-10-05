@@ -123,7 +123,7 @@ public class TuneToReef extends Command{
 
     @Override
     public boolean isFinished() {
-        if(debug) SmartDashboard.putBoolean("RoReef end", distanceToTarget < MAX_ERROR);
+        if(debug) SmartDashboard.putBoolean("ToReef end", distanceToTarget < MAX_ERROR);
         return distanceToTarget < MAX_ERROR;
     }
 }
