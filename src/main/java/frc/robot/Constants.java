@@ -81,7 +81,8 @@ public final class Constants {
 };
 
 //angle of every tag reletive to the field
-public static Rotation2d[] TAG_ANGLE = { null, // 0
+public static Rotation2d[] TAG_ANGLE = { 
+  Rotation2d.kZero, // 0
   Rotation2d.fromDegrees(126), // 1
   Rotation2d.fromDegrees(234), // 2
   Rotation2d.fromDegrees(270), // 3
@@ -111,7 +112,8 @@ public static Rotation2d[] TAG_ANGLE = { null, // 0
          * Each value corresponds to either LOW, MID, or HIGH mounting position.
          * Index corresponds to AprilTag ID (0 is unused).
          */
-public static double[] TAG_HEIGHT = { 0, // 0
+public static double[] TAG_HEIGHT = { 
+  0, // 0
   STATION_TAG_HIGHT, // 1
   STATION_TAG_HIGHT, // 2
   SIDE_TAG_HIGHT, // 3

@@ -77,6 +77,7 @@ public class TuneToReef extends Command{
             target = new Pose2d(tagPosition.plus(new Translation2d(distanceFromeReef, leftorRightdistance).rotateBy(tagRotation)), 
                 tagRotation.plus(Rotation2d.k180deg));
             if(debug) {
+                SmartDashboard.putNumber("ToReef Tag angle", tagRotation.getDegrees());
                 SmartDashboard.putNumber("ToReef Target id", id);
                 SmartDashboard.putNumber("ToReef Target x", target.getX());
                 SmartDashboard.putNumber("ToReef Target y", target.getY());
