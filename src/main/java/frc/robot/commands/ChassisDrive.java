@@ -17,7 +17,7 @@ public class ChassisDrive extends Command{
     private boolean isRed;
     private ChassisSpeeds speeds;
     private boolean UseStick;
-    private ElevatorSubsystem Elevator;
+    ElevatorSubsystem Elevator;
     private double Kheight = 1;
     
     public ChassisDrive(ChassisSubsystem chassis, ElevatorSubsystem elevator, CommandXboxController controller){

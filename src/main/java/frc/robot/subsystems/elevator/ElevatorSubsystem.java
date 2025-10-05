@@ -15,7 +15,6 @@ import frc.Demacia.utils.Log.LogManager;
 import frc.Demacia.utils.Motors.MotorCommands;
 import frc.Demacia.utils.Motors.MotorInterface;
 import frc.Demacia.utils.Motors.TalonMotor;
-import frc.Demacia.utils.Sensors.Cancoder;
 import frc.robot.Constants;
 
 

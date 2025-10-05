@@ -16,7 +16,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.Camera;
-import frc.robot.Constants;
 import frc.robot.subsystems.Swerve.ChassisSubsystem;
 
 import static frc.robot.Constants.*;

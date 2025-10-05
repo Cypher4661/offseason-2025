@@ -41,7 +41,8 @@ public class RobotContainer {
     SmartDashboard.putData("Scheduler", CommandScheduler.getInstance());
     //chassis.setDefaultCommand(new ChassisDrive(chassis, DriverController)); 
     SmartDashboard.putData("Drive", new ChassisDrive(chassis, elevator, DriverController));
-    SmartDashboard.putData("tuneToReef", new TuneToReef(chassis, visionSubsystem, elevator));   
+    SmartDashboard.putData("TuneToReef - Left", new TuneToReef(chassis, visionSubsystem, elevator, true));   
+    SmartDashboard.putData("TuneToReef - Right", new TuneToReef(chassis, visionSubsystem, elevator, false));   
     
     field.setRobotPose(visionSubsystem.getPose());
     configureBindings();
@@ -50,8 +51,8 @@ public class RobotContainer {
    private void configureBindings() {
     DriverController.back().onChange(new InstantCommand(()->chassis.setZeroHeading()).ignoringDisable(true));
     DriverController.a().toggleOnTrue( new InstantCommand(()->chassis.PrecisionMode = !chassis.PrecisionMode));
-    DriverController.b().toggleOnTrue(new InstantCommand(()->tuneToReef.GoRight = !tuneToReef.GoRight));
-    DriverController.x().toggleOnTrue(new InstantCommand(()->tuneToReef.GoLeft = !tuneToReef.GoLeft));
+    DriverController.b().toggleOnTrue(new TuneToReef(chassis, visionSubsystem, elevator, false));
+    DriverController.x().toggleOnTrue(new TuneToReef(chassis, visionSubsystem, elevator, true));
 
 
   }
