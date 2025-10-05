@@ -25,7 +25,7 @@ public class RobotContainer {
   public ElevatorSubsystem elevator = new ElevatorSubsystem();
   private final VisionSubsystem visionSubsystem = new VisionSubsystem(Constants.CAMERA_POSITION, null, chassis);
   private final Field2d field = new Field2d();
-  private final TuneToReef tuneToReef = new TuneToReef(chassis, visionSubsystem, elevator);
+  
 
 
   
@@ -41,6 +41,7 @@ public class RobotContainer {
     SmartDashboard.putData("Scheduler", CommandScheduler.getInstance());
     //chassis.setDefaultCommand(new ChassisDrive(chassis, DriverController)); 
     SmartDashboard.putData("Drive", new ChassisDrive(chassis, elevator, DriverController));
+    SmartDashboard.putData("tuneToReef", new TuneToReef(chassis, visionSubsystem, elevator));   
     
     field.setRobotPose(visionSubsystem.getPose());
     configureBindings();
