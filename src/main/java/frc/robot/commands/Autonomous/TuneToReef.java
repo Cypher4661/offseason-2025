@@ -22,6 +22,8 @@ public class TuneToReef extends Command{
     private ElevatorSubsystem elevator;
     private boolean goLeft = false;
 
+    private boolean debug = true;
+
 
     private final static double kDistance = SwerveConstants.AutonomousConstants.KDistance;
     private final static double kOmega = SwerveConstants.AutonomousConstants.KOmega;
@@ -74,9 +76,14 @@ public class TuneToReef extends Command{
             }
             target = new Pose2d(tagPosition.plus(new Translation2d(distanceFromeReef, leftorRightdistance).rotateBy(tagRotation)), 
                 tagRotation.plus(Rotation2d.k180deg));
-            SmartDashboard.putString("ToReef Target", " id=" + id + " x=" + target.getX() + " y=" + target.getY() + " angle=" + target.getRotation().getDegrees());
-            SmartDashboard.putBoolean("ToReef see", true);
-        } else {
+            if(debug) {
+                SmartDashboard.putNumber("ToReef Target id", id);
+                SmartDashboard.putNumber("ToReef Target x", target.getX());
+                SmartDashboard.putNumber("ToReef Target y", target.getY());
+                SmartDashboard.putNumber("ToReef Target angle", target.getRotation().getDegrees());
+                SmartDashboard.putBoolean("ToReef see", true);
+            }
+        } else if(debug) {
             SmartDashboard.putBoolean("ToReef see", false);
         }
 
@@ -87,21 +94,36 @@ public class TuneToReef extends Command{
             double Vel = Math.min(velocity, distanceToTarget * kDistance);
             toTarget.times(Vel/distanceToTarget);
             double omega = toTarget.getAngle().minus(currentPosition.getRotation()).getRadians()*kOmega;
-            SmartDashboard.putNumber("ToReef dist", distanceToTarget);
-            SmartDashboard.putNumber("ToReef Vel", Vel);
-            SmartDashboard.putNumber("ToReef omega", omega);
-            SmartDashboard.putNumber("ToReef vx", toTarget.getX());
-            SmartDashboard.putNumber("ToReef vy", toTarget.getY());
+            if(debug) {
+                SmartDashboard.putNumber("ToReef dist", distanceToTarget);
+                SmartDashboard.putNumber("ToReef Vel", Vel);
+                SmartDashboard.putNumber("ToReef omega", omega);
+                SmartDashboard.putNumber("ToReef vx", toTarget.getX());
+                SmartDashboard.putNumber("ToReef vy", toTarget.getY());
+            }
             chassis.setVelocities(new ChassisSpeeds(toTarget.getX(), toTarget.getY(), omega));
         } else {
             chassis.setVelocities(new ChassisSpeeds(0,0,0));
-            SmartDashboard.putNumber("ToReef dist", 0);
-            SmartDashboard.putNumber("ToReef Vel", 0);
+            if(debug) {
+                SmartDashboard.putNumber("ToReef dist", 0);
+                SmartDashboard.putNumber("ToReef Vel", 0);
+            }
+        }
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        chassis.setVelocities(new ChassisSpeeds(0,0,0));
+        if(debug) {
+            SmartDashboard.putNumber("ToReef end x", chassis.getPose().getX());
+            SmartDashboard.putNumber("ToReef end y", chassis.getPose().getY());
+            SmartDashboard.putNumber("ToReef end angle", chassis.getPose().getRotation().getDegrees());
         }
     }
 
     @Override
     public boolean isFinished() {
+        if(debug) SmartDashboard.putBoolean("RoReef end", distanceToTarget < MAX_ERROR);
         return distanceToTarget < MAX_ERROR;
     }
 }
