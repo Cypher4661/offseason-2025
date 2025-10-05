@@ -58,22 +58,27 @@ public class TuneToReef extends Command{
             Rotation2d tagRotation = Constants.TAG_ANGLE[id];
             double leftorRightdistance = 0.0;
             double distanceFromeReef = 0.0;
+
             
-            leftorRightdistance = goLeft? SwerveConstants.AutonomousConstants.Left_Reef_Y : SwerveConstants.AutonomousConstants.Right_Reef_Y;
-            System.out.println(leftorRightdistance);
+            
+
 
             switch (elevator.getMode()) {
                 case L4:
                     distanceFromeReef = SwerveConstants.AutonomousConstants.L4_Reef_X;
+                    leftorRightdistance = goLeft? SwerveConstants.AutonomousConstants.Left_Reef_Y_L4 : SwerveConstants.AutonomousConstants.Right_Reef_Y_L4;
                     break;
                 case L3:
                     distanceFromeReef = SwerveConstants.AutonomousConstants.L3_Reef_X;
+                    leftorRightdistance = goLeft? SwerveConstants.AutonomousConstants.Left_Reef_Y_L3 : SwerveConstants.AutonomousConstants.Right_Reef_Y_L3;
                     break;
                 case L2:
                     distanceFromeReef = SwerveConstants.AutonomousConstants.L2_Reef_X;
+                    leftorRightdistance = goLeft? SwerveConstants.AutonomousConstants.Left_Reef_Y_L2 : SwerveConstants.AutonomousConstants.Right_Reef_Y_L2;
                     break;
                 default:
                     distanceFromeReef = 0.6;
+                    leftorRightdistance = goLeft? SwerveConstants.AutonomousConstants.Left_Reef_Y : SwerveConstants.AutonomousConstants.Right_Reef_Y;
                     break;
             }
             target = new Pose2d(tagPosition.plus(new Translation2d(distanceFromeReef, leftorRightdistance).rotateBy(tagRotation)), 
