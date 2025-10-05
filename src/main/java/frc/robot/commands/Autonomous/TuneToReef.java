@@ -11,20 +11,26 @@ import frc.robot.Constants;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.Swerve.ChassisSubsystem;
 import frc.robot.subsystems.Swerve.SwerveConstants;
+import frc.robot.subsystems.elevator.ElevatorSubsystem;
+import frc.robot.subsystems.elevator.ElevatorSubsystem.ElevatorMode;
 
-public class TuneToRiff extends Command{
+public class TuneToReef extends Command{
     private Pose2d target;
     private double velocity = SwerveConstants.ChassisConstants.Max_Linear_Speed;
     private ChassisSubsystem chassis;
     private double distanceToTarget = 0;
     private VisionSubsystem vision;
+    private ElevatorSubsystem elevator;
+    public boolean GoRight = false;
+    public boolean GoLeft = false;
+
 
     private final static double kDistance = SwerveConstants.AutonomousConstants.KDistance;
     private final static double kOmega = SwerveConstants.AutonomousConstants.KOmega;
     private final static double MAX_ERROR = SwerveConstants.AutonomousConstants.Max_Erorr_Riff;
 
-    public TuneToRiff(Pose2d target, ChassisSubsystem chassis, VisionSubsystem vision) {
-        this.target  = target;
+    public TuneToReef(ChassisSubsystem chassis, VisionSubsystem vision, ElevatorSubsystem elevator){
+        this.elevator = elevator;
         this.chassis = chassis;
         this.vision = vision;
         addRequirements(chassis);
@@ -42,13 +48,37 @@ public class TuneToRiff extends Command{
 
     @Override
     public void execute(){
+        System.out.println("test");
         if(vision.isSeeTag()) {
             int id = vision.getTagId();
             Translation2d tagPosition = Constants.O_TO_TAG[id];
             Rotation2d tagRotation = Constants.TAG_ANGLE[id];
-            // need code for left/right and level
-            double xOffset = 0.52; // 52 cm from reef
-            double yOffset = -0.06; // 6 cm left of reef
+            double LeftorRightdistance = 0.0;
+            double distanceFromeReef = 0.0;
+            if(GoRight == true){
+                LeftorRightdistance = SwerveConstants.AutonomousConstants.Right_Reef_Y;
+            }
+            else if(GoLeft == true){
+                LeftorRightdistance = SwerveConstants.AutonomousConstants.Left_Reef_Y;
+                System.out.println(LeftorRightdistance);
+            }
+            ElevatorMode level = elevator.getMode();
+            switch (level) {
+                case L4:
+                    distanceFromeReef = SwerveConstants.AutonomousConstants.L4_Reef_X;
+                    break;
+                case L3:
+                    distanceFromeReef = SwerveConstants.AutonomousConstants.L3_Reef_X;
+                    break;
+                case L2:
+                    distanceFromeReef = SwerveConstants.AutonomousConstants.L2_Reef_X;
+                    break;
+                default:
+                    distanceFromeReef = 0.0;
+                    break;
+            }
+            double xOffset = 0.52 + distanceFromeReef; // 52 cm from reef
+            double yOffset = -0.06 + LeftorRightdistance; // 6 cm left of reef
             target = new Pose2d(tagPosition.plus(new Translation2d(xOffset, yOffset).rotateBy(tagRotation)), 
                 tagRotation.plus(Rotation2d.k180deg));
             SmartDashboard.putString("ToReef Target", " id=" + id + " x=" + target.getX() + " y=" + target.getY() + " angle=" + target.getRotation().getDegrees());
@@ -82,3 +112,4 @@ public class TuneToRiff extends Command{
         return distanceToTarget < MAX_ERROR;
     }
 }
+

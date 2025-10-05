@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.ChassisDrive;
+import frc.robot.commands.Autonomous.TuneToReef;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.Swerve.ChassisSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
@@ -24,6 +25,8 @@ public class RobotContainer {
   public ElevatorSubsystem elevator = new ElevatorSubsystem();
   private final VisionSubsystem visionSubsystem = new VisionSubsystem(Constants.CAMERA_POSITION, null, chassis);
   private final Field2d field = new Field2d();
+  private final TuneToReef tuneToReef = new TuneToReef(chassis, visionSubsystem, elevator);
+
 
   
   public static int N_CYCLE = 0;
@@ -38,6 +41,7 @@ public class RobotContainer {
     SmartDashboard.putData("Scheduler", CommandScheduler.getInstance());
     //chassis.setDefaultCommand(new ChassisDrive(chassis, DriverController)); 
     SmartDashboard.putData("Drive", new ChassisDrive(chassis, elevator, DriverController));
+    
     field.setRobotPose(visionSubsystem.getPose());
     configureBindings();
   }
@@ -45,6 +49,8 @@ public class RobotContainer {
    private void configureBindings() {
     DriverController.back().onChange(new InstantCommand(()->chassis.setZeroHeading()).ignoringDisable(true));
     DriverController.a().toggleOnTrue( new InstantCommand(()->chassis.PrecisionMode = !chassis.PrecisionMode));
+    DriverController.b().toggleOnTrue(new InstantCommand(()->tuneToReef.GoRight = !tuneToReef.GoRight));
+    DriverController.x().toggleOnTrue(new InstantCommand(()->tuneToReef.GoLeft = !tuneToReef.GoLeft));
 
 
   }
@@ -56,7 +62,9 @@ public class RobotContainer {
   public void periodic() {
     if (visionSubsystem.getPose() != null) {
       field.setRobotPose(visionSubsystem.getPose());
+
   }
+  
   }
 
   public Command getAutonomousCommand() {

@@ -49,8 +49,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         Home(0, -90), 
         Intake(0, -107), 
         L1(0.3, -80), 
-        L2(0.5, -80
-        ), 
+        L2(0.5, -80), 
         L3(0, 60), 
         L4(0.72,40), 
         AlgieUp(0.3,60), 

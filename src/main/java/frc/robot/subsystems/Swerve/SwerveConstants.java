@@ -67,5 +67,10 @@ public class SwerveConstants {
         public static final double KDistance = 2.0;
         public static final double KOmega = 1.0;
         public static final double Max_Erorr_Riff = 0.05;
+        public static final double Left_Reef_Y = -0.2;
+        public static final double Right_Reef_Y = 0.0;
+        public static final double L2_Reef_X = 0.4;
+        public static final double L3_Reef_X = 0.0;
+        public static final double L4_Reef_X = 0.0;
     }
 }
