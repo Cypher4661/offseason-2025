@@ -19,6 +19,7 @@ public class TuneToReef extends Command{
     private double velocity = SwerveConstants.ChassisConstants.Max_Linear_Speed;
     private ChassisSubsystem chassis;
     private double distanceToTarget = 0;
+    private double headingError = 0;
     private VisionSubsystem vision;
     private ElevatorSubsystem elevator;
     private boolean goLeft = false;
@@ -95,7 +96,8 @@ public class TuneToReef extends Command{
             distanceToTarget = toTarget.getNorm();
             double Vel = Math.min(velocity, distanceToTarget * kDistance);
             toTarget.times(Vel/distanceToTarget);
-            double omega = MathUtil.inputModulus(target.getRotation().minus(currentPosition.getRotation()).getRadians(), -Math.PI, Math.PI)*kOmega;
+            headingError = MathUtil.inputModulus(target.getRotation().minus(currentPosition.getRotation()).getRadians(), -Math.PI, Math.PI);
+            double omega = headingError*kOmega;
             if(debug) {
                 SmartDashboard.putNumber("ToReef dist", distanceToTarget);
                 SmartDashboard.putNumber("ToReef Vel", Vel);
@@ -125,8 +127,8 @@ public class TuneToReef extends Command{
 
     @Override
     public boolean isFinished() {
-        if(debug) SmartDashboard.putBoolean("ToReef end", distanceToTarget < MAX_ERROR);
-        return distanceToTarget < MAX_ERROR;
+        if(debug) SmartDashboard.putBoolean("ToReef end", distanceToTarget < MAX_ERROR && headingError < SwerveConstants.AutonomousConstants.Max_Heading_Erorr_Riff);
+        return distanceToTarget < MAX_ERROR && headingError < SwerveConstants.AutonomousConstants.Max_Heading_Erorr_Riff;
     }
 }
 
