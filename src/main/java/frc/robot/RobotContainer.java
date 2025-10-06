@@ -93,8 +93,7 @@ public class RobotContainer implements Sendable {
   }
 
   public Command getAutonomousCommand() {
-    return new AutoScore(false, ElevatorMode.L4);
-    
+    return null;
   }
       public VisionSubsystem getVisionSubsystem() {
         return visionSubsystem;
