@@ -29,9 +29,11 @@ public class AutoScore extends SequentialCommandGroup {
   public AutoScore(boolean goLeft, ElevatorMode mode) {
     this.elevator = RobotContainer.elevator;
     this.chassis = RobotContainer.chassis;
-    addCommands(new InstantCommand(()->elevator.setMode(mode)),
-    new WaitCommand(3),
+    addCommands(
       new RunCommand(() -> chassis.setVelocitiesRobotVel(new ChassisSpeeds(0.5, 0, 0)), chassis).until(() -> RobotContainer.visionSubsystem.isSeeTag()),
+      new WaitCommand(1),
+      new InstantCommand(()->elevator.setMode(mode)),
+      new WaitCommand(3),
       new TuneToReef(chassis, RobotContainer.visionSubsystem, elevator, goLeft),
       new RunCommand(()->elevator.setGripperPower(-0.3), elevator).withTimeout(1),
       new RunCommand(()->chassis.setVelocitiesRobotVel(new ChassisSpeeds(-0.5, 0,0)), chassis).withTimeout(2),
