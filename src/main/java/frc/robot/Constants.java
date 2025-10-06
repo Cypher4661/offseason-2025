@@ -158,6 +158,7 @@ public static double[] TAG_HEIGHT = {
 
     public static final double KG = 0.2;
 
+    public static final double deadbend = 0.02; // meters
     public static final TalonConfig LeftMotor = new TalonConfig(30, Canbus.Rio, "Elevator/Left")
         .withBrake(true)
         .withInvert(false)
@@ -187,7 +188,7 @@ public static double[] TAG_HEIGHT = {
         .withCurrent(20)
         .withRampTime(0.2);
 
-    public static final double ARM_CANCODER_OFFSET = 339;
+    public static final double ARM_CANCODER_OFFSET = 338.8;
     public static final double kG = 0.20;
 
 

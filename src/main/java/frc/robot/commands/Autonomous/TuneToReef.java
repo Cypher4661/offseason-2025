@@ -51,9 +51,11 @@ public class TuneToReef extends Command{
 
     @Override
     public void execute(){
-        System.out.println("test");
+        
         if(vision.isSeeTag()) {
             int id = vision.getTagId();
+            if (id < 0 ) id = 0;
+            if (id > 22) id =22;
             Translation2d tagPosition = Constants.O_TO_TAG[id];
             Rotation2d tagRotation = Constants.TAG_ANGLE[id];
             double leftorRightdistance = 0.0;
@@ -65,15 +67,15 @@ public class TuneToReef extends Command{
 
             switch (elevator.getMode()) {
                 case L4:
-                    distanceFromeReef = SwerveConstants.AutonomousConstants.L4_Reef_X;
+                    distanceFromeReef = goLeft? SwerveConstants.AutonomousConstants.Left_L4_Reef_X: SwerveConstants.AutonomousConstants.Right_L4_Reef_X;
                     leftorRightdistance = goLeft? SwerveConstants.AutonomousConstants.Left_Reef_Y_L4 : SwerveConstants.AutonomousConstants.Right_Reef_Y_L4;
                     break;
                 case L3:
-                    distanceFromeReef = SwerveConstants.AutonomousConstants.L3_Reef_X;
+                    distanceFromeReef = goLeft? SwerveConstants.AutonomousConstants.Left_L3_Reef_X: SwerveConstants.AutonomousConstants.Right_L3_Reef_X;
                     leftorRightdistance = goLeft? SwerveConstants.AutonomousConstants.Left_Reef_Y_L3 : SwerveConstants.AutonomousConstants.Right_Reef_Y_L3;
                     break;
                 case L2:
-                    distanceFromeReef = SwerveConstants.AutonomousConstants.L2_Reef_X;
+                    distanceFromeReef = goLeft? SwerveConstants.AutonomousConstants.Left_L2_Reef_X: SwerveConstants.AutonomousConstants.Right_L2_Reef_X;
                     leftorRightdistance = goLeft? SwerveConstants.AutonomousConstants.Left_Reef_Y_L2 : SwerveConstants.AutonomousConstants.Right_Reef_Y_L2;
                     break;
                 default:

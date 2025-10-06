@@ -40,7 +40,7 @@ public class ElevatorCommand extends Command {
                 elevator.setArmPower(0);
                 break;
             case Intake:
-                elevator.setGripperPower(0.27);
+                elevator.setGripperPower(0.3);
 
                 if(elevator.isCoralBack()){
                     elevator.setGripperPower(0);

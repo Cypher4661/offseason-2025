@@ -49,7 +49,7 @@ public class ChassisDrive extends Command{
         }
 
         Kheight = -(0.45 * Elevator.getHeight() - 0.1);
-        System.out.println(Kheight);
+       
         
 
         LjoyY = MathUtil.applyDeadband(LjoyY, ChassisConstants.DeadBand);

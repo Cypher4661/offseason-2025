@@ -227,7 +227,9 @@ public class ElevatorSubsystem extends SubsystemBase {
     public void setHeight(double height) {
         if(!calibreated) return;
         height = Math.max(minHeight, Math.min(maxHeight, height));
+
         leftMotor.setPositionVoltage(height-encoderOffset, isAtButtom()? 0 :  Constants.elevatorConfig.KG);
+        
     }
 
     public void setMode(ElevatorMode mode) {
