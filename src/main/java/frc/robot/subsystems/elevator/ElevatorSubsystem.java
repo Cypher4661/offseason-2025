@@ -43,7 +43,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     double encoderOffset;
 
     
-    public enum ElevatorMode { 
+public enum ElevatorMode { 
         Idle(0, -90), 
         Home(0, -90), 
         Intake(0, -107), 
@@ -164,6 +164,9 @@ public class ElevatorSubsystem extends SubsystemBase {
     private boolean buttomSwitch() {
         return !buttomSwitch.get();
     }
+    public boolean isReady(){
+        return calibreated && Math.abs(leftMotor.getCurrentClosedLoopError()) <= Constants.elevatorConfig.deadbend && Math.abs(armMotor.getCurrentClosedLoopSP()) <= 1;
+    }
 
     private boolean IsAtMagnet(){
         return !magenticSwitch.get();
@@ -225,10 +228,13 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public void setHeight(double height) {
+        
         if(!calibreated) return;
-        height = Math.max(minHeight, Math.min(maxHeight, height));
-
-        leftMotor.setPositionVoltage(height-encoderOffset, isAtButtom()? 0 :  Constants.elevatorConfig.KG);
+        height = MathUtil.clamp(height, minHeight, maxHeight);
+        if(Math.abs(getHeight() - height) < Constants.elevatorConfig.deadbend){
+           leftMotor.setDuty(0);
+        }
+        else leftMotor.setPositionVoltage(height-encoderOffset, isAtButtom()? 0 :  Constants.elevatorConfig.KG);
         
     }
 
@@ -273,7 +279,7 @@ public class ElevatorSubsystem extends SubsystemBase {
             double error = Double.MAX_VALUE;
             for(double mh : magenticHeights){
                 if(Math.abs(mh - h) < error){
-                    error = Math.abs(mh - h);
+                    error = Math.abs(mh - h);   
                     closest = mh;
                 }
             }

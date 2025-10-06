@@ -186,6 +186,17 @@ public class ChassisSubsystem extends SubsystemBase {
         }
     }
 
+    public void setVelocitiesRobotVel(ChassisSpeeds speeds){
+        if(Math.abs(speeds.vxMetersPerSecond) < 0.01 && Math.abs(speeds.vyMetersPerSecond) < 0.01 && Math.abs(speeds.omegaRadiansPerSecond) < 0.01){
+            for(SwerveModule m : Modules){
+                m.setStop();
+            }
+            return;
+        }
+        SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds);
+        setModuleStates(states);
+
+    }
     
     public boolean isRed(){
         return RobotContainer.isRed;

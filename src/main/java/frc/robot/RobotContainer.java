@@ -15,11 +15,13 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.ChassisDrive;
+import frc.robot.commands.Autonomous.AutoScore;
 import frc.robot.commands.Autonomous.TuneToReef;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.Swerve.ChassisSubsystem;
 import frc.robot.subsystems.elevator.ElevatorCommand;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
+import frc.robot.subsystems.elevator.ElevatorSubsystem.ElevatorMode;
 
 public class RobotContainer implements Sendable {
   
@@ -27,10 +29,11 @@ public class RobotContainer implements Sendable {
   public static boolean isRed; 
   public static Robot robot;
   public CommandXboxController DriverController = new CommandXboxController(0);
-  public ChassisSubsystem chassis = new ChassisSubsystem();
-  public ElevatorSubsystem elevator = new ElevatorSubsystem();
-  private final VisionSubsystem visionSubsystem = new VisionSubsystem(Constants.CAMERA_POSITION, null, chassis);
+  public static ChassisSubsystem chassis = new ChassisSubsystem();
+  public static ElevatorSubsystem elevator = new ElevatorSubsystem();
+  public static final VisionSubsystem visionSubsystem = new VisionSubsystem(Constants.CAMERA_POSITION, null, chassis);
   private final Field2d field = new Field2d();
+  
   
 
 
@@ -63,7 +66,7 @@ public class RobotContainer implements Sendable {
     DriverController.a().toggleOnTrue( new InstantCommand(()->chassis.PrecisionMode = !chassis.PrecisionMode));
     DriverController.x().onTrue(new TuneToReef(chassis, visionSubsystem, elevator, true));
     DriverController.b().onTrue(new TuneToReef(chassis, visionSubsystem, elevator, false));
-
+    DriverController.y  ().onTrue(new AutoScore(false, ElevatorMode.L4));
     Trigger driverControllerStickMove = new Trigger(() -> new Translation2d(Math.abs(DriverController.getLeftX()), Math.abs(DriverController.getLeftY())).getNorm() > 0.3);
     driverControllerStickMove.onTrue(new ChassisDrive(chassis, elevator, DriverController));
 

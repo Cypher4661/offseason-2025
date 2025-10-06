@@ -102,7 +102,7 @@ public class TuneToReef extends Command{
             Translation2d toTarget = target.getTranslation().minus(currentPosition.getTranslation());
             distanceToTarget = toTarget.getNorm();
             double Vel = Math.min(velocity, distanceToTarget * kDistance);
-            toTarget.times(Vel/distanceToTarget);
+            
             headingError = MathUtil.inputModulus(target.getRotation().minus(currentPosition.getRotation()).getRadians(), -Math.PI, Math.PI);
             double omega = headingError*kOmega;
             if(debug) {
@@ -112,7 +112,7 @@ public class TuneToReef extends Command{
                 SmartDashboard.putNumber("ToReef vx", toTarget.getX());
                 SmartDashboard.putNumber("ToReef vy", toTarget.getY());
             }
-            chassis.setVelocities(new ChassisSpeeds(toTarget.getX(), toTarget.getY(), omega));
+            chassis.setVelocities(new ChassisSpeeds(toTarget.getAngle().getCos() * Vel, toTarget.getAngle().getSin() * Vel, omega));
         } else {
             chassis.setVelocities(new ChassisSpeeds(0,0,0));
             if(debug) {

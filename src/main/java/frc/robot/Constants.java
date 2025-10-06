@@ -163,7 +163,7 @@ public static double[] TAG_HEIGHT = {
         .withBrake(true)
         .withInvert(false)
         .withMeterMotor(15, 0.0364)
-        .withPID(15, 0, 0, 0.6, 15, 0.35, KG)
+        .withPID(17, 0, 0, 0.6, 15, 0.35, KG)
         .withCurrent(35)
         .withRampTime(0.2)
         .withVolts(12);
@@ -196,8 +196,8 @@ public static double[] TAG_HEIGHT = {
         .withBrake(true)
         .withInvert(true)
         .withDegreesMotor(108) 
-        .withMotionParam(90, 150, 300) 
-        .withPID(0.3, 0.0, 0.001, 0.0, 0.0, 0.0, kG) 
+        .withMotionParam(140, 280, 560) 
+        .withPID(0.3, 0.0, 0.0, 0.0, 0.0, 0.0, kG) 
         .withVolts(12)
         .withCurrent(30)
         .withRampTime(0.3);
