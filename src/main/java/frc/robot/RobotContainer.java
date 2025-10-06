@@ -66,7 +66,7 @@ public class RobotContainer implements Sendable {
     DriverController.a().toggleOnTrue( new InstantCommand(()->chassis.PrecisionMode = !chassis.PrecisionMode));
     DriverController.x().onTrue(new TuneToReef(chassis, visionSubsystem, elevator, true));
     DriverController.b().onTrue(new TuneToReef(chassis, visionSubsystem, elevator, false));
-    DriverController.y  ().onTrue(new AutoScore(false, ElevatorMode.L4));
+    DriverController.y().onTrue(new AutoScore(false, ElevatorMode.L4));
     Trigger driverControllerStickMove = new Trigger(() -> new Translation2d(Math.abs(DriverController.getLeftX()), Math.abs(DriverController.getLeftY())).getNorm() > 0.3);
     driverControllerStickMove.onTrue(new ChassisDrive(chassis, elevator, DriverController));
 
@@ -93,7 +93,8 @@ public class RobotContainer implements Sendable {
   }
 
   public Command getAutonomousCommand() {
-    return null;
+    return new AutoScore(false, ElevatorMode.L4);
+    
   }
       public VisionSubsystem getVisionSubsystem() {
         return visionSubsystem;
