@@ -37,7 +37,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     private final MotorInterface armMotor;
     private final DutyCycleEncoder armEncoder;     
     private final MotorInterface gripperMotor;   
-    private final Ultrasonic frontSensor;     
+    private final Ultrasonic frontSensor;   
+    public ElevatorMode modeElstic;
     private double armOffset = Constants.Arm.ARM_CANCODER_OFFSET; // used to set the offset from Elastic
     SendableChooser<ElevatorMode> modeChooser;
     double encoderOffset;
@@ -67,6 +68,7 @@ public enum ElevatorMode {
     private double maxHeight = 0.8;
     private double minAngle = -104;
     private double  maxAngle = 90;
+    
 
     public ElevatorSubsystem() {
         LogManager.log("ElevatorSubsystem started");
@@ -76,7 +78,7 @@ public enum ElevatorMode {
         gripperMotor = new TalonMotor(Constants.Arm.GripperConfig);
         Ultrasonic.setAutomaticMode(true); 
         frontSensor = new Ultrasonic(3,4);
-
+        modeElstic = ElevatorMode.Idle;
         ((TalonFX)rightMotor).setControl(new Follower(Constants.elevatorConfig.LeftMotor.id, true));
 
         // start mode
@@ -245,6 +247,12 @@ public enum ElevatorMode {
             this.mode = mode;
         }   
     }
+    public void setModeElstic(ElevatorMode mode) {
+            this.modeElstic = mode; 
+    }
+    public ElevatorMode getModeElstic() {
+        return modeElstic;
+    }
     public void setMode(String mode) {
 
         try{
@@ -295,7 +303,7 @@ public enum ElevatorMode {
             if(mode != ElevatorMode.Idle)
                 modeChooser.addOption(mode.name(), mode);
         }
-        modeChooser.onChange((mode)->setMode(mode));
+        modeChooser.onChange((mode)->setModeElstic(mode));
         SmartDashboard.putData("Mode",modeChooser);
     }
 

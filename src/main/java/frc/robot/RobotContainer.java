@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.ChassisDrive;
@@ -55,8 +56,7 @@ public class RobotContainer implements Sendable {
     //chassis.setDefaultCommand(new ChassisDrive(chassis, DriverController)); 
     SmartDashboard.putData("Drive", new ChassisDrive(chassis, elevator, DriverController));
     SmartDashboard.putData("TuneToReef - Left", new TuneToReef(chassis, visionSubsystem, elevator, true));   
-    SmartDashboard.putData("TuneToReef - Right", new TuneToReef(chassis, visionSubsystem, elevator, false));   
-
+    SmartDashboard.putData("TuneToReef - Right", new TuneToReef(chassis, visionSubsystem, elevator, false));  
     SmartDashboard.putData("roboContainer", this);
 
   
@@ -64,14 +64,28 @@ public class RobotContainer implements Sendable {
     field.setRobotPose(visionSubsystem.getPose());
     configureBindings();
   }
+  public static POSITION getClosetPosition(){
+    POSITION closet = POSITION.A;
+    double minDis = Double.MAX_VALUE;
+    for(POSITION pos : POSITION.values()){
+      double dis = chassis.getPose().getTranslation().getDistance(pos.getPose().getTranslation());
+      if(dis < minDis){
+        minDis = dis;
+        closet = pos;
+      }
+    }
+    return closet;
+  }
   
    private void configureBindings() {
+    
+    DriverController.rightBumper().onTrue(new InstantCommand(()-> elevator.setMode(ElevatorMode.Intake)));
+    DriverController.leftBumper().onTrue(new RunCommand(()->elevator.setGripperPower(0.3)).withTimeout(0.5));
+    DriverController.povDown().onTrue(new InstantCommand(()->elevator.setMode(ElevatorMode.Home)));
+    DriverController.b().onTrue(new AutoScore(false));
+    DriverController.x().onTrue(new AutoScore(true));
     DriverController.back().onChange(new InstantCommand(()->chassis.setZeroHeading()).ignoringDisable(true));
-    DriverController.a().toggleOnTrue( new InstantCommand(()->chassis.PrecisionMode = !chassis.PrecisionMode));
-    DriverController.x().onTrue(new TuneToReef(chassis, visionSubsystem, elevator, true));
-    DriverController.b().onTrue(new TuneToReef(chassis, visionSubsystem, elevator, false));
-    DriverController.y().onTrue(new AlignAndScore(false, ElevatorMode.L4));
-    DriverController.povUp().onTrue(new AutoScore(POSITION.B, false));
+    DriverController.a().toggleOnTrue(new InstantCommand(()->chassis.PrecisionMode = !chassis.PrecisionMode));
     Trigger driverControllerStickMove = new Trigger(() -> new Translation2d(Math.abs(DriverController.getLeftX()), Math.abs(DriverController.getLeftY())).getNorm() > 0.3);
     driverControllerStickMove.onTrue(new ChassisDrive(chassis, elevator, DriverController));
 

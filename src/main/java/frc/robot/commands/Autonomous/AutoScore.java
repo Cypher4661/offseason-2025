@@ -26,20 +26,21 @@ public class AutoScore extends Command {
   POSITION position;
   boolean goLeft;
   ChassisSubsystem chassis;
-  public AutoScore(FieldTarget.POSITION position, boolean goLeft) {
-    this.position = position;
+  public AutoScore(boolean goLeft) {
     this.goLeft = goLeft;
     this.chassis = RobotContainer.chassis;
   }
   @Override
   public void initialize() {
+    this.position = RobotContainer.getClosetPosition();
+    ElevatorMode mode = RobotContainer.elevator.getModeElstic();
     poseWithOffset = new Pose2d(position.getPose().getTranslation().plus(new Translation2d(1, position.getPose().getRotation())), position.getPose().getRotation().plus(Rotation2d.k180deg));
     new SequentialCommandGroup(
       
     new GoToCommand(poseWithOffset, 2, chassis),
     new RunCommand(()-> chassis.setVelocitiesRobotVel(new ChassisSpeeds(1, 0, 0))).until(()->RobotContainer.visionSubsystem.isSeeTag() || chassis.getPose().getTranslation().getDistance(position.getPose().getTranslation()) < 0.5).withTimeout(3),
 
-    new AlignAndScore(goLeft, ElevatorMode.L4)).schedule();
+    new AlignAndScore(goLeft, mode)).schedule();
     
   }
   @Override
