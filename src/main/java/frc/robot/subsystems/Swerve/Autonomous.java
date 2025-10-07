@@ -20,7 +20,8 @@ import frc.robot.subsystems.elevator.ElevatorSubsystem.ElevatorMode;
 public class Autonomous extends SequentialCommandGroup {
   public Autonomous() {
     addCommands(
-      new RunCommand(()->RobotContainer.chassis.setVelocitiesRobotRel(new ChassisSpeeds(0.5, 0, 0))).until(()->RobotContainer.visionSubsystem.isSeeTag()).withTimeout(3),
+      new RunCommand(()->RobotContainer.chassis.setVelocitiesRobotRel(new ChassisSpeeds(1, 0, 0))).withTimeout(1),
+      
       new AlignAndScore(true, ElevatorMode.L4));
   }
 }

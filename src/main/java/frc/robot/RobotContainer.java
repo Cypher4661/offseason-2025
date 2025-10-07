@@ -88,6 +88,7 @@ public class RobotContainer implements Sendable {
     DriverController.back().onChange(new InstantCommand(()->chassis.setZeroHeading()).ignoringDisable(true));
     DriverController.a().toggleOnTrue(new InstantCommand(()->chassis.PrecisionMode = !chassis.PrecisionMode));
     DriverController.y().onTrue(new InstantCommand(()->elevator.setGripperPower(0)));
+    DriverController.povUp().onTrue(new InstantCommand(()->{elevator.setMode(ElevatorMode.L1); elevator.setModeElstic(ElevatorMode.L1);}));
     Trigger driverControllerStickMove = new Trigger(() -> new Translation2d(Math.abs(DriverController.getLeftX()), Math.abs(DriverController.getLeftY())).getNorm() > 0.3);
     driverControllerStickMove.onTrue(new ChassisDrive(chassis, elevator, DriverController));
 
