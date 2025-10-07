@@ -77,14 +77,14 @@ public class SwerveConstants {
         public static final double Left_Reef_Y_L2 = -0.32;
         public static final double Right_Reef_Y_L2 = -0.07;
         //L3
-        public static final double Right_L3_Reef_X = 0.47;
+        public static final double Right_L3_Reef_X = 0.53;
         public static final double Left_L3_Reef_X = 0.47;
         public static final double Left_Reef_Y_L3 = -0.39;
         public static final double Right_Reef_Y_L3 = -0.12;
         //L4
-        public static final double Right_L4_Reef_X = 0.54;
-        public static final double Left_L4_Reef_X = 0.47;
+        public static final double Right_L4_Reef_X = 0.6;
+        public static final double Left_L4_Reef_X = 0.53;
         public static final double Left_Reef_Y_L4 =  -0.45;
-        public static final double Right_Reef_Y_L4 = -0.15;
+        public static final double Right_Reef_Y_L4 = -0.18;
     }
 }

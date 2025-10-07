@@ -37,7 +37,7 @@ public class AutoScore extends Command {
     this.position = RobotContainer.getClosetPosition();
     ElevatorMode mode = RobotContainer.elevator.getModeElstic();
     double goLeftOffset = goLeft ? SwerveConstants.AutonomousConstants.Left_Reef_Y_L3 : AutonomousConstants.Right_Reef_Y_L3;
-    Translation2d offset = new Translation2d(1, position.getPose().getRotation()).plus(new Translation2d(0, goLeftOffset));
+    Translation2d offset = new Translation2d(1.2, position.getPose().getRotation()).plus(new Translation2d(0, goLeftOffset));
     poseWithOffset = new Pose2d(position.getPose().getTranslation().plus(offset)  , position.getPose().getRotation().plus(Rotation2d.k180deg));
     new SequentialCommandGroup(
       

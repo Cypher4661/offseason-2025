@@ -32,7 +32,7 @@ public class TuneToReef extends Command{
     private final static double kDistance = SwerveConstants.AutonomousConstants.KDistance;
     private final static double kOmega = SwerveConstants.AutonomousConstants.KOmega;
     private final static double MAX_ERROR = SwerveConstants.AutonomousConstants.Max_Erorr_Riff;
-    private final ProfiledPIDController pid = new ProfiledPIDController(kDistance, 0, 0, new Constraints(1, 2));
+    private final ProfiledPIDController pid = new ProfiledPIDController(kDistance, 0, 0, new Constraints(0.75, 2));
     public TuneToReef(ChassisSubsystem chassis, VisionSubsystem vision, ElevatorSubsystem elevator, boolean goLeft) {
         this.elevator = elevator;
         this.chassis = chassis;
@@ -103,8 +103,8 @@ public class TuneToReef extends Command{
             Pose2d currentPosition = chassis.getPose();
             Translation2d toTarget = target.getTranslation().minus(currentPosition.getTranslation());
             distanceToTarget = toTarget.getNorm();
-            //double Vel = Math.min(velocity, pid.calculate(-distanceToTarget, 0));
-            double Vel = Math.min(velocity, kDistance * distanceToTarget);
+            double Vel = Math.min(velocity, pid.calculate(-distanceToTarget, 0));
+            //double Vel = Math.min(velocity, kDistance * distanceToTarget);
             headingError = MathUtil.inputModulus(target.getRotation().minus(currentPosition.getRotation()).getRadians(), -Math.PI, Math.PI);
             double omega = headingError*kOmega;
             if(debug) {
