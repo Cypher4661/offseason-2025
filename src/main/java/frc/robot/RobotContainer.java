@@ -16,7 +16,9 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.ChassisDrive;
 import frc.robot.commands.Autonomous.AutoScore;
+import frc.robot.commands.Autonomous.AlignAndScore;
 import frc.robot.commands.Autonomous.TuneToReef;
+import frc.robot.commands.Autonomous.FieldTarget.POSITION;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.Swerve.ChassisSubsystem;
 import frc.robot.subsystems.elevator.ElevatorCommand;
@@ -42,7 +44,9 @@ public class RobotContainer implements Sendable {
   public static double CYCLE_TIME = 0.02;
 
   
-  
+  public static boolean isRed(){
+    return isRed;
+  }
 
   public RobotContainer(Robot robot) {
     RobotContainer.robot = robot;
@@ -66,7 +70,8 @@ public class RobotContainer implements Sendable {
     DriverController.a().toggleOnTrue( new InstantCommand(()->chassis.PrecisionMode = !chassis.PrecisionMode));
     DriverController.x().onTrue(new TuneToReef(chassis, visionSubsystem, elevator, true));
     DriverController.b().onTrue(new TuneToReef(chassis, visionSubsystem, elevator, false));
-    DriverController.y().onTrue(new AutoScore(false, ElevatorMode.L4));
+    DriverController.y().onTrue(new AlignAndScore(false, ElevatorMode.L4));
+    DriverController.povUp().onTrue(new AutoScore(POSITION.B, false));
     Trigger driverControllerStickMove = new Trigger(() -> new Translation2d(Math.abs(DriverController.getLeftX()), Math.abs(DriverController.getLeftY())).getNorm() > 0.3);
     driverControllerStickMove.onTrue(new ChassisDrive(chassis, elevator, DriverController));
 

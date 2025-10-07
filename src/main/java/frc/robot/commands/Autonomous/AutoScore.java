@@ -4,40 +4,47 @@
 
 package frc.robot.commands.Autonomous;
 
-import java.lang.annotation.ElementType;
+import static edu.wpi.first.units.Units.Rotation;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.RobotContainer;
+import frc.robot.commands.GoToCommand;
+import frc.robot.commands.Autonomous.FieldTarget.POSITION;
 import frc.robot.subsystems.Swerve.ChassisSubsystem;
-import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem.ElevatorMode;
 
-// NOTE:  Consider using this command inline, rather than writing a subclass.  For more
-// information, see:
-// https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class AutoScore extends SequentialCommandGroup {
-  TuneToReef tuneToReef;
-  ElevatorSubsystem elevator;
+/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
+public class AutoScore extends Command {
+  Pose2d poseWithOffset = Pose2d.kZero;
+  POSITION position;
+  boolean goLeft;
   ChassisSubsystem chassis;
-
-  public AutoScore(boolean goLeft, ElevatorMode mode) {
-    this.elevator = RobotContainer.elevator;
+  public AutoScore(FieldTarget.POSITION position, boolean goLeft) {
+    this.position = position;
+    this.goLeft = goLeft;
     this.chassis = RobotContainer.chassis;
-    addCommands(new InstantCommand(()->elevator.setMode(mode)),
-    new WaitCommand(3),
-      new TuneToReef(chassis, RobotContainer.visionSubsystem, elevator, goLeft),
-      new RunCommand(()->elevator.setGripperPower(-0.3), elevator).withTimeout(1),
-      new RunCommand(()->chassis.setVelocitiesRobotVel(new ChassisSpeeds(-0.5, 0,0)), chassis).withTimeout(2),
-      new InstantCommand(()->elevator.setMode(ElevatorMode.Home))    
-      );
-
-    
-
   }
+  @Override
+  public void initialize() {
+    poseWithOffset = new Pose2d(position.getPose().getTranslation().plus(new Translation2d(1, position.getPose().getRotation())), position.getPose().getRotation().plus(Rotation2d.k180deg));
+    new SequentialCommandGroup(
+      
+    new GoToCommand(poseWithOffset, 2, chassis),
+    new RunCommand(()-> chassis.setVelocitiesRobotVel(new ChassisSpeeds(1, 0, 0))).until(()->RobotContainer.visionSubsystem.isSeeTag() || chassis.getPose().getTranslation().getDistance(position.getPose().getTranslation()) < 0.5).withTimeout(3),
+
+    new AlignAndScore(goLeft, ElevatorMode.L4)).schedule();
+    
+  }
+  @Override
+  public boolean isFinished() {
+      return true;
+  }
+
 }

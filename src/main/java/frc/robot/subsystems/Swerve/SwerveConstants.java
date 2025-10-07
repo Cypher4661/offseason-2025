@@ -64,8 +64,8 @@ public class SwerveConstants {
     }
 
     public static class AutonomousConstants{
-        public static final double KDistance = 2.0;
-        public static final double KOmega = 1.0;
+        public static final double KDistance = 2.5;
+        public static final double KOmega = 2;
         public static final double Max_Erorr_Riff = 0.03;
         public static final double Max_Heading_Erorr_Riff = 0.03;
         //

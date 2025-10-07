@@ -2,10 +2,12 @@ package frc.robot.commands.Autonomous;
 
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
@@ -30,7 +32,7 @@ public class TuneToReef extends Command{
     private final static double kDistance = SwerveConstants.AutonomousConstants.KDistance;
     private final static double kOmega = SwerveConstants.AutonomousConstants.KOmega;
     private final static double MAX_ERROR = SwerveConstants.AutonomousConstants.Max_Erorr_Riff;
-
+    private final ProfiledPIDController pid = new ProfiledPIDController(0, 0, 0, new Constraints(0, 0));
     public TuneToReef(ChassisSubsystem chassis, VisionSubsystem vision, ElevatorSubsystem elevator, boolean goLeft) {
         this.elevator = elevator;
         this.chassis = chassis;
@@ -67,20 +69,20 @@ public class TuneToReef extends Command{
 
             switch (elevator.getMode()) {
                 case L4:
-                    distanceFromeReef = goLeft? SwerveConstants.AutonomousConstants.Left_L4_Reef_X: SwerveConstants.AutonomousConstants.Right_L4_Reef_X;
-                    leftorRightdistance = goLeft? SwerveConstants.AutonomousConstants.Left_Reef_Y_L4 : SwerveConstants.AutonomousConstants.Right_Reef_Y_L4;
+                    distanceFromeReef = goLeft ? SwerveConstants.AutonomousConstants.Left_L4_Reef_X: SwerveConstants.AutonomousConstants.Right_L4_Reef_X;
+                    leftorRightdistance = goLeft ? SwerveConstants.AutonomousConstants.Left_Reef_Y_L4 : SwerveConstants.AutonomousConstants.Right_Reef_Y_L4;
                     break;
                 case L3:
-                    distanceFromeReef = goLeft? SwerveConstants.AutonomousConstants.Left_L3_Reef_X: SwerveConstants.AutonomousConstants.Right_L3_Reef_X;
-                    leftorRightdistance = goLeft? SwerveConstants.AutonomousConstants.Left_Reef_Y_L3 : SwerveConstants.AutonomousConstants.Right_Reef_Y_L3;
+                    distanceFromeReef = goLeft ? SwerveConstants.AutonomousConstants.Left_L3_Reef_X: SwerveConstants.AutonomousConstants.Right_L3_Reef_X;
+                    leftorRightdistance = goLeft ? SwerveConstants.AutonomousConstants.Left_Reef_Y_L3 : SwerveConstants.AutonomousConstants.Right_Reef_Y_L3;
                     break;
                 case L2:
-                    distanceFromeReef = goLeft? SwerveConstants.AutonomousConstants.Left_L2_Reef_X: SwerveConstants.AutonomousConstants.Right_L2_Reef_X;
-                    leftorRightdistance = goLeft? SwerveConstants.AutonomousConstants.Left_Reef_Y_L2 : SwerveConstants.AutonomousConstants.Right_Reef_Y_L2;
+                    distanceFromeReef = goLeft ? SwerveConstants.AutonomousConstants.Left_L2_Reef_X: SwerveConstants.AutonomousConstants.Right_L2_Reef_X;
+                    leftorRightdistance = goLeft ? SwerveConstants.AutonomousConstants.Left_Reef_Y_L2 : SwerveConstants.AutonomousConstants.Right_Reef_Y_L2;
                     break;
                 default:
                     distanceFromeReef = 0.6;
-                    leftorRightdistance = goLeft? SwerveConstants.AutonomousConstants.Left_Reef_Y : SwerveConstants.AutonomousConstants.Right_Reef_Y;
+                    leftorRightdistance = goLeft ? SwerveConstants.AutonomousConstants.Left_Reef_Y : SwerveConstants.AutonomousConstants.Right_Reef_Y;
                     break;
             }
             target = new Pose2d(tagPosition.plus(new Translation2d(distanceFromeReef, leftorRightdistance).rotateBy(tagRotation)), 
