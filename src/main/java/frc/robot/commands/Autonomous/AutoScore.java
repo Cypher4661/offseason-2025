@@ -18,6 +18,8 @@ import frc.robot.RobotContainer;
 import frc.robot.commands.GoToCommand;
 import frc.robot.commands.Autonomous.FieldTarget.POSITION;
 import frc.robot.subsystems.Swerve.ChassisSubsystem;
+import frc.robot.subsystems.Swerve.SwerveConstants;
+import frc.robot.subsystems.Swerve.SwerveConstants.AutonomousConstants;
 import frc.robot.subsystems.elevator.ElevatorSubsystem.ElevatorMode;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
@@ -34,11 +36,13 @@ public class AutoScore extends Command {
   public void initialize() {
     this.position = RobotContainer.getClosetPosition();
     ElevatorMode mode = RobotContainer.elevator.getModeElstic();
-    poseWithOffset = new Pose2d(position.getPose().getTranslation().plus(new Translation2d(1, position.getPose().getRotation())), position.getPose().getRotation().plus(Rotation2d.k180deg));
+    double goLeftOffset = goLeft ? SwerveConstants.AutonomousConstants.Left_Reef_Y_L3 : AutonomousConstants.Right_Reef_Y_L3;
+    Translation2d offset = new Translation2d(1, position.getPose().getRotation()).plus(new Translation2d(0, goLeftOffset));
+    poseWithOffset = new Pose2d(position.getPose().getTranslation().plus(offset)  , position.getPose().getRotation().plus(Rotation2d.k180deg));
     new SequentialCommandGroup(
       
     new GoToCommand(poseWithOffset, 2, chassis),
-    new RunCommand(()-> chassis.setVelocitiesRobotVel(new ChassisSpeeds(1, 0, 0))).until(()->RobotContainer.visionSubsystem.isSeeTag() || chassis.getPose().getTranslation().getDistance(position.getPose().getTranslation()) < 0.5).withTimeout(3),
+    new RunCommand(()-> chassis.setVelocitiesRobotRel(new ChassisSpeeds(1, 0, 0))).until(()->RobotContainer.visionSubsystem.isSeeTag() || chassis.getPose().getTranslation().getDistance(position.getPose().getTranslation()) < 0.5).withTimeout(3),
 
     new AlignAndScore(goLeft, mode)).schedule();
     

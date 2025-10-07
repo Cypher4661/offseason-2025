@@ -43,7 +43,7 @@ public class ChassisDrive extends Command{
         double LjoyX = controller.getLeftY() * direction;
         double LjoyY = controller.getLeftX() * direction;
         if(UseStick){
-            rot = controller.getRightX() * direction;
+            rot = -controller.getRightX() * direction;
         } else {
             rot  = controller.getLeftTriggerAxis() - controller.getRightTriggerAxis();
         }

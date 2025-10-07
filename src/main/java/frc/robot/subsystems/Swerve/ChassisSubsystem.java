@@ -186,7 +186,7 @@ public class ChassisSubsystem extends SubsystemBase {
         }
     }
 
-    public void setVelocitiesRobotVel(ChassisSpeeds speeds){
+    public void setVelocitiesRobotRel(ChassisSpeeds speeds){
         if(Math.abs(speeds.vxMetersPerSecond) < 0.01 && Math.abs(speeds.vyMetersPerSecond) < 0.01 && Math.abs(speeds.omegaRadiansPerSecond) < 0.01){
             for(SwerveModule m : Modules){
                 m.setStop();

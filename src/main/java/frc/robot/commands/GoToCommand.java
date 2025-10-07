@@ -1,8 +1,10 @@
 package frc.robot.commands;
 
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Swerve.ChassisSubsystem;
 
@@ -15,11 +17,13 @@ public class GoToCommand extends Command {
     private final static double kDistance = 2;
     private final static double kOmega = 2;
     private final static double MAX_ERROR = 0.05;
+    private final ProfiledPIDController pid;
 
     public GoToCommand(Pose2d target, double velocity, ChassisSubsystem chassis) {
         this.target  = target;
         this.chassis = chassis;
         this.velocity = velocity;
+        this.pid = new ProfiledPIDController(kDistance, 0, 0, new Constraints(velocity, velocity * 2));
         addRequirements(chassis);
     }
 
@@ -31,7 +35,7 @@ public class GoToCommand extends Command {
         
         distanceToTarget = toTarget.getNorm();
         angleError = target.getRotation().minus(currentPosition.getRotation()).getRadians();
-        double v = Math.min(velocity, distanceToTarget * kDistance);
+        double v = Math.min(velocity, pid.calculate(-distanceToTarget, 0));
         double omega = angleError*kOmega;
         // System.out.println("Distance: " + distanceToTarget + " Angle Error: " + Math.toDegrees(angleError) + " v: " + v + " omega: " + omega);
         ChassisSpeeds s;

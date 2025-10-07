@@ -32,7 +32,7 @@ public class TuneToReef extends Command{
     private final static double kDistance = SwerveConstants.AutonomousConstants.KDistance;
     private final static double kOmega = SwerveConstants.AutonomousConstants.KOmega;
     private final static double MAX_ERROR = SwerveConstants.AutonomousConstants.Max_Erorr_Riff;
-    private final ProfiledPIDController pid = new ProfiledPIDController(0, 0, 0, new Constraints(0, 0));
+    private final ProfiledPIDController pid = new ProfiledPIDController(kDistance, 0, 0, new Constraints(1, 2));
     public TuneToReef(ChassisSubsystem chassis, VisionSubsystem vision, ElevatorSubsystem elevator, boolean goLeft) {
         this.elevator = elevator;
         this.chassis = chassis;
@@ -61,7 +61,7 @@ public class TuneToReef extends Command{
             Translation2d tagPosition = Constants.O_TO_TAG[id];
             Rotation2d tagRotation = Constants.TAG_ANGLE[id];
             double leftorRightdistance = 0.0;
-            double distanceFromeReef = 0.0;
+            double distanceFromReef = 0.0;
 
             
             
@@ -69,23 +69,23 @@ public class TuneToReef extends Command{
 
             switch (elevator.getMode()) {
                 case L4:
-                    distanceFromeReef = goLeft ? SwerveConstants.AutonomousConstants.Left_L4_Reef_X: SwerveConstants.AutonomousConstants.Right_L4_Reef_X;
+                    distanceFromReef = goLeft ? SwerveConstants.AutonomousConstants.Left_L4_Reef_X: SwerveConstants.AutonomousConstants.Right_L4_Reef_X;
                     leftorRightdistance = goLeft ? SwerveConstants.AutonomousConstants.Left_Reef_Y_L4 : SwerveConstants.AutonomousConstants.Right_Reef_Y_L4;
                     break;
                 case L3:
-                    distanceFromeReef = goLeft ? SwerveConstants.AutonomousConstants.Left_L3_Reef_X: SwerveConstants.AutonomousConstants.Right_L3_Reef_X;
+                    distanceFromReef = goLeft ? SwerveConstants.AutonomousConstants.Left_L3_Reef_X: SwerveConstants.AutonomousConstants.Right_L3_Reef_X;
                     leftorRightdistance = goLeft ? SwerveConstants.AutonomousConstants.Left_Reef_Y_L3 : SwerveConstants.AutonomousConstants.Right_Reef_Y_L3;
                     break;
                 case L2:
-                    distanceFromeReef = goLeft ? SwerveConstants.AutonomousConstants.Left_L2_Reef_X: SwerveConstants.AutonomousConstants.Right_L2_Reef_X;
+                    distanceFromReef = goLeft ? SwerveConstants.AutonomousConstants.Left_L2_Reef_X: SwerveConstants.AutonomousConstants.Right_L2_Reef_X;
                     leftorRightdistance = goLeft ? SwerveConstants.AutonomousConstants.Left_Reef_Y_L2 : SwerveConstants.AutonomousConstants.Right_Reef_Y_L2;
                     break;
                 default:
-                    distanceFromeReef = 0.6;
+                    distanceFromReef = 0.6;
                     leftorRightdistance = goLeft ? SwerveConstants.AutonomousConstants.Left_Reef_Y : SwerveConstants.AutonomousConstants.Right_Reef_Y;
                     break;
             }
-            target = new Pose2d(tagPosition.plus(new Translation2d(distanceFromeReef, leftorRightdistance).rotateBy(tagRotation)), 
+            target = new Pose2d(tagPosition.plus(new Translation2d(distanceFromReef, leftorRightdistance).rotateBy(tagRotation)), 
                 tagRotation.plus(Rotation2d.k180deg));
             if(debug) {
                 SmartDashboard.putNumber("ToReef Tag angle", tagRotation.getDegrees());
@@ -103,8 +103,8 @@ public class TuneToReef extends Command{
             Pose2d currentPosition = chassis.getPose();
             Translation2d toTarget = target.getTranslation().minus(currentPosition.getTranslation());
             distanceToTarget = toTarget.getNorm();
-            double Vel = Math.min(velocity, distanceToTarget * kDistance);
-            
+            //double Vel = Math.min(velocity, pid.calculate(-distanceToTarget, 0));
+            double Vel = Math.min(velocity, kDistance * distanceToTarget);
             headingError = MathUtil.inputModulus(target.getRotation().minus(currentPosition.getRotation()).getRadians(), -Math.PI, Math.PI);
             double omega = headingError*kOmega;
             if(debug) {

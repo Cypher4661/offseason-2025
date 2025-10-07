@@ -51,7 +51,7 @@ public enum ElevatorMode {
         L1(0.3, -80), 
         L2(0.5, -80), 
         L3(0, 60), 
-        L4(0.72,40), 
+        L4(0.72,45), 
         AlgieUp(0.3,60), 
         AlgieDown(0.22, 30), 
         Barge(0.6, 90), 
@@ -236,7 +236,7 @@ public enum ElevatorMode {
         if(Math.abs(getHeight() - height) < Constants.elevatorConfig.deadbend){
            leftMotor.setDuty(0);
         }
-        else leftMotor.setPositionVoltage(height-encoderOffset, isAtButtom()? 0 :  Constants.elevatorConfig.KG);
+        else leftMotor.setMotion(height-encoderOffset, isAtButtom()? 0 :  Constants.elevatorConfig.KG);
         
     }
 

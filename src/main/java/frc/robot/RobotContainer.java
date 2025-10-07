@@ -21,6 +21,7 @@ import frc.robot.commands.Autonomous.AlignAndScore;
 import frc.robot.commands.Autonomous.TuneToReef;
 import frc.robot.commands.Autonomous.FieldTarget.POSITION;
 import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.subsystems.Swerve.Autonomous;
 import frc.robot.subsystems.Swerve.ChassisSubsystem;
 import frc.robot.subsystems.elevator.ElevatorCommand;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
@@ -86,6 +87,7 @@ public class RobotContainer implements Sendable {
     DriverController.x().onTrue(new AutoScore(true));
     DriverController.back().onChange(new InstantCommand(()->chassis.setZeroHeading()).ignoringDisable(true));
     DriverController.a().toggleOnTrue(new InstantCommand(()->chassis.PrecisionMode = !chassis.PrecisionMode));
+    DriverController.y().onTrue(new InstantCommand(()->elevator.setGripperPower(0)));
     Trigger driverControllerStickMove = new Trigger(() -> new Translation2d(Math.abs(DriverController.getLeftX()), Math.abs(DriverController.getLeftY())).getNorm() > 0.3);
     driverControllerStickMove.onTrue(new ChassisDrive(chassis, elevator, DriverController));
 
@@ -112,7 +114,7 @@ public class RobotContainer implements Sendable {
   }
 
   public Command getAutonomousCommand() {
-    return null;
+    return new Autonomous();
   }
       public VisionSubsystem getVisionSubsystem() {
         return visionSubsystem;

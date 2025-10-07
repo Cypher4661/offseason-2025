@@ -31,7 +31,7 @@ public final class Constants {
   public static final double gyroOffset = 0.32 ; // Gyro offset for blue alliance in degrees
   // public static final double gyroOffsetRed = 183.2; // Gyro offset for red alliance in degrees
 
-  public static final Camera CAMERA_POSITION = new Camera("tag", new Translation3d(0.358, -0.06, 0.646), -50.0, 0.0, "reef");
+  public static final Camera CAMERA_POSITION = new Camera("tag", new Translation3d(0.358, -0.06, 0.646), -38, 0.0, "reef");
   
   public static final double MIN_CROP = 0.5; // Minimum crop value
   public static final double MAX_CROP = 0.6; // Maximum crop value
@@ -163,7 +163,8 @@ public static double[] TAG_HEIGHT = {
         .withBrake(true)
         .withInvert(false)
         .withMeterMotor(15, 0.0364)
-        .withPID(17, 0, 0, 0.6, 15, 0.35, KG)
+        .withPID(0.5, 0, 0, 0.6, 15, 0.35, KG)
+        .withMotionParam(1, 3, 6)
         .withCurrent(35)
         .withRampTime(0.2)
         .withVolts(12);
@@ -188,7 +189,7 @@ public static double[] TAG_HEIGHT = {
         .withCurrent(20)
         .withRampTime(0.2);
 
-    public static final double ARM_CANCODER_OFFSET = 342.9216085730402;
+    public static final double ARM_CANCODER_OFFSET = 339.4054524851363;
     public static final double kG = 0.20;
 
 
@@ -196,7 +197,7 @@ public static double[] TAG_HEIGHT = {
         .withBrake(true)
         .withInvert(true)
         .withDegreesMotor(108) 
-        .withMotionParam(140, 280, 560) 
+        .withMotionParam(180, 360, 720) 
         .withPID(0.3, 0.0, 0.0, 0.0, 0.0, 0.0, kG) 
         .withVolts(12)
         .withCurrent(30)
