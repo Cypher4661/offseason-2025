@@ -19,6 +19,7 @@ public class ChassisDrive extends Command{
     private boolean isRed;
     private ChassisSpeeds speeds;
     private boolean UseStick;
+    private boolean isInverse;
     ElevatorSubsystem Elevator;
     private double Kheight = 1;
     
@@ -28,6 +29,7 @@ public class ChassisDrive extends Command{
         this.Elevator = elevator;
         addRequirements(chassis);
         SmartDashboard.putBoolean("Use Stick", false);
+        SmartDashboard.putBoolean("is inverse", false);
         SmartDashboard.putNumber("Kheight", Kheight);
         
     }
@@ -38,12 +40,13 @@ public class ChassisDrive extends Command{
         isRed = chassis.isRed();
         direction = isRed ? 1 : -1;
         UseStick = SmartDashboard.getBoolean("Use Stick", false);
+        isInverse = SmartDashboard.getBoolean("is inverse", false);
 
         double rot = 0;
         double LjoyX = controller.getLeftY() * direction;
         double LjoyY = controller.getLeftX() * direction;
         if(UseStick){
-            rot = -controller.getRightX() * direction;
+            rot = isInverse ? controller.getRightX() : -controller.getRightX();
         } else {
             rot  = controller.getLeftTriggerAxis() - controller.getRightTriggerAxis();
         }

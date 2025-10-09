@@ -102,7 +102,7 @@ public class SparkMotor extends SparkMax implements Sendable, MotorInterface {
    * set motor to brake or coast
    */
   public void setNeutralMode(boolean isBrake) {
-    cfg.idleMode(config.brake ? SparkBaseConfig.IdleMode.kBrake : SparkBaseConfig.IdleMode.kCoast);
+    cfg.idleMode (config.brake ? SparkBaseConfig.IdleMode.kBrake : SparkBaseConfig.IdleMode.kCoast);
     configure(cfg, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
   }
 

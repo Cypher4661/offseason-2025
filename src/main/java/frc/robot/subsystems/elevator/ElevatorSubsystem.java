@@ -47,7 +47,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 public enum ElevatorMode { 
         Idle(0, -90), 
         Home(0, -90), 
-        Intake(0, -107), 
+        Intake(0, -110), 
         L1(0.3, -80), 
         L2(0.5, -80), 
         L3(0, 60), 

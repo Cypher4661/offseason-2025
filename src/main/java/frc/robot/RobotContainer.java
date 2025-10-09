@@ -1,3 +1,4 @@
+
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
@@ -7,6 +8,8 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -59,6 +62,7 @@ public class RobotContainer implements Sendable {
     SmartDashboard.putData("TuneToReef - Left", new TuneToReef(chassis, visionSubsystem, elevator, true));   
     SmartDashboard.putData("TuneToReef - Right", new TuneToReef(chassis, visionSubsystem, elevator, false));  
     SmartDashboard.putData("roboContainer", this);
+    SmartDashboard.putData("Calibrate Elevator", new InstantCommand(()->elevator.setMode(ElevatorMode.Calibreate)));
 
   
     
@@ -91,7 +95,9 @@ public class RobotContainer implements Sendable {
     DriverController.povUp().onTrue(new InstantCommand(()->{elevator.setMode(ElevatorMode.L1); elevator.setModeElstic(ElevatorMode.L1);}));
     Trigger driverControllerStickMove = new Trigger(() -> new Translation2d(Math.abs(DriverController.getLeftX()), Math.abs(DriverController.getLeftY())).getNorm() > 0.3);
     driverControllerStickMove.onTrue(new ChassisDrive(chassis, elevator, DriverController));
-
+    DriverController.povLeft().onTrue(new RunCommand(()->elevator.setGripperPower(-0.3)).withTimeout(0.5));
+    Trigger rumble = new Trigger(()->getTime() <= 15);
+    rumble.onTrue(new RunCommand(()->DriverController.setRumble(RumbleType.kBothRumble, 1)).withTimeout(2));
     chassis.setDefaultCommand(new ChassisDrive(chassis, elevator, DriverController));
     elevator.setDefaultCommand(new ElevatorCommand(elevator));
   }
@@ -99,7 +105,12 @@ public class RobotContainer implements Sendable {
   public void initSendable(SendableBuilder builder) {
       // TODO Auto-generated method stub
       builder.addBooleanProperty("isRed", () -> isRed, p -> isRed = p);
+      builder.addDoubleProperty("TIMER", this::getTime, null);
       
+  }
+
+  public double getTime(){
+    return DriverStation.getMatchTime();
   }
 
   public static boolean isEnabled() {

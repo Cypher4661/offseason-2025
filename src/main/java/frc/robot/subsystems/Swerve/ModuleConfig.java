@@ -50,7 +50,7 @@ public class ModuleConfig {
             .withInvert(IsDriveInverted)
             .withMeterMotor(GearRatioDrive, diameter)
             .withCurrent(20)
-            .withVolts(6)
+            .withVolts(10)
             .withPID(5, 0, 0, 0.29, 2.5, 0.1, 0)
             .withRampTime(0.2)
             .withMotionParam(720, 1200, 2000);

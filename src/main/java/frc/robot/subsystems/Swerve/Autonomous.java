@@ -12,6 +12,7 @@ import frc.robot.RobotContainer;
 import frc.robot.commands.Autonomous.AlignAndScore;
 import frc.robot.commands.Autonomous.AutoScore;
 import frc.robot.commands.Autonomous.TuneToReef;
+import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem.ElevatorMode;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -20,8 +21,8 @@ import frc.robot.subsystems.elevator.ElevatorSubsystem.ElevatorMode;
 public class Autonomous extends SequentialCommandGroup {
   public Autonomous() {
     addCommands(
-      new RunCommand(()->RobotContainer.chassis.setVelocitiesRobotRel(new ChassisSpeeds(1, 0, 0))).withTimeout(1),
-      
-      new AlignAndScore(true, ElevatorMode.L4));
+      new RunCommand(()->RobotContainer.chassis.setVelocitiesRobotRel(new ChassisSpeeds(1, 0, 0))).until(()->RobotContainer.visionSubsystem.isSeeTag()).withTimeout(1.2),
+      new InstantCommand(()->RobotContainer.elevator.setMode(ElevatorMode.L4)),
+      new AlignAndScore(false, ElevatorMode.L4));   
   }
 }

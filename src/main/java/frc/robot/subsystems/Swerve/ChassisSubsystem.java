@@ -69,7 +69,7 @@ public class ChassisSubsystem extends SubsystemBase {
         SmartDashboard.putData("Set 90 Degrees", new RunCommand(()-> setAllModulsTo(90),this));
         SmartDashboard.putData("Set 0 Degrees", new RunCommand(()-> setAllModulsTo(0),this));
         SmartDashboard.putData("Brake", new InstantCommand(()-> setBrake(true)).ignoringDisable(true));
-        SmartDashboard.putData("Coast", new InstantCommand(()-> setBrake(false)).ignoringDisable(true));
+        SmartDashboard.putData("Coast", new InstantCommand(()-> setCoast(false)).ignoringDisable(true));
     
     }    
 
@@ -85,6 +85,12 @@ public class ChassisSubsystem extends SubsystemBase {
         for(SwerveModule module : Modules){
             module.SteerMotor.setNeutralMode(brake);
             module.DriveMotor.setNeutralMode(brake);
+        }
+    }
+
+    public void setCoast(boolean brake){
+        for(SwerveModule module : Modules){
+            module.SteerMotor.setNeutralMode(brake);
         }
     }
 
