@@ -40,7 +40,7 @@ public class AlignAndScore extends SequentialCommandGroup {
       
        new RunCommand(()->elevator.setGripperPower(elevator.getMode() == ElevatorMode.L2? 0.3 : -0.3)).withTimeout(1),
        new InstantCommand(()->elevator.setGripperPower(0)),
-      new RunCommand(()->chassis.setVelocitiesRobotRel(new ChassisSpeeds(-1.00, 0,0))).withTimeout(0.5),
+      new RunCommand(()->chassis.setVelocitiesRobotRel(new ChassisSpeeds(-0.7, 0,0))).withTimeout(0.7),
       new InstantCommand(()->elevator.setMode(ElevatorMode.Home))    
       );
 

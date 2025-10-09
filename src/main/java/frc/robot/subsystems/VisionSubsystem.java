@@ -52,6 +52,7 @@ public class VisionSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         seeTag = Table.getEntry("tv").getDouble(0.0) != 0;
+        //pipEntry = Table.getEntry("pipeline");
         //if there is'nt a tag in view, dont do anything 
         if (seeTag) {
             //get yaw and pitch from camera to tag

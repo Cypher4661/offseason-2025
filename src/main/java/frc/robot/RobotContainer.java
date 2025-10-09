@@ -62,6 +62,7 @@ public class RobotContainer implements Sendable {
     SmartDashboard.putData("TuneToReef - Left", new TuneToReef(chassis, visionSubsystem, elevator, true));   
     SmartDashboard.putData("TuneToReef - Right", new TuneToReef(chassis, visionSubsystem, elevator, false));  
     SmartDashboard.putData("roboContainer", this);
+    SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
     SmartDashboard.putData("Calibrate Elevator", new InstantCommand(()->elevator.setMode(ElevatorMode.Calibreate)));
 
   

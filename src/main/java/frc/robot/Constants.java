@@ -189,7 +189,7 @@ public static double[] TAG_HEIGHT = {
         .withCurrent(20)
         .withRampTime(0.2);
 
-    public static final double ARM_CANCODER_OFFSET = 315.2131278803282;
+    public static final double ARM_CANCODER_OFFSET = 318.5136079628402;
     public static final double kG = 0.20;
 
 
