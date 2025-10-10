@@ -83,6 +83,7 @@ public class RobotContainer implements Sendable {
     return closet;
   }
   
+  
    private void configureBindings() {
     
     DriverController.rightBumper().onTrue(new InstantCommand(()-> elevator.setMode(ElevatorMode.Intake)));
